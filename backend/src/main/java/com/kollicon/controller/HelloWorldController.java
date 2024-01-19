@@ -1,6 +1,6 @@
-package com.boot.controller;
+package com.kollicon.controller;
 
-import com.boot.service.HelloWorldService;
+import com.kollicon.service.HelloWorldService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,11 +1,9 @@
-package com.boot.kollicon;
+package com.kollicon.application;
 
-import com.boot.controller.HelloWorldController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = "com.boot")
+@SpringBootApplication(scanBasePackages = "com.kollicon")
 public class KolliconApplication {
 
 	public static void main(String[] args) {

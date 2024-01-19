@@ -1,30 +1,24 @@
-# React + TypeScript + Vite
+## React with TypeScript and Vite - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project utilizes modern frontend technologies, specifically React with TypeScript, powered by the Vite build tool. This combination provides a fast and efficient development experience, allowing for a more maintainable and scalable frontend application.
 
-Currently, two official plugins are available:
+### Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The frontend project follows a typical structure for a React application with TypeScript, and Vite configurations are managed in the `vite.config.ts` file. The main components of the project structure include:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```plaintext
+src/
+|-- components/
+|-- pages/
+|-- styles/
+|-- App.tsx
+|-- index.tsx
+|-- vite.config.ts
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# How to start Vite frontend
+
+1. Open terminal
+2. Navigate to the frontend folder
+3. run `npm install`
+4. run `npm run dev`

@@ -1,4 +1,4 @@
-package com.boot.service;
+package com.kollicon.service;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
