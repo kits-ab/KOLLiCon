@@ -1,0 +1,145 @@
+service: kollicon-authentication
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-west-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+resources:
+  Outputs:
+    CognitoUserPoolArn:
+      Description: The ARN for this stack's Cognito User Pool
+      Value: !GetAtt UserPool.Arn
+    UserPoolClientId:
+      Description: The client id for the user pool client, this is needed to login
+      Value: !Ref UserPoolClient
+  Resources:
+    UserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        Schema:
+          - Name: name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+          - Name: email
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+
+    OIDCProvider:
+      Type: AWS::Cognito::UserPoolIdentityProvider
+      Properties:
+        AttributeMapping:
+          email: "email"
+          sub: "username"
+          name: "name"
+        ProviderDetails:
+          client_id: ${ssm:/azure/client_id}
+          client_secret: ${ssm:/azure/client_secret}
+          attributes_request_method: "GET"
+          oidc_issuer: "https://login.microsoftonline.com/31759c9d-8927-430d-9abc-cf496fc85429/v2.0"
+          authorize_scopes: "email profile openid"
+        ProviderName: "AzureServerlessTest"
+        ProviderType: "OIDC"
+        UserPoolId: !Ref UserPool
+
+    UserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      DependsOn: OIDCProvider
+      Properties:
+        GenerateSecret: false
+        UserPoolId: !Ref UserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_ADMIN_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        AllowedOAuthFlows:
+          - "implicit"
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes:
+          - phone
+          - email
+          - openid
+          - profile
+          - aws.cognito.signin.user.admin
+        CallbackURLs:
+          - http://localhost:5173/handlelogin
+          - https://d7izzmjfk47wh.cloudfront.net/handlelogin
+          - https://kollicon-dev.aws.kits.dev/handlelogin
+        SupportedIdentityProviders:
+          - AzureServerlessTest
+        PreventUserExistenceErrors: ENABLED
+        RefreshTokenValidity: 30
+
+    UserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        UserPoolId: !Ref UserPool
+        Domain: !Sub kollicon-login-${opt:stage}
+
+    IdentityPool:
+      Type: "AWS::Cognito::IdentityPool"
+      Properties:
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders:
+          - ClientId: !Ref UserPoolClient
+            ProviderName: !GetAtt UserPool.ProviderName
+    # Create a role for unauthorized acces to AWS resources. Very limited access. Only allows users in the previously created Identity Pool
+    CognitoUnAuthorizedRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action:
+                - "sts:AssumeRoleWithWebIdentity"
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud": !Ref IdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": unauthenticated
+
+    # Create a role for authorized acces to AWS resources. Control what your user can access. This example only allows Lambda invokation
+    # Only allows users in the previously created Identity Pool
+    CognitoAuthorizedRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action:
+                - "sts:AssumeRoleWithWebIdentity"
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud": !Ref IdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": authenticated
+        Policies:
+          - PolicyName: "CognitoAuthorizedPolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "lambda:InvokeFunction"
+                  Resource: "*"
+
+    # Assigns the roles to the Identity Pool
+    IdentityPoolRoleMapping:
+      Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+      Properties:
+        IdentityPoolId: !Ref IdentityPool
+        Roles:
+          authenticated: !GetAtt CognitoAuthorizedRole.Arn
+          unauthenticated: !GetAtt CognitoUnAuthorizedRole.Arn
