@@ -43,3 +43,8 @@ Follow these steps to start the backend:
 4. Select SDK -> Java 21
 
 Click on run to start the backend
+
+### AWS Account Role
+
+ID: 637423179043
+Role: OrganizationAccountAccessRole
