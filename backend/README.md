@@ -19,6 +19,15 @@ src/
 |-- settings.gradle
 ```
 
+# Prerequisites
+
+```
+Docker desktop
+Java 20
+Java 21
+Preferred IDEA of the team is IntelliJ
+```
+
 # How to start spring backend
 
 ## Getting Started

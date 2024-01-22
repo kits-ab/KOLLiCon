@@ -16,6 +16,13 @@ src/
 |-- vite.config.ts
 ```
 
+# Prerequisites
+
+```
+Node v20.11.0 (LTS)
+Npm v10.2.4 (LTS)
+```
+
 # How to start Vite frontend
 
 1. Open terminal
