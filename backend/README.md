@@ -4,7 +4,7 @@ This project utilizes the Spring Boot framework as the backend technology, provi
 
 ### Project Structure
 
-The project follows a standard Spring Boot project structure and leverages Gradle for managing dependencies. The main components of the project structure include:sdfsf
+The project follows a standard Spring Boot project structure and leverages Gradle for managing dependencies. The main components of the project structure include:
 
 ```plaintext
 src/
