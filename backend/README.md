@@ -19,6 +19,13 @@ src/
 |-- settings.gradle
 ```
 
+### Figma
+
+Figma prototypes and sketches for Kollicon:
+
+[FIGMA](https://www.figma.com/file/Jsbt9jh0fgHUAIN6QMM3iF/KolliCon---LIA-projekt?type=design&node-id=0%3A1&mode=design&t=whV1YNILGDwatZ9j-1)\
+[FIGMA PROTOTYPE](https://www.figma.com/proto/Jsbt9jh0fgHUAIN6QMM3iF/KolliCon---LIA-projekt?type=design&node-id=1-4&t=9sHlTrZK9QCzL3y9-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=1%3A4&show-proto-sidebar=1&mode=design)
+
 # Prerequisites
 
 ```
