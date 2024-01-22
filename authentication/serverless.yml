@@ -59,7 +59,7 @@ resources:
           - ALLOW_ADMIN_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
         AllowedOAuthFlows:
-          - "implicit"
+          - "code"
         AllowedOAuthFlowsUserPoolClient: true
         AllowedOAuthScopes:
           - phone
@@ -89,6 +89,7 @@ resources:
         CognitoIdentityProviders:
           - ClientId: !Ref UserPoolClient
             ProviderName: !GetAtt UserPool.ProviderName
+            
     # Create a role for unauthorized acces to AWS resources. Very limited access. Only allows users in the previously created Identity Pool
     CognitoUnAuthorizedRole:
       Type: "AWS::IAM::Role"
