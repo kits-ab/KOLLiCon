@@ -8,10 +8,10 @@ provider:
 custom:
   stage: ${opt:stage, "dev"}
   cloudfrontInvalidate:
-  - distributionIdKey: "CDNDistributionId"
-    autoInvalidate: true
-    items:
-      - "*"
+    - distributionIdKey: "CDNDistributionId"
+      autoInvalidate: true
+      items:
+        - "/*"
 
 plugins:
   - serverless-cloudfront-invalidate
@@ -35,7 +35,7 @@ resources:
               Resource: !Sub "${DeployBucket.Arn}/*"
               Condition:
                 StringEquals:
-                  aws:SourceArn: "arn:aws:cloudfront::637423179043:distribution/EVHLPUF7390FL"
+                  aws:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${KolliconCloudfront.Id}"
     KolliconCloudfrontOAC:
       Type: "AWS::CloudFront::OriginAccessControl"
       Properties:
@@ -67,5 +67,4 @@ resources:
   Outputs:
     CDNDistributionId:
       Description: CDN distribution id.
-      Value:
-        Ref: CDN
+      Value: !Ref KolliconCloudfront
