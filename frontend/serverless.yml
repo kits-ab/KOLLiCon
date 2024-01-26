@@ -1,0 +1,70 @@
+service: kollicon-frontend
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  region: eu-west-1
+
+custom:
+  stage: ${opt:stage, "dev"}
+  cloudfrontInvalidate:
+    - distributionIdKey: "CDNDistributionId"
+      autoInvalidate: true
+      items:
+        - "/*"
+
+plugins:
+  - serverless-cloudfront-invalidate
+
+resources:
+  Resources:
+    DeployBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: kollicon-${self:custom.stage}-deploy
+    KolliconS3BucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        Bucket: !Ref DeployBucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: "cloudfront.amazonaws.com"
+              Action: s3:GetObject
+              Resource: !Sub "${DeployBucket.Arn}/*"
+              Condition:
+                StringEquals:
+                  aws:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${KolliconCloudfront.Id}"
+    KolliconCloudfrontOAC:
+      Type: "AWS::CloudFront::OriginAccessControl"
+      Properties:
+        OriginAccessControlConfig:
+          Name: KolliconOACConfig
+          OriginAccessControlOriginType: "s3"
+          SigningBehavior: "always"
+          SigningProtocol: "sigv4"
+    KolliconCloudfront:
+      Type: "AWS::CloudFront::Distribution"
+      Properties:
+        DistributionConfig:
+          DefaultRootObject: index.html
+          Origins:
+            - DomainName: !GetAtt DeployBucket.DomainName
+              Id: MyS3Origin
+              OriginAccessControlId: !GetAtt KolliconCloudfrontOAC.Id
+              S3OriginConfig:
+                OriginAccessIdentity:
+          Enabled: true
+          DefaultCacheBehavior:
+            TargetOriginId: MyS3Origin
+            ForwardedValues:
+              QueryString: "false"
+              Cookies:
+                Forward: "none"
+            ViewerProtocolPolicy: redirect-to-https
+          PriceClass: PriceClass_All
+  Outputs:
+    CDNDistributionId:
+      Description: CDN distribution id.
+      Value: !Ref KolliconCloudfront

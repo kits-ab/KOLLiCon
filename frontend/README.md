@@ -16,6 +16,17 @@ src/
 |-- vite.config.ts
 ```
 
+## Kits React Components
+
+[React component library](https://react-components.kits.se/?path=/docs/about-about--docs)
+
+# Prerequisites
+
+```
+Node v20.11.0 (LTS)
+Npm v10.2.4 (LTS)
+```
+
 # How to start Vite frontend
 
 1. Open terminal
