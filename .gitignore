@@ -133,3 +133,6 @@ dist
 backend/.gradle
 backend/.idea
 backend/build
+
+#app
+backend/src/main/resources/application.properties
