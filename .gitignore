@@ -134,5 +134,7 @@ backend/.gradle
 backend/.idea
 backend/build
 
+backend/bin
+
 #app
 backend/src/main/resources/application.properties
