@@ -1,11 +1,17 @@
 package com.kollicon.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "schema")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = SchemaModel.class)
 public class SchemaModel {
 
     @Id
@@ -15,8 +21,10 @@ public class SchemaModel {
     @Column(name = "user_id")
     private String userId;
 
-/*    @Column(name = "activity_id") -- Bortkommenterad tills activity är klar
-    private List<Activity> activityId;*/
+    @OneToMany(mappedBy = "schema")
+    @Column(name = "activity_id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<ActivityModel> activityId;
 
     @Column(name = "type") // Kanske ska var ett enum?
     private String type;
@@ -42,17 +50,28 @@ public class SchemaModel {
     public SchemaModel() {
     }
 
-    public SchemaModel(UUID id, String userId, String type, String title, String tagLine, String location,
-                       Date start, Date end, boolean active) {
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
         this.userId = userId;
-        this.type = type;
-        this.title = title;
-        this.tagLine = tagLine;
-        this.location = location;
-        this.start = start;
-        this.end = end;
-        this.active = active;
+    }
+
+    public List<ActivityModel> getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(List<ActivityModel> activityId) {
+        this.activityId = activityId;
     }
 
     public String getType() {

@@ -2,31 +2,43 @@ package com.kollicon.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 @Entity
 @Table(name = "activity")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Activity.class)
-public class Activity {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ActivityModel.class)
+public class ActivityModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(name = "user_id")
     private String userID;
+
     @Column(name = "review_id")
-    private List<Review> review;
-    private Schema schema;
+    @OneToMany(mappedBy = "activity")
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<ReviewModel> review;
+
+    @ManyToOne
+    @JoinColumn(name = "schema_id", referencedColumnName = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private SchemaModel schema;
     @Column(name = "winner")
     private Boolean winner;
     @Column(name = "type")
     private String type;
-    @Column(name = "")
-    private List<Presenter> presenter;
-    @Column(name = "")
-    private Location location;
+    @Column(name = "presenter")
+    @OneToMany(mappedBy = "activity")
+    private List<PresenterModel> presenter;
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    @OneToOne
+    private LocationModel location;
     @Column(name = "title")
     private String title;
     @Column(name = "details")
@@ -38,7 +50,7 @@ public class Activity {
     @Column(name = "end")
     private LocalDateTime end;
 
-    public Activity() {
+    public ActivityModel() {
     }
 
     public UUID getId() {
@@ -57,12 +69,20 @@ public class Activity {
         this.userID = userID;
     }
 
-    public List<Review> getReview() {
+    public List<ReviewModel> getReview() {
         return review;
     }
 
-    public void setReview(List<Review> review) {
+    public void setReview(List<ReviewModel> review) {
         this.review = review;
+    }
+
+    public SchemaModel getSchema() {
+        return schema;
+    }
+
+    public void setSchema(SchemaModel schema) {
+        this.schema = schema;
     }
 
     public Boolean getWinner() {
@@ -81,19 +101,19 @@ public class Activity {
         this.type = type;
     }
 
-    public List<Presenter> getPresenter() {
+    public List<PresenterModel> getPresenter() {
         return presenter;
     }
 
-    public void setPresenter(List<Presenter> presenter) {
+    public void setPresenter(List<PresenterModel> presenter) {
         this.presenter = presenter;
     }
 
-    public Location getLocation() {
+    public LocationModel getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LocationModel location) {
         this.location = location;
     }
 
