@@ -25,7 +25,7 @@ public class ActivityModel {
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityReference(alwaysAsId = false)
     private ScheduleModel schedule;
     @Column(name = "winner")
     private Boolean winner;
@@ -33,10 +33,11 @@ public class ActivityModel {
     private String type;
     @Column(name = "presenter")
     @OneToMany(mappedBy = "activity")
+    @JsonIdentityReference(alwaysAsId = false)
     private List<PresenterModel> presenter;
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @OneToOne
+    @JsonIdentityReference(alwaysAsId = false)
+    @OneToOne(cascade = CascadeType.ALL)
     private LocationModel location;
     @Column(name = "title")
     private String title;

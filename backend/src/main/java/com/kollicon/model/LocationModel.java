@@ -17,7 +17,7 @@ public class LocationModel {
     private String coordinates;
     @Column(name = "title")
     private String title;
-    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "location")
     @JsonIdentityReference(alwaysAsId = true)
     private ActivityModel activity;
 

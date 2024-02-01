@@ -13,23 +13,23 @@ public class ReviewController {
     ReviewService reviewService;
 
 
-    @PostMapping("createreview")
+    @PostMapping("review/create")
     public ReviewModel createReview(@RequestBody ReviewModel reviewModel) {
         return reviewService.createReview(reviewModel);
     }
 
 
-    @GetMapping("getreview/{id}")
+    @GetMapping("review/{id}")
     public ReviewModel getReview(@PathVariable Long id) {
         return reviewService.getReview(id);
     }
 
-    @DeleteMapping("deletereview")
+    @DeleteMapping("review/delete/{id}")
     public String deleteReview(@PathVariable Long id) {
         return reviewService.deleteReview(id);
     }
 
-    @PutMapping("updatereview/{id}")
+    @PutMapping("review/update/{id}")
     public ReviewModel updateReview( @RequestBody ReviewModel updatedReview, @PathVariable Long id) {
         return reviewService.updateReview(updatedReview, id);
     }

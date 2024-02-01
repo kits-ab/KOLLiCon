@@ -20,7 +20,7 @@ public class ReviewModel {
     @Column(name = "rate")
     private int rate;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityReference(alwaysAsId = false)
     @ManyToOne
     private ActivityModel activity;
 

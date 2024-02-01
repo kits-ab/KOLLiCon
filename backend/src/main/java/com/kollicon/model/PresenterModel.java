@@ -18,8 +18,8 @@ public class PresenterModel {
     @Column(name = "image")
     private String image;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @ManyToOne
+    @JsonIdentityReference(alwaysAsId = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     private ActivityModel activity;
 
     public PresenterModel() {

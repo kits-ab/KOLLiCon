@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ScheduleModel {
     private String userId;
     @OneToMany(mappedBy = "schedule")
     @Column(name = "activity_id")
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityReference(alwaysAsId = false)
     private List<ActivityModel> activityId;
     @Column(name = "type") // Kanske ska var ett enum?
     private String type;
@@ -31,9 +32,9 @@ public class ScheduleModel {
     @Column(name = "location")
     private String location;
     @Column(name = "startTime")
-    private Date start;
+    private LocalDate start;
     @Column(name = "endTime")
-    private Date end;
+    private LocalDate end;
     @Column(name = "active")
     private boolean active;
 
@@ -82,16 +83,16 @@ public class ScheduleModel {
     public void setLocation(String location) {
         this.location = location;
     }
-    public Date getStart() {
+    public LocalDate getStart() {
         return start;
     }
-    public void setStart(Date start) {
+    public void setStart(LocalDate start) {
         this.start = start;
     }
-    public Date getEnd() {
+    public LocalDate getEnd() {
         return end;
     }
-    public void setEnd(Date end) {
+    public void setEnd(LocalDate end) {
         this.end = end;
     }
     public boolean isActive() {

@@ -8,28 +8,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/api")
 public class ScheduleController {
 
     @Autowired
     private ScheduleService scheduleService;
 
-    @PostMapping("/post")
+    @PostMapping("/schedule/post")
     public ScheduleModel createSchedule(@RequestBody ScheduleModel schedule) {
         return scheduleService.createSchedule(schedule);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/schedule/get/{id}")
     public Optional<ScheduleModel> getScheduleById(@PathVariable Long id){
         return scheduleService.getScheduleById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/schedule/update")
     public ScheduleModel updateSchedule(@RequestBody ScheduleModel scheduleModel){
         return scheduleService.updateSchedule(scheduleModel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/schedule/delete/{id}")
     public String deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return "Schedule was deleted";
