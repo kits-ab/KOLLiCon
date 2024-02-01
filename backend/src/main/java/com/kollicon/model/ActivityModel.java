@@ -8,16 +8,15 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 @Entity
 @Table(name = "activity")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ActivityModel.class)
 public class ActivityModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @Column(name = "user_id")
-    private String userID;
+    private String userId;
 
     @Column(name = "review_id")
     @OneToMany(mappedBy = "activity")
@@ -25,9 +24,9 @@ public class ActivityModel {
     private List<ReviewModel> review;
 
     @ManyToOne
-    @JoinColumn(name = "schema_id", referencedColumnName = "id")
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private SchemaModel schema;
+    private ScheduleModel schedule;
     @Column(name = "winner")
     private Boolean winner;
     @Column(name = "type")
@@ -44,107 +43,84 @@ public class ActivityModel {
     @Column(name = "details")
     private String details;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "start")
+    @Column(name = "startTime")
     private LocalDateTime start;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "end")
+    @Column(name = "endTime")
     private LocalDateTime end;
 
     public ActivityModel() {
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
-
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
-
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
-
     public List<ReviewModel> getReview() {
         return review;
     }
-
     public void setReview(List<ReviewModel> review) {
         this.review = review;
     }
-
-    public SchemaModel getSchema() {
-        return schema;
+    public ScheduleModel getSchedule() {
+        return schedule;
     }
-
-    public void setSchema(SchemaModel schema) {
-        this.schema = schema;
+    public void setSchedule(ScheduleModel schedule) {
+        this.schedule = schedule;
     }
-
     public Boolean getWinner() {
         return winner;
     }
-
     public void setWinner(Boolean winner) {
         this.winner = winner;
     }
-
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public List<PresenterModel> getPresenter() {
         return presenter;
     }
-
     public void setPresenter(List<PresenterModel> presenter) {
         this.presenter = presenter;
     }
-
     public LocationModel getLocation() {
         return location;
     }
-
     public void setLocation(LocationModel location) {
         this.location = location;
     }
-
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
-
     public String getDetails() {
         return details;
     }
-
     public void setDetails(String details) {
         this.details = details;
     }
-
     public LocalDateTime getStart() {
         return start;
     }
-
     public void setStart(LocalDateTime start) {
         this.start = start;
     }
-
     public LocalDateTime getEnd() {
         return end;
     }
-
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }

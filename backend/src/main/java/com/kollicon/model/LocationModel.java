@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "location")
@@ -12,8 +11,8 @@ import java.util.UUID;
 public class LocationModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @Column(name = "coordinates")
     private String coordinates;
     @Column(name = "title")
@@ -25,34 +24,27 @@ public class LocationModel {
     public LocationModel() {
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
-
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
-
     public String getCoordinates() {
         return coordinates;
     }
-
     public void setCoordinates(String coordinates) {
         this.coordinates = coordinates;
     }
-
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
-
     public ActivityModel getActivity() {
         return activity;
     }
-
     public void setActivity(ActivityModel activity) {
         this.activity = activity;
     }
