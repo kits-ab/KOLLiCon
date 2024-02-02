@@ -5,6 +5,8 @@ import com.kollicon.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/")
 public class ReviewController {
@@ -12,12 +14,10 @@ public class ReviewController {
     @Autowired
     ReviewService reviewService;
 
-
     @PostMapping("review/create")
     public ReviewModel createReview(@RequestBody ReviewModel reviewModel) {
         return reviewService.createReview(reviewModel);
     }
-
 
     @GetMapping("review/{id}")
     public ReviewModel getReview(@PathVariable Long id) {
@@ -32,5 +32,9 @@ public class ReviewController {
     @PutMapping("review/update/{id}")
     public ReviewModel updateReview( @RequestBody ReviewModel updatedReview, @PathVariable Long id) {
         return reviewService.updateReview(updatedReview, id);
+    }
+    @GetMapping("reviews")
+    public List<ReviewModel> getAllReviews () {
+        return reviewService.getAllReviews();
     }
 }

@@ -17,22 +17,19 @@ public class ActivityModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-
-    @Column(name = "review_id")
     @OneToMany(mappedBy = "activity")
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityReference(alwaysAsId = false)
     private List<ReviewModel> review;
-
     @ManyToOne
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = false)
+    @JsonIdentityReference(alwaysAsId = true)
     private ScheduleModel schedule;
     @Column(name = "winner")
     private Boolean winner;
     @Column(name = "type")
     private String type;
-    @Column(name = "presenter")
-    @OneToMany(mappedBy = "activity")
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<PresenterModel> presenter;
     @JoinColumn(name = "location_id", referencedColumnName = "id")
@@ -44,10 +41,10 @@ public class ActivityModel {
     @Column(name = "details")
     private String details;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "startTime")
+    @Column(name = "start_time")
     private LocalDateTime start;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "endTime")
+    @Column(name = "end_time")
     private LocalDateTime end;
 
     public ActivityModel() {

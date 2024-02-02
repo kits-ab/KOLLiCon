@@ -5,6 +5,8 @@ import com.kollicon.service.PresenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class PresenterController {
@@ -33,4 +35,8 @@ public class PresenterController {
         return presenterService.deletePresenter(id);
     }
 
+    @GetMapping("/presenters")
+    public List<PresenterModel> getAllPresenters() {
+        return presenterService.getAllPresenters();
+    }
 }
