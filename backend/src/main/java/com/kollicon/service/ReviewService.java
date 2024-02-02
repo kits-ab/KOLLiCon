@@ -29,27 +29,14 @@ public class ReviewService {
     }
 
     public ReviewModel updateReview(ReviewModel updatedReview, Long id) {
-        Optional<ReviewModel> existingReviewOptional = reviewRepository.findById(id);
-
-        if (existingReviewOptional.isPresent()) {
-            ReviewModel existingReview = existingReviewOptional.get();
-
-            if (updatedReview.getUserId() != null) {
-                existingReview.setUserId(updatedReview.getUserId());
-            }
-
-            if (updatedReview.getReview() != null) {
-                existingReview.setReview(updatedReview.getReview());
-            }
-
-            if (updatedReview.getRate() > -1) {
-                existingReview.setRate(updatedReview.getRate());
-            }
-
-            return reviewRepository.save(existingReview);
-        } else {
-            return null;
-        }
+        return reviewRepository.findById(id)
+                .map(existingReview -> {
+                    if (updatedReview.getUserId() != null) existingReview.setUserId(updatedReview.getUserId());
+                    if (updatedReview.getReview() != null) existingReview.setReview(updatedReview.getReview());
+                    if (updatedReview.getRate() > 0 && updatedReview.getRate() < 6) existingReview.setRate(updatedReview.getRate());
+                    return reviewRepository.save(existingReview);
+                })
+                .orElse(null);
     }
 
     public List<ReviewModel> getAllReviews () {
