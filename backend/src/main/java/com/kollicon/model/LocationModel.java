@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "location")
@@ -13,8 +14,10 @@ public class LocationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull
     @Column(name = "coordinates")
     private String coordinates;
+    @NotNull(message = "title can not be empty")
     @Column(name = "title")
     private String title;
     @OneToOne(mappedBy = "location")
