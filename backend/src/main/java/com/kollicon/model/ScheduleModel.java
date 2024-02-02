@@ -20,7 +20,6 @@ public class ScheduleModel {
     @Column(name = "user_id")
     private String userId;
     @OneToMany(mappedBy = "schedule")
-    @Column(name = "activity_id")
     @JsonIdentityReference(alwaysAsId = false)
     private List<ActivityModel> activityId;
     @Column(name = "type") // Kanske ska var ett enum?
@@ -31,9 +30,9 @@ public class ScheduleModel {
     private String tagLine;
     @Column(name = "location")
     private String location;
-    @Column(name = "startTime")
+    @Column(name = "start_time")
     private LocalDate start;
-    @Column(name = "endTime")
+    @Column(name = "end_time")
     private LocalDate end;
     @Column(name = "active")
     private boolean active;
