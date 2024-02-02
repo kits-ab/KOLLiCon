@@ -6,10 +6,18 @@ import {
   spacing,
   width,
   Wrapper,
+  GlobalStyles,
+  WrapperProps,
 } from '@kokitotsos/react-components';
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import Box from '@mui/material/Box';
+import 'normalize.css';
+import { sep } from 'path';
 
+export declare class StyledWrapper extends React.PureComponent<WrapperProps> {
+  render(): React.JSX.Element;
+}
 export const Events = () => {
   const placeholderEvents: Events = {
     events: [
@@ -19,8 +27,8 @@ export const Events = () => {
         review_id: 1,
         winner: true,
         type: types.TimeslotType.Presentation,
-        presenter: 'Magnus',
-        location: '57.7092833,11.9889706',
+        presenter: [{ id: '1', name: 'Magnus' }],
+        location: { coordinates: [57.7092833, 11.9889706] },
         title: 'Tal till nationen',
         details: 'Viktigt',
         start: new Date('2024-02-05T11:00:00'),
@@ -32,16 +40,34 @@ export const Events = () => {
         review_id: 2,
         winner: true,
         type: types.TimeslotType.Presentation,
-        presenter: 'Alireza',
-        location: '57.7092833,11.9889706',
+        presenter: [{ id: '3', name: 'Alireza' }],
+        location: { coordinates: [57.7092833, 11.9889706] },
         title: 'ER-diagram is the shit',
         details: 'PostgreSQL rules them all!',
-        start: new Date('2024-02-05T13:00:00'),
-        end: new Date('2024-02-05T14:00:00'),
+        start: new Date('2024-02-07T13:00:00'),
+        end: new Date('2024-02-07T14:00:00'),
       },
     ],
   };
   const [events, setEvents] = useState(placeholderEvents);
+
+  const separateEventsByDate = (events: Events): { [key: string]: Event[] } => {
+    const separatedEvents: { [key: string]: Event[] } = {};
+
+    events.events.forEach((event) => {
+      const date = event.start.toDateString();
+
+      if (!separatedEvents[date]) {
+        separatedEvents[date] = [];
+      }
+
+      separatedEvents[date].push(event);
+    });
+
+    return separatedEvents;
+  };
+
+  const separatedEvents = separateEventsByDate(events);
 
   type Event = {
     id: number;
@@ -49,8 +75,8 @@ export const Events = () => {
     review_id: number;
     winner: boolean;
     type: types.TimeslotType;
-    presenter: string;
-    location: string;
+    presenter: types.Person[];
+    location: { coordinates: number[] };
     title: string;
     details: string;
     start: Date;
@@ -61,52 +87,63 @@ export const Events = () => {
     events: Event[];
   };
 
-  const StyledHorizontal = styled(Horizontal)`
-    margin-left: ${-spacing.medium / 2}px;
-    margin-right: ${-spacing.medium / 2}px;
-
-    > * {
-      flex: 0 1 calc(${100 / 6}% - ${spacing.medium}px);
-      height: 80px;
-      margin-left: ${spacing.medium / 2}px;
-      margin-right: ${spacing.medium / 2}px;
-      margin-top: ${spacing.medium}px;
-
-      @media (max-width: ${width.tablet}px) {
-        flex: 0 1 calc(${100 / 4}% - ${spacing.medium}px);
-      }
-
-      @media (max-width: ${width.mobileMenu}px) {
-        flex: 0 1 calc(${100 / 3}% - ${spacing.medium}px);
-      }
+  const EventsWrapper = styled(Box)`
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 50%;
+    @media (max-width: 500px) {
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 20px;
+      max-width: 95%;
     }
   `;
 
   return (
     <>
-      {console.log(events)}
-      <Horizontal
-        breakpoint={width.mobile}
-        distribute={true}
-        spacing={spacing.medium}
-        style={{ backgroundColor: 'blue' }}
-      >
-        <Wrapper spacing={spacing.large} style={{ backgroundColor: 'red' }}>
-          {events &&
-            events.events.map((event: Event) => (
-              <Timeslot
-                key={event.id}
-                connectToPrevious
-                endTime={event.end}
-                heading={event.title}
-                startTime={event.start}
-                type={types.TimeslotType.ExternalPresentation}
-              >
-                <p>{event.details}</p>
-              </Timeslot>
-            ))}
-        </Wrapper>
-      </Horizontal>
+      {console.log(Object.keys(separatedEvents))}
+      <GlobalStyles />
+      <EventsWrapper>
+        {separatedEvents &&
+          //map through each array inside the events array and return a Timeslot component for each event
+
+          separatedEvents.events.map((event: Event, index) => {
+            if (index === 0) {
+              console.log(event.presenter);
+              return (
+                <>
+                  <p>{Object.keys(separatedEvents)}</p>
+                  <Timeslot
+                    key={event.id}
+                    presenters={event.presenter}
+                    endTime={event.end}
+                    heading={event.title}
+                    startTime={event.start}
+                    type={types.TimeslotType.ExternalPresentation}
+                    location={event.location}
+                  >
+                    <p>{event.details}</p>
+                  </Timeslot>
+                </>
+              );
+            } else {
+              return (
+                <Timeslot
+                  key={event.id}
+                  connectToPrevious={index !== 0}
+                  presenters={event.presenter}
+                  endTime={event.end}
+                  heading={event.title}
+                  startTime={event.start}
+                  type={types.TimeslotType.ExternalPresentation}
+                  location={event.location}
+                >
+                  <p>{event.details}</p>
+                </Timeslot>
+              );
+            }
+          })}
+      </EventsWrapper>
     </>
   );
 };
