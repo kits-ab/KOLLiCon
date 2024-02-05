@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import 'normalize.css';
-import { sep } from 'path';
+import DateText from '@/styles/DateText';
 
 export declare class StyledWrapper extends React.PureComponent<WrapperProps> {
   render(): React.JSX.Element;
@@ -47,21 +47,41 @@ export const Events = () => {
         start: new Date('2024-02-07T13:00:00'),
         end: new Date('2024-02-07T14:00:00'),
       },
+      {
+        id: 3,
+        user_id: '2',
+        review_id: 2,
+        winner: true,
+        type: types.TimeslotType.Presentation,
+        presenter: [{ id: '3', name: 'Alireza' }],
+        location: { coordinates: [57.7092833, 11.9889706] },
+        title: 'ER-diagram is the shit',
+        details: 'PostgreSQL rules them all!',
+        start: new Date('2024-02-05T09:00:00'),
+        end: new Date('2024-02-05T10:00:00'),
+      },
     ],
   };
   const [events, setEvents] = useState(placeholderEvents);
 
   const separateEventsByDate = (events: Events): { [key: string]: Event[] } => {
     const separatedEvents: { [key: string]: Event[] } = {};
-
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
     events.events.forEach((event) => {
-      const date = event.start.toDateString();
+      let date = event.start.toLocaleDateString('sv-SE', options);
+      date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
 
       if (!separatedEvents[date]) {
         separatedEvents[date] = [];
       }
 
       separatedEvents[date].push(event);
+    });
+
+    Object.keys(separatedEvents).forEach((date) => {
+      separatedEvents[date].sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      );
     });
 
     return separatedEvents;
@@ -101,20 +121,35 @@ export const Events = () => {
 
   return (
     <>
-      {console.log(Object.keys(separatedEvents))}
+      {console.log(separatedEvents)}
       <GlobalStyles />
       <EventsWrapper>
         {separatedEvents &&
-          //map through each array inside the events array and return a Timeslot component for each event
-
-          separatedEvents.events.map((event: Event, index) => {
-            if (index === 0) {
-              console.log(event.presenter);
-              return (
-                <>
-                  <p>{Object.keys(separatedEvents)}</p>
+          Object.keys(separatedEvents).map((date) => {
+            return separatedEvents[date].map((event: Event, index: number) => {
+              const key = `${date}-${index}`; // Unique key
+              if (index === 0) {
+                return (
+                  <React.Fragment key={key}>
+                    <DateText>{date}</DateText>
+                    <Timeslot
+                      key={key}
+                      presenters={event.presenter}
+                      endTime={event.end}
+                      heading={event.title}
+                      startTime={event.start}
+                      type={types.TimeslotType.ExternalPresentation}
+                      location={event.location}
+                    >
+                      <p>{event.details}</p>
+                    </Timeslot>
+                  </React.Fragment>
+                );
+              } else {
+                return (
                   <Timeslot
-                    key={event.id}
+                    key={key}
+                    connectToPrevious={index !== 0}
                     presenters={event.presenter}
                     endTime={event.end}
                     heading={event.title}
@@ -124,24 +159,9 @@ export const Events = () => {
                   >
                     <p>{event.details}</p>
                   </Timeslot>
-                </>
-              );
-            } else {
-              return (
-                <Timeslot
-                  key={event.id}
-                  connectToPrevious={index !== 0}
-                  presenters={event.presenter}
-                  endTime={event.end}
-                  heading={event.title}
-                  startTime={event.start}
-                  type={types.TimeslotType.ExternalPresentation}
-                  location={event.location}
-                >
-                  <p>{event.details}</p>
-                </Timeslot>
-              );
-            }
+                );
+              }
+            });
           })}
       </EventsWrapper>
     </>
