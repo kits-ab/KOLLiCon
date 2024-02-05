@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Service
 public class ActivityService {
@@ -33,47 +34,48 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
-    public ActivityModel getActivityById (Long id) {
-        return activityRepository.findById(id).get();
-    }
-
-    private PresenterModel getPresenterById(Long id) {
-        return presenterRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Presenter not found with id: " + id));
+    public ActivityModel getActivityById(Long id) {
+        return activityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Activity not found with id: " + id));
     }
 
     public ActivityModel updateActivity(ActivityModel updatedActivity) {
-        ActivityModel existingActivity = getActivityById(updatedActivity.getId());
+        ActivityModel existingActivity = activityRepository.findById(updatedActivity.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Activity not found with id: " + updatedActivity.getId()));
 
-        // Uppdatera fälten om inte nulla
-        existingActivity.setTitle(updatedActivity.getTitle());
-        existingActivity.setType(updatedActivity.getType());
-        existingActivity.setDetails(updatedActivity.getDetails());
-        existingActivity.setStart(updatedActivity.getStart());
-        existingActivity.setEnd(updatedActivity.getEnd());
-        existingActivity.setWinner(updatedActivity.getWinner());
+        updateFieldIfNotNull(existingActivity::setTitle, updatedActivity.getTitle());
+        updateFieldIfNotNull(existingActivity::setType, updatedActivity.getType());
+        updateFieldIfNotNull(existingActivity::setDetails, updatedActivity.getDetails());
+        updateFieldIfNotNull(existingActivity::setStart, updatedActivity.getStart());
+        updateFieldIfNotNull(existingActivity::setEnd, updatedActivity.getEnd());
+        updateFieldIfNotNull(existingActivity::setWinner, updatedActivity.getWinner());
 
-        // uppdatera presenters
         updatePresenters(existingActivity, updatedActivity.getPresenter());
 
-        // uppdatera location
         updateLocation(existingActivity, updatedActivity.getLocation());
 
         return activityRepository.save(existingActivity);
     }
 
+    private <T> void updateFieldIfNotNull(Consumer<T> updateFunction, T updatedValue) {
+        if (updatedValue != null) {
+            updateFunction.accept(updatedValue);
+        }
+    }
+
     private void updatePresenters(ActivityModel existingActivity, List<PresenterModel> updatedPresenters) {
         if (updatedPresenters != null) {
-            updatedPresenters.forEach(updatedPresenter -> {
-                PresenterModel existingPresenter = getPresenterById(updatedPresenter.getId());
+            for (PresenterModel updatedPresenter : updatedPresenters) {
+                PresenterModel existingPresenter = presenterRepository.findById(updatedPresenter.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Presenter not found with id: " + updatedPresenter.getId()));
 
-                // uppdatera fälten om inte nulla
-                existingPresenter.setName(updatedPresenter.getName());
-                existingPresenter.setImage(updatedPresenter.getImage());
+                updateFieldIfNotNull(existingPresenter::setName, updatedPresenter.getName());
+                updateFieldIfNotNull(existingPresenter::setImage, updatedPresenter.getImage());
 
                 existingPresenter.setActivity(existingActivity);
+
                 presenterRepository.save(existingPresenter);
-            });
+            }
         }
     }
 
@@ -81,9 +83,8 @@ public class ActivityService {
         if (updatedLocation != null) {
             LocationModel existingLocation = existingActivity.getLocation();
 
-            // Update location fields if not null
-            existingLocation.setCoordinates(updatedLocation.getCoordinates());
-            existingLocation.setTitle(updatedLocation.getTitle());
+            updateFieldIfNotNull(existingLocation::setCoordinates, updatedLocation.getCoordinates());
+            updateFieldIfNotNull(existingLocation::setTitle, updatedLocation.getTitle());
 
             existingLocation.setActivity(existingActivity);
         }
