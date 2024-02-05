@@ -2,15 +2,17 @@ package com.kollicon.controller;
 
 
 import com.kollicon.model.LocationModel;
+import com.kollicon.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api")
 public class LocationController {
 
     @Autowired
-    com.kollicon.controller.LocationService locationService;
+    LocationService locationService;
 
     @PostMapping("/location")
     public LocationModel createLocation(@RequestBody LocationModel locationModel) {

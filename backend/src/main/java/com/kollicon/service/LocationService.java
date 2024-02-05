@@ -1,4 +1,4 @@
-package com.kollicon.controller;
+package com.kollicon.service;
 
 import com.kollicon.model.LocationModel;
 import com.kollicon.repository.LocationRepository;
