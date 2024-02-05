@@ -33,6 +33,7 @@ public class LocationService {
 
 
     public String deleteLocation(Long id) {
+        locationRepository.deleteById(id);
         return "location with id " + id + " has been deleted";
     }
 }

@@ -37,6 +37,7 @@ public class PresenterService {
     }
 
     public String deletePresenter(Long id) {
+        presenterRepository.deleteById(id);
         return "presenter with id " + id + " has been deleted";
     }
 
