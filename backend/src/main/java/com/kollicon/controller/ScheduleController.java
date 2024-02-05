@@ -2,6 +2,7 @@ package com.kollicon.controller;
 
 import com.kollicon.model.ScheduleModel;
 import com.kollicon.service.ScheduleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @PostMapping("/schedule/post")
-    public ScheduleModel createSchedule(@RequestBody ScheduleModel schedule) {
+    public ScheduleModel createSchedule(@RequestBody @Valid ScheduleModel schedule) {
         return scheduleService.createSchedule(schedule);
     }
 
@@ -25,7 +26,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/schedule/update")
-    public ScheduleModel updateSchedule(@RequestBody ScheduleModel scheduleModel){
+    public Optional<ScheduleModel> updateSchedule(@Valid @RequestBody ScheduleModel scheduleModel){
         return scheduleService.updateSchedule(scheduleModel);
     }
 
