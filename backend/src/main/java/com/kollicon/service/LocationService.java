@@ -1,4 +1,4 @@
-package com.kollicon.controller;
+package com.kollicon.service;
 
 import com.kollicon.model.LocationModel;
 import com.kollicon.repository.LocationRepository;
@@ -22,25 +22,15 @@ public class LocationService {
     }
 
     public LocationModel updateLocation(LocationModel updateLocation, Long id) {
-
-        Optional<LocationModel> existingLocationOptional = locationRepository.findById(id);
-
-        if(existingLocationOptional.isPresent()) {
-            LocationModel existingLocation = existingLocationOptional.get();
-
-            if(updateLocation.getCoordinates() != null) {
-                existingLocation.setCoordinates(updateLocation.getCoordinates());
-            }
-
-            if(updateLocation.getTitle() != null) {
-                existingLocation.setTitle(updateLocation.getTitle());
-            }
-
-            return locationRepository.save(existingLocation);
-        } else {
-            return null;
-        }
+        return locationRepository.findById(id)
+                .map(existingLocation -> {
+                    if (updateLocation.getCoordinates() != null) existingLocation.setCoordinates(updateLocation.getCoordinates());
+                    if (updateLocation.getTitle() != null) existingLocation.setTitle(updateLocation.getTitle());
+                    return locationRepository.save(existingLocation);
+                })
+                .orElse(null);
     }
+
 
     public String deleteLocation(Long id) {
         return "location with id " + id + " has been deleted";

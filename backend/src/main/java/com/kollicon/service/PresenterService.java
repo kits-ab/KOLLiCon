@@ -27,24 +27,13 @@ public class PresenterService {
     }
 
     public PresenterModel updatePresenter(PresenterModel presenterModel, Long id) {
-
-        Optional<PresenterModel> existingPresenterOptional = presenterRepository.findById(id);
-
-        if (existingPresenterOptional.isPresent()) {
-            PresenterModel existingPresenter = existingPresenterOptional.get();
-
-            if (presenterModel.getName() != null) {
-                existingPresenter.setName(presenterModel.getName());
-            }
-
-            if (presenterModel.getImage() != null) {
-                existingPresenter.setImage(presenterModel.getImage());
-            }
-
-            return presenterRepository.save(existingPresenter);
-        } else {
-            return null;
-        }
+        return presenterRepository.findById(id)
+                .map(existingPresenter -> {
+                    if (presenterModel.getName() != null) existingPresenter.setName(presenterModel.getName());
+                    if (presenterModel.getImage() != null) existingPresenter.setImage(presenterModel.getImage());
+                    return presenterRepository.save(existingPresenter);
+                })
+                .orElse(null);
     }
 
     public String deletePresenter(Long id) {
