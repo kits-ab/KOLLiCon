@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "review")
@@ -15,12 +18,15 @@ public class ReviewModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
+    @NotNull(message = "review can not be empty")
     @Column(name = "review")
     private String review;
+    @Min(value = 1, message = "Rating must not be less than 0")
+    @Max(value = 5, message = "Rating must not be more than 5")
     @Column(name = "rate")
     private int rate;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
-    @JsonIdentityReference(alwaysAsId = false)
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     private ActivityModel activity;
 
