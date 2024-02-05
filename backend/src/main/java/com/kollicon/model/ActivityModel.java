@@ -17,7 +17,7 @@ public class ActivityModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-    @OneToMany(mappedBy = "activity")
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<ReviewModel> review;
     @ManyToOne
