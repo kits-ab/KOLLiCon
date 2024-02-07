@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
-import './index.css';
 import { CssBaseline } from '@mui/material';
 import { Global, css } from '@emotion/react';
+import { theme } from '@/theme/theme.ts';
+import { ThemeProvider } from '@mui/material';
 
 /* eslint-disable react-refresh/only-export-components */
 const GlobalStyles = () => (
@@ -12,8 +13,9 @@ const GlobalStyles = () => (
     styles={css`
       #root {
         height: 100vh;
+        height: 100svh;
         width: 100%;
-      }
+      },
     `}
   />
 );
@@ -21,9 +23,11 @@ const GlobalStyles = () => (
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <CssBaseline />
-      <GlobalStyles />
-      <App />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <GlobalStyles />
+        <App />
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

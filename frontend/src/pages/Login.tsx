@@ -1,16 +1,8 @@
 import { signinRedirect } from '@/utils/Auth';
 import Box from '@mui/material/Box';
-// import { styled } from '@mui/material';
-// import Button from '@mui/material/Button';
-
-// const TestDiv = styled('div')(({ theme }) => ({
-//   color: theme.palette.primary.main,
-// }));
-
-// const LoginButton = styled(Button)(({ width }: { width: string }) => ({
-//   width: width,
-//   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-// }));
+import Button from '@mui/material/Button';
+import placeholder from '@/assets/placeholder.svg';
+import headerplaceholder from '@/assets/headerplaceholder.svg';
 
 const Wrapper = ({ children }: any) => (
   <Box
@@ -18,74 +10,86 @@ const Wrapper = ({ children }: any) => (
       height: '100%',
       width: '100%',
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
+      flexDirection: 'column',
       alignItems: 'center',
-      // flexDirection: 'column',
-      // justifyContent: 'flex-start',
-      // alignItems: 'center',
-      // backgroundColor: 'black',
     }}
   >
     {children}
   </Box>
 );
 
+const Header = () => (
+  <Box
+    sx={{
+      position: 'relative',
+      width: '100%',
+      height: '3rem',
+      textAlign: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderBottom: '1px solid #878686',
+    }}
+  >
+    <Box
+      component='img'
+      src={headerplaceholder}
+      alt='Kits KOLLiCon'
+      sx={{ position: 'absolute', left: '1rem', top: '0.5rem' }}
+    />
+  </Box>
+);
+
+const LoginWrapper = ({ children }: any) => (
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: { xs: '19.5rem', sm: '29rem' },
+      height: { xs: '18.5rem', sm: '25rem' },
+      position: 'absolute',
+      top: { xs: '28%', sm: '25%' },
+      gap: '2rem',
+      backgroundColor: '#343434',
+      borderRadius: '0.3125rem',
+      boxShadow: '0px 4px 16px 0px rgba(22, 22, 22, 0.25)',
+    }}
+  >
+    {children}
+  </Box>
+);
+
+const KitsLogo = () => (
+  <Box
+    component='img'
+    src={placeholder}
+    alt='Kits KOLLiCon'
+    sx={{ width: { xs: '12rem', sm: '45%' } }}
+  />
+);
+
+const LoginButton = () => (
+  <Button
+    sx={{ width: '13rem', height: '3rem' }}
+    variant='contained'
+    onClick={() => signinRedirect()}
+  >
+    Logga in med Office 365
+  </Button>
+);
+
 const Login = () => {
   return (
     <Wrapper>
-      <button onClick={() => signinRedirect()}>Sign In</button>
+      <Header />
+      <LoginWrapper>
+        <KitsLogo />
+        <LoginButton />
+      </LoginWrapper>
     </Wrapper>
   );
 };
-
-// const Login = () => {
-//   return (
-//     <Box sx={
-//       .wrapper {
-//         height: 100%;
-//         width: 100%;
-//         position: relative;
-//         display: flex;
-//         flex-direction: column;
-//         justify-content: flex-start;
-//         align-items: center;
-//       }
-
-//       .header {
-//         width: 100%;
-//         height: 3rem;
-//         background-color: var(--primary-color);
-//         color: #f2f2f2;
-//         text-align: center;
-//       }
-
-//       .login {
-//         width: 29rem;
-//         height: 25rem;
-//         display: flex;
-//         flex-direction: column;
-//         align-items: center;
-//         justify-content: center;
-//         border-radius: 0.3125rem;
-//         background: var(--darkmode-lighter-bg);
-//         box-shadow: 0px 4px 16px 0px rgba(22, 22, 22, 0.25);
-//         position: absolute;
-//         top: 25%;
-//         gap: 2rem;
-//       }
-
-//       .kits {
-//         width: 13rem;
-//         height: 9rem;
-//       }
-
-//     }>
-//       <button onClick={() => signinRedirect()}>Sign In</button>
-//       {/* <LoginButton width={'1000px'} onClick={() => signinRedirect()}>
-//         Sign In
-//       </LoginButton> */}
-//     </Box>
-//   );
-// };
 
 export default Login;
