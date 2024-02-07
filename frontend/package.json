@@ -13,11 +13,16 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.15.6",
+    "@kokitotsos/react-components": "^4.0.0",
+    "@mui/material": "^5.15.7",
+    "mapbox-gl": "1.13.2",
+    "normalize.css": "8.0.1",
     "oidc-client-ts": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.3"
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.21.3",
+    "styled-components": "5.3.5"
   },
   "devDependencies": {
     "@types/node": "^20.11.6",
