@@ -1,9 +1,9 @@
-import { Timeslot, types, GlobalStyles } from '@kokitotsos/react-components';
+import { Timeslot, GlobalStyles } from '@kokitotsos/react-components';
 import React, { useState } from 'react';
 import 'normalize.css';
 import DateText from '@/styles/DateText';
 import ActivitiesWrapper from '@/styles/ActivitiesWrapper';
-import { ActivitiesType, ActivityType } from '@/types/Activities';
+import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 import { useQuery } from 'react-query';
 import axios from 'axios';
@@ -11,27 +11,22 @@ import axios from 'axios';
 export const Activities = () => {
   const fetchData = async () => {
     const response = await axios.get('http://localhost:8080/api/schedule/get/1');
-    response.data.activityId.map((activity: any) => {
-      const convertToNumberArrayLocation: number[] = activity.location.coordinates
-        .split(',')
-        .map(Number);
+    response.data.activityId.map((activity: ActivityType) => {
+      const coor: string = activity.location.coordinates as string;
+      const convertToNumberArrayLocation: number[] = coor.split(',').map(Number);
+      const start = new Date(activity.start);
+      const end = new Date(activity.end);
+      activity.start = start;
+      activity.end = end;
       activity.location.coordinates = convertToNumberArrayLocation;
+      return activity as ActivityType;
     });
     setActivitiesData(response.data.activityId);
     return response.data as Schedule;
   };
 
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
-  // const scheduleData: Schedule | undefined = data;
-
-  const [activitiesData, setActivitiesData] = useState<ActivitiesType | null>(
-    data?.activityId || null,
-  );
-
-  // ...
-
-  // const [activitiesData, setActivitiesData] = useState<ActivitiesType | null>(data?.activityId || null);
-  // const [Activities, setActivities] = useState(data);
+  const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -42,19 +37,17 @@ export const Activities = () => {
     return <div>Error: {err.message}</div>;
   }
 
-  // const scheduleData = data; // Access the fetched data here
-
-  const separateActivitiesByDate = (
-    activitiesData: ActivitiesType,
-  ): { [key: string]: ActivityType[] } => {
+  const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
     {
-      console.log(activitiesData);
+      console.log('activitiesData: ', activitiesData);
     }
-    activitiesData.activities?.forEach((activity) => {
-      let date = new Date(activity.start).toLocaleDateString('sv-SE', options);
+
+    activitiesData?.map((activity: ActivityType) => {
+      console.log('Activity: ', activity);
+      let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
 
       if (activity.presenter === null) {
@@ -75,6 +68,9 @@ export const Activities = () => {
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
+    {
+      console.log('separatedActivities: ', separatedActivities);
+    }
 
     return separatedActivities;
   };
@@ -84,7 +80,6 @@ export const Activities = () => {
 
   return (
     <>
-      {console.log(separatedActivities)}
       <GlobalStyles />
       <ActivitiesWrapper>
         {separatedActivities &&
