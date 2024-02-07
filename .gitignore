@@ -141,3 +141,4 @@ backend/bin
 #app
 backend/src/main/resources/application.properties
 frontend/package-lock.json
+.vscode/settings.json

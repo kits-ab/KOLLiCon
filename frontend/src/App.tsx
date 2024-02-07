@@ -6,7 +6,7 @@ import NotFound from '@/pages/NotFound';
 import Success from '@/pages/Token';
 import Error from '@/pages/Error';
 import { Events } from './pages/Events';
-import ScheduleForm from './pages/CreateSchedulePage';
+import ScheduleForm from './components/CreateScheduleComponent';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
       <Route path='/error' element={<Error />} />
       <Route path='*' element={<NotFound />} />
       <Route path='/events' element={<Events />} />
-      <Route path='/postschedule' element={<ScheduleForm/>} />
+      <Route path='/postschedule' element={<ScheduleForm />} />
     </Routes>
   );
 }
