@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/styled": "^11.11.0",
     "@kokitotsos/react-components": "^4.0.0",
+    "@mui/icons-material": "^5.15.8",
     "@mui/material": "^5.15.7",
     "mapbox-gl": "1.13.2",
     "normalize.css": "8.0.1",
