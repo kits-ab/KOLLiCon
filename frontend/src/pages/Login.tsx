@@ -1,8 +1,7 @@
 import { signinRedirect } from '@/utils/Auth';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import placeholder from '@/assets/placeholder.svg';
-import headerplaceholder from '@/assets/headerplaceholder.svg';
+import { Logotype } from '@kokitotsos/react-components';
 
 const Wrapper = ({ children }: any) => (
   <Box
@@ -19,26 +18,34 @@ const Wrapper = ({ children }: any) => (
   </Box>
 );
 
-const Header = () => (
-  <Box
-    sx={{
-      position: 'relative',
-      width: '100%',
-      height: '3rem',
-      textAlign: 'center',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderBottom: '1px solid #878686',
-    }}
-  >
+const Header = () => {
+  return (
     <Box
-      component='img'
-      src={headerplaceholder}
-      alt='Kits KOLLiCon'
-      sx={{ position: 'absolute', left: '1rem', top: '0.5rem' }}
-    />
-  </Box>
-);
+      sx={{
+        position: 'relative',
+        width: '100%',
+        height: '3rem',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: '1px solid #878686',
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          left: '1rem',
+          top: '1rem',
+          margin: '0.5rem',
+          backgroundColor: '#262626',
+          width: '6rem',
+        }}
+      >
+        <Logotype color='white' height={50} />
+      </Box>
+    </Box>
+  );
+};
 
 const LoginWrapper = ({ children }: any) => (
   <Box
@@ -61,15 +68,6 @@ const LoginWrapper = ({ children }: any) => (
   </Box>
 );
 
-const KitsLogo = () => (
-  <Box
-    component='img'
-    src={placeholder}
-    alt='Kits KOLLiCon'
-    sx={{ width: { xs: '12rem', sm: '45%' } }}
-  />
-);
-
 const LoginButton = () => (
   <Button
     sx={{ width: '13rem', height: '3rem' }}
@@ -85,7 +83,7 @@ const Login = () => {
     <Wrapper>
       <Header />
       <LoginWrapper>
-        <KitsLogo />
+        <Logotype color='white' />
         <LoginButton />
       </LoginWrapper>
     </Wrapper>
