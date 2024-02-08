@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useNavigate } from "react-router-dom";
 import { signOut } from '@/utils/Auth';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { GlobalStyles } from '@kokitotsos/react-components';
 
 const drawerBleeding = 11;
 
@@ -17,18 +16,18 @@ interface Props {
     window?: () => Window;
 }
 
-const Root = styled('div')(({ theme }) => ({
-    marginLeft: "80%",
-    height: "100%"
+const Root = styled('div')(() => ({
+    marginLeft: "88%",
+    height: "80px"
 }));
 
-const StyledBox = styled('div')(({ theme }) => ({
+const StyledBox = styled('div')(() => ({
   backgroundColor: '#777777',
   height: '100%',
   borderRadius: '20px 20px 0px 0px',
 }));
 
-const LogoutChildPart = styled('div')(({ theme }) => ({
+const LogoutChildPart = styled('div')(() => ({
   backgroundColor: '#333333',
   height: '60%',
   display: 'flex',
@@ -36,16 +35,6 @@ const LogoutChildPart = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   borderTop: '2px solid white',
   color: 'white',
-}));
-
-const Puller = styled('div')(({ theme }) => ({
-  width: 30,
-  height: 6,
-  backgroundColor: 'red',
-  borderRadius: 3,
-  position: 'absolute',
-  top: 8,
-  left: 'calc(50% - 15px)',
 }));
 
 
@@ -67,7 +56,8 @@ export default function SwipeableEdgeDrawer(props: Props) {
   }
   
   return ( 
-    
+    <>
+    <GlobalStyles/>
     <Root>
       <Global
         styles={{
@@ -79,9 +69,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
           },
         }}
       />
-      <Box sx={{ textAlign: 'center', pt: 1}}>
-        <MenuIcon sx={{height: 50, width: 50}} style={{color: "white"}}onClick={toggleDrawer(true)}/>
-      </Box>
+        <MenuIcon sx={{height: 50, width: 50, zIndex: 1000}} style={{color: "white", position: "fixed"}} onClick={toggleDrawer(true)}/>
       <SwipeableDrawer
         container={container}
         anchor="bottom"
@@ -101,9 +89,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
         <Typography onClick={() => { signOut(); logoutPage(); }}>Logout</Typography>
         </LogoutChildPart>
       </SwipeableDrawer>  
-
-          
     </Root>
-    
+    </>
   );
 }

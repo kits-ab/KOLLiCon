@@ -15,6 +15,10 @@ import Box from '@mui/material/Box';
 import 'normalize.css';
 import DateText from '@/styles/DateText';
 import MenuHeader from './MenuHeader';
+import AddIcon from '@mui/icons-material/Add';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import InputTest from './InputTest';
+import KolliconFooter from './KolliconFooter';
 
 export declare class StyledWrapper extends React.PureComponent<WrapperProps> {
   render(): React.JSX.Element;
@@ -120,10 +124,29 @@ export const Events = () => {
     }
   `;
 
+  const AddAcitivityStyling = styled('div')(() => ({
+    color: 'white',
+    borderRadius : '10px',
+    padding: '20px',
+    marginTop : '20px',
+    marginBottom : '30px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#333333',
+  }));
+
+  const [open, setOpen] = React.useState(false);
+
+  const activateDrawer = () => {
+    setOpen(true);
+  }
+  
+
   return (
     <>
       {console.log(separatedEvents)}
-      <GlobalStyles />
+      <GlobalStyles/>
       <EventsWrapper>
       <MenuHeader></MenuHeader>
         {separatedEvents &&
@@ -165,7 +188,21 @@ export const Events = () => {
               }
             });
           })}
+          
+      <AddAcitivityStyling>
+      <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
+      </AddAcitivityStyling>
+
+
+      <SwipeableDrawer
+        anchor="bottom"
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}>
+          <InputTest/>
+      </SwipeableDrawer>
       </EventsWrapper>
+      <KolliconFooter />
     </>
   );
 };
