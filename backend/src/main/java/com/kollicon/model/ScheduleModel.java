@@ -20,7 +20,7 @@ public class ScheduleModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<ActivityModel> activityId;
     @Column(name = "type") // Kanske ska var ett enum?

@@ -14,6 +14,7 @@ import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import 'normalize.css';
 import DateText from '@/styles/DateText';
+import MenuHeader from './MenuHeader';
 
 export declare class StyledWrapper extends React.PureComponent<WrapperProps> {
   render(): React.JSX.Element;
@@ -124,6 +125,7 @@ export const Events = () => {
       {console.log(separatedEvents)}
       <GlobalStyles />
       <EventsWrapper>
+      <MenuHeader></MenuHeader>
         {separatedEvents &&
           Object.keys(separatedEvents).map((date) => {
             return separatedEvents[date].map((event: Event, index: number) => {
