@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -18,7 +19,7 @@ public class ReviewModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-    @NotNull(message = "review can not be empty")
+    @NotBlank(message = "review can not be empty")
     @Column(name = "review")
     private String review;
     @Min(value = 1, message = "Rating must not be less than 0")

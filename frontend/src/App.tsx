@@ -7,7 +7,8 @@ import Success from '@/pages/Token';
 import Error from '@/pages/Error';
 import { Activities } from './pages/Activities';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import InputTest from './pages/InputTest';
+import Activity from './pages/Activity';
+
 // Create a client
 const queryClient = new QueryClient();
 
@@ -22,7 +23,7 @@ function App() {
         <Route path='/error' element={<Error />} />
         <Route path='*' element={<NotFound />} />
         <Route path='/activities' element={<Activities />} />
-        <Route path='/inputtest' element={<InputTest />} />
+        <Route path='/activity' element={<Activity />} />
       </Routes>
     </QueryClientProvider>
   );
