@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -18,7 +19,7 @@ public class PresenterModel {
     @Column(name = "name") // ENUM?
     private String name;
     @Column(name = "image")
-    private String image;
+    private String imageSrc;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     @JsonIdentityReference(alwaysAsId = false)
     @ManyToOne(cascade = CascadeType.ALL)
@@ -39,11 +40,11 @@ public class PresenterModel {
     public void setName(String name) {
         this.name = name;
     }
-    public String getImage() {
-        return image;
+    public String getImageSrc() {
+        return imageSrc;
     }
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
     public ActivityModel getActivity() {
         return activity;

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,7 @@ public class ActivityModel {
     @Column(name = "winner")
     private Boolean winner;
 
+    @NotNull(message = "Type is required")
     @Column(name = "type")
     private String type;
 
@@ -45,11 +48,13 @@ public class ActivityModel {
     @Column(name = "details")
     private String details;
     @NotNull(message = "Start date is required")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "UTC")
     @Column(name = "start_time")
     private LocalDateTime start;
     @NotNull(message = "End date is required")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "UTC")
+
     @Column(name = "end_time")
     private LocalDateTime end;
 

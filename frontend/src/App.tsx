@@ -6,6 +6,7 @@ import NotFound from '@/pages/NotFound';
 import Success from '@/pages/Token';
 import Error from '@/pages/Error';
 import { Events } from './pages/Events';
+import Activity from './pages/Activity';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path='/error' element={<Error />} />
       <Route path='*' element={<NotFound />} />
       <Route path='/events' element={<Events />} />
+      <Route path='/activity' element={<Activity />} />
     </Routes>
   );
 }
