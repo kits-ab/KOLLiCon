@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 import java.util.List;
 @Entity
@@ -17,7 +20,7 @@ public class ActivityModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-    @OneToMany(mappedBy = "activity")
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<ReviewModel> review;
     @ManyToOne
@@ -26,6 +29,8 @@ public class ActivityModel {
     private ScheduleModel schedule;
     @Column(name = "winner")
     private Boolean winner;
+
+    @NotNull(message = "Type is required")
     @Column(name = "type")
     private String type;
 
@@ -36,14 +41,20 @@ public class ActivityModel {
     @JsonIdentityReference(alwaysAsId = false)
     @OneToOne(cascade = CascadeType.ALL)
     private LocationModel location;
+    @NotNull(message = "Title is required")
     @Column(name = "title")
     private String title;
+    @NotNull(message = "Details is required")
     @Column(name = "details")
     private String details;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "Start date is required")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "UTC")
     @Column(name = "start_time")
     private LocalDateTime start;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "End date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "UTC")
+
     @Column(name = "end_time")
     private LocalDateTime end;
 
