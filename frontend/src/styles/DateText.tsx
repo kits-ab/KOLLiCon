@@ -1,10 +1,6 @@
 import styled from '@emotion/styled';
 
-interface DateTextProps {
-  text: string;
-}
-
-const DateText = styled.h1<DateTextProps>`
+const DateText = styled.h1`
   color: #bbbbbb;
   position: relative;
   text-align: center;

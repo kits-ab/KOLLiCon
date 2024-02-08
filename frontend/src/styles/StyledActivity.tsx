@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 export const EventsWrapper = styled(Box)`
   margin-left: auto;
@@ -32,8 +32,8 @@ export const StyledButton = styled.button`
   max-width: 30%;
   background-color: #718863;
   margin-left: 35%;
-  color: #D4D4D4;
-  font-size:15px;
+  color: #d4d4d4;
+  font-size: 15px;
 `;
 
 export const StyledDiv = styled.div`
@@ -51,9 +51,9 @@ export const StyledInput = styled.input`
   background-color: #424241;
   margin: 2% 7%;
   border: 1px solid gray;
-  color: #CCCCCC;
+  color: #cccccc;
   ::placeholder {
-    color: #CCCCCC;
+    color: #cccccc;
     position: absolute;
     padding: 7px 10px;
     left: 0px;
@@ -63,15 +63,15 @@ export const StyledInput = styled.input`
 `;
 
 export const StyledTextArea = styled.textarea`
-padding: 8px;
+  padding: 8px;
   border-radius: 6px;
   border: none;
   background-color: #424241;
   margin: 2% 7%;
   border: 1px solid gray;
-  color: #CCCCCC;
+  color: #cccccc;
   ::placeholder {
-    color: #CCCCCC;
+    color: #cccccc;
     position: absolute;
     padding: 7px 10px;
     left: 0px;
@@ -87,13 +87,13 @@ export const StyledSelect = styled.select`
   margin: 2% 7%;
   background-color: #424241;
   border: 1px solid gray;
-  color: #CCCCCC;
+  color: #cccccc;
 `;
 
 export const StyledLine = styled.hr`
   width: 100%;
   margin: 20px auto;
-  border: none; 
-  border-top: 1px solid black; 
-  height: 0.1px; 
+  border: none;
+  border-top: 1px solid black;
+  height: 0.1px;
 `;
