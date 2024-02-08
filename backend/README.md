@@ -19,6 +19,10 @@ src/
 |-- settings.gradle
 ```
 
+### Database ER-Diagram
+
+![ER-diagram](../docs/ER-Model.png "ER-diagram")
+
 ### Figma
 
 Figma prototypes and sketches for Kollicon:
