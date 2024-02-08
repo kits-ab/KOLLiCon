@@ -35,7 +35,7 @@ const Header = () => {
         sx={{
           position: 'absolute',
           left: '1rem',
-          top: '1rem',
+          top: '0.3rem',
           margin: '0.5rem',
           backgroundColor: '#262626',
           width: '6rem',
