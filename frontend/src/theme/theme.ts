@@ -4,14 +4,8 @@ export const theme = responsiveFontSizes(
   createTheme({
     palette: {
       mode: 'dark',
-      primary: {
-        main: '#596b4d', //'#424241',
-      },
       background: {
         default: '#262626',
-      },
-      customColor1: {
-        main: '#f44336',
       },
     },
     components: {
@@ -19,8 +13,19 @@ export const theme = responsiveFontSizes(
         styleOverrides: {
           root: {
             backgroundColor: '#596b4d',
+            color: '#ffffff',
             fontWeight: 'normal',
             textTransform: 'none',
+            '&:hover': {
+              backgroundColor: '#475a39',
+            },
+            '&:active': {
+              backgroundColor: '#354a2b',
+            },
+            '&.MuiButton-contained.Mui-disabled': {
+              backgroundColor: '#596b4d',
+              color: '#ffffff',
+            },
           },
         },
       },
