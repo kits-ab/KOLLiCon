@@ -13,6 +13,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -34,7 +35,7 @@ export const Activities = () => {
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -86,30 +87,28 @@ export const Activities = () => {
   if (!activitiesData) return null;
   const separatedActivities = separateActivitiesByDate(activitiesData);
 
-
   const AddAcitivityStyling = styled('div')(() => ({
     color: 'white',
-    borderRadius : '10px',
+    borderRadius: '10px',
     padding: '20px',
-    marginTop : '20px',
-    marginBottom : '30px',
+    marginTop: '20px',
+    marginBottom: '30px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#333333',
   }));
 
-
   const activateDrawer = () => {
-    setOpen(true);
-  }
-  
+    // setOpen(true);
+    navigate('/activity');
+  };
 
   return (
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
-      <MenuHeader></MenuHeader>
+        <MenuHeader></MenuHeader>
 
         {separatedActivities &&
           Object.keys(separatedActivities).map((date) => {
@@ -126,7 +125,7 @@ export const Activities = () => {
                       heading={activity.title}
                       startTime={activity.start}
                       type={activity.type}
-                     // location={activity.location}
+                      // location={activity.location}
                     >
                       <p>{activity.details}</p>
                     </Timeslot>
@@ -142,7 +141,7 @@ export const Activities = () => {
                     heading={activity.title}
                     startTime={activity.start}
                     type={activity.type}
-                   // location={activity.location}
+                    // location={activity.location}
                   >
                     <p>{activity.details}</p>
                   </Timeslot>
@@ -150,18 +149,18 @@ export const Activities = () => {
               }
             });
           })}
-            <AddAcitivityStyling>
-      <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
-      </AddAcitivityStyling>
+        <AddAcitivityStyling>
+          <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
+        </AddAcitivityStyling>
 
-
-      <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}>
-          <InputTest/>
-      </SwipeableDrawer>
+        <SwipeableDrawer
+          anchor='bottom'
+          open={open}
+          onClose={() => setOpen(false)}
+          onOpen={() => setOpen(true)}
+        >
+          <InputTest />
+        </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />
     </>

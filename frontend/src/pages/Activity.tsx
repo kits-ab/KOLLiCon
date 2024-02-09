@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState,  } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
 import StyledCheckbox from '../components/CheckBox';
@@ -15,6 +16,7 @@ import {
 } from '../styles/StyledActivity';
 
 type Activity = {
+  schedule: number;
   userId: string;
   winner: boolean;
   type: types.TimeslotType;
@@ -27,6 +29,7 @@ type Activity = {
 };
 
 function Activity() {
+  const navigate = useNavigate();
   const [showPresenter, setShowPresenter] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
 
@@ -41,6 +44,7 @@ function Activity() {
   });
 
   const [activity, setActivity] = useState<Activity>({
+    schedule:1,
     userId: '',
     winner: false,
     type: undefined,
@@ -70,6 +74,8 @@ function Activity() {
 
       const response = await axios.post('http://localhost:8080/api/activity', activityData);
       console.log(response.data);
+      
+      navigate('/activities');
     } catch (error) {
       console.error('Error submitting activity:', error);
     }
