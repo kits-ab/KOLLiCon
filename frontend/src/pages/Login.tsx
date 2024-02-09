@@ -1,7 +1,7 @@
 import { signinRedirect } from '@/utils/Auth';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { Logotype } from '@kokitotsos/react-components';
+import Button from '@/components/Button';
 
 const Wrapper = ({ children }: any) => (
   <Box
