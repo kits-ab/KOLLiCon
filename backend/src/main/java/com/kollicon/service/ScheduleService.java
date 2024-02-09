@@ -6,11 +6,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.NameNotFoundException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -18,8 +21,12 @@ import java.util.Set;
 @Service
 public class ScheduleService {
 
+    final ScheduleRepository scheduleRepository;
+
     @Autowired
-    private ScheduleRepository scheduleRepository;
+    public ScheduleService(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
+    }
 
 
     public ScheduleModel createSchedule(ScheduleModel schedule) {

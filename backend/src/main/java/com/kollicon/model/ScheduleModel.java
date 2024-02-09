@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ScheduleModel {
     private long id;
     @Column(name = "user_id")
     private String userId;
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<ActivityModel> activityId;
     @Column(name = "type") // Kanske ska var ett enum?
@@ -32,10 +33,10 @@ public class ScheduleModel {
     @Column(name = "location")
     private String location;
     @Column(name = "start_time")
-    @NotBlank(message = "Start date is required")
+    @NotNull(message = "Start date is required")
     private LocalDate start;
     @Column(name = "end_time")
-    @NotBlank(message = "End date is required")
+    @NotNull(message = "End date is required")
     private LocalDate end;
     @Column(name = "active")
     private boolean active;
