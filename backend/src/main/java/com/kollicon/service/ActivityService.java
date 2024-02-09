@@ -70,7 +70,7 @@ public class ActivityService {
                         .orElseThrow(() -> new EntityNotFoundException("Presenter not found with id: " + updatedPresenter.getId()));
 
                 updateFieldIfNotNull(existingPresenter::setName, updatedPresenter.getName());
-                updateFieldIfNotNull(existingPresenter::setImage, updatedPresenter.getImage());
+                updateFieldIfNotNull(existingPresenter::setImageSrc, updatedPresenter.getImageSrc());
 
                 existingPresenter.setActivity(existingActivity);
 
