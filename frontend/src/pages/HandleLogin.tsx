@@ -15,7 +15,7 @@ const HandleLogin = () => {
     signinCallback()
       .then(() => {
         // Temp path
-        navigate('/token', { replace: true });
+        navigate('/activities', { replace: true });
       })
       .catch(() => {
         // Temp path
