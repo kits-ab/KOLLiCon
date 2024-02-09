@@ -3,8 +3,10 @@ package com.kollicon.service;
 import com.kollicon.model.ActivityModel;
 import com.kollicon.model.LocationModel;
 import com.kollicon.model.PresenterModel;
+import com.kollicon.model.ScheduleModel;
 import com.kollicon.repository.ActivityRepository;
 import com.kollicon.repository.PresenterRepository;
+import com.kollicon.repository.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,14 +23,19 @@ public class ActivityService {
      ActivityRepository activityRepository;
     @Autowired
     PresenterRepository presenterRepository;
+    @Autowired
+    ScheduleRepository scheduleRepository;
 
 
     public ActivityModel createActivity(ActivityModel activity) {
+        ScheduleModel scheduleModel= scheduleRepository.findById(1);
+        activity.setSchedule(scheduleModel);
         //Först hämtas presenter från activity och loppar igenom presenters lista sen sätter activity_id på varje enskild presenter.
         List<PresenterModel> presenters = activity.getPresenter();
         if (presenters != null) {
             for (PresenterModel presenter : presenters) {
                 presenter.setActivity(activity);
+
             }
         }
         return activityRepository.save(activity);
