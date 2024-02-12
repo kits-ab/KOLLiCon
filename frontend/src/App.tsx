@@ -8,6 +8,7 @@ import Error from '@/pages/Error';
 import { Activities } from './pages/Activities';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Activity from './pages/Activity';
+import ScheduleForm from './components/CreateScheduleComponent';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ function App() {
         <Route path='*' element={<NotFound />} />
         <Route path='/activities' element={<Activities />} />
         <Route path='/activity' element={<Activity />} />
+        <Route path='/postschedule' element={<ScheduleForm />} />
       </Routes>
     </QueryClientProvider>
   );

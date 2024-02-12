@@ -12,14 +12,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins="http://localhost:5173")
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ScheduleController {
 
     private ScheduleService scheduleService;
 
     @Autowired
-    public ScheduleController (ScheduleService scheduleService) {
+    public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
 
@@ -29,7 +29,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule/get/{id}")
-    public Optional<ScheduleModel> getScheduleById(@PathVariable Long id){
+    public Optional<ScheduleModel> getScheduleById(@PathVariable Long id) {
         if (scheduleService.getScheduleById(id).isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Schedule with id " + id + " not found");

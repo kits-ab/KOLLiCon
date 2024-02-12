@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,7 +25,7 @@ public class ScheduleModel {
     private List<ActivityModel> activityId;
     @Column(name = "type") // Kanske ska var ett enum?
     private String type;
-    @NotNull(message = "Title is required")
+    @NotBlank(message = "Title is required")
     @Column(name = "title")
     private String title;
     @Column(name = "tag_line")
