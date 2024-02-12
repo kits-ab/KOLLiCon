@@ -28,9 +28,8 @@ export const StyledButton = styled.button`
   border-radius: 6px;
   border: none;
   margin-top: 2%;
-  margin-bottom: 4%;
   max-width: 30%;
-  background-color: #718863;
+  background-color: #596b4d;
   margin-left: 35%;
   color: #d4d4d4;
   font-size: 15px;
@@ -92,8 +91,8 @@ export const StyledSelect = styled.select`
 
 export const StyledLine = styled.hr`
   width: 100%;
-  margin: 20px auto;
+  margin: 15px auto;
   border: none;
-  border-top: 1px solid black;
+  border-top: 1px solid #272727;
   height: 0.1px;
 `;

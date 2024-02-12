@@ -14,6 +14,7 @@ import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import Activity from './Activity';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -100,8 +101,8 @@ export const Activities = () => {
   }));
 
   const activateDrawer = () => {
-    // setOpen(true);
-    navigate('/activity');
+    setOpen(true);
+    // navigate('/activity');
   };
 
   return (
@@ -158,8 +159,11 @@ export const Activities = () => {
           open={open}
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
+          PaperProps={{
+            style:{height:'100%', overflow:'scroll', backgroundColor: '#262626', borderRadius:'0'}
+          }}
         >
-          <InputTest />
+          <Activity />
         </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />
