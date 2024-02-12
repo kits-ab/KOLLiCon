@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 @Entity
-@Table(name = "presenter")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = PresenterModel.class)
-public class PresenterModel {
+@Table(name = "external_presenter")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ExternalPresenterModel.class)
+public class ExternalPresenterModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +23,7 @@ public class PresenterModel {
     @ManyToOne(cascade = CascadeType.ALL)
     private ActivityModel activity;
 
-    public PresenterModel() {
+    public ExternalPresenterModel() {
     }
 
     public long getId() {
@@ -40,15 +38,12 @@ public class PresenterModel {
     public void setName(String name) {
         this.name = name;
     }
-
     public String getAvatarSrc() {
         return AvatarSrc;
     }
-
     public void setAvatarSrc(String avatarSrc) {
         AvatarSrc = avatarSrc;
     }
-
     public ActivityModel getActivity() {
         return activity;
     }
