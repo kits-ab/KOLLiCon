@@ -14,6 +14,7 @@ import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import ExpandInfo from '@/components/ExpandInfoComponent';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -35,6 +36,8 @@ export const Activities = () => {
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
+  const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -104,6 +107,14 @@ export const Activities = () => {
     navigate('/activity');
   };
 
+  const expandInfo = () => {
+    if (expandInfoOpen) {
+      setExpandInfoOpen(false);
+    } else {
+      setExpandInfoOpen(true);
+    }
+  };
+
   return (
     <>
       <GlobalStyles />
@@ -118,33 +129,67 @@ export const Activities = () => {
                 return (
                   <React.Fragment key={key}>
                     <DateText>{date}</DateText>
-                    <Timeslot
-                      key={key}
-                      presenters={activity.presenter}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      // location={activity.location}
+                    <a
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
                     >
-                      <p>{activity.details}</p>
-                    </Timeslot>
+                      <Timeslot
+                        key={key}
+                        presenters={activity.presenter}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        // location={activity.location}
+                      >
+                        <p>{activity.details}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityId={activity.id}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        >
+                          {/* <button onClick={expandInfo}>Close Drawer</button> */}
+                        </ExpandInfo>
+                      )}
+                    </a>
                   </React.Fragment>
                 );
               } else {
                 return (
-                  <Timeslot
-                    key={key}
-                    connectToPrevious={index !== 0}
-                    presenters={activity.presenter}
-                    endTime={activity.end}
-                    heading={activity.title}
-                    startTime={activity.start}
-                    type={activity.type}
-                    // location={activity.location}
-                  >
-                    <p>{activity.details}</p>
-                  </Timeslot>
+                  <React.Fragment key={key}>
+                    <a
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
+                    >
+                      <Timeslot
+                        key={key}
+                        connectToPrevious={index !== 0}
+                        presenters={activity.presenter}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        // location={activity.location}
+                      >
+                        <p>{activity.details}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityId={activity.id}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        >
+                          {/* <button onClick={expandInfo}>Close Drawer</button> */}
+                        </ExpandInfo>
+                      )}
+                    </a>
+                  </React.Fragment>
                 );
               }
             });
