@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileWriter;
@@ -32,24 +33,21 @@ public class DatabaseService {
     @Autowired
     private LocationRepository locationRepository;
 
-    public void generateMdFile() {
+    public void generateMdFile(@PathVariable Long id) {
 
-        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/yolo.md";
+        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/paket.md";
 
-        List<ScheduleModel> scheduleModels = scheduleRepository.findAll();
-
+        ScheduleModel scheduleModels = scheduleRepository.findById(1);
         Map<String, List<Map<String, Object>>> scheduleData = new HashMap<>();
+        List<Map<String, Object>> activityData = new ArrayList<>();
 
-        for(ScheduleModel scheduleModel : scheduleModels) {
-            List<Map<String, Object>> activityData = new ArrayList<>();
-
-            for(ActivityModel activityModel : activityRepository.findByScheduleId(scheduleModel.getId())) {
+            for(ActivityModel activityModel : activityRepository.findByScheduleId(scheduleModels.getId())) {
                 LocationModel locationModel = locationRepository.findById(activityModel.getId()).orElse(null);
 
                 if(locationModel != null) {
                     String [] coordinates = locationModel.getCoordinates().split("\\.");
-                    Float latitude = Float.parseFloat("-" + coordinates[0]);
-                    Float longitude = Float.parseFloat("-" + coordinates[1]);
+                    Float latitude = Float.parseFloat(coordinates[0]);
+                    Float longitude = Float.parseFloat(coordinates[1]);
 
                     LocalDateTime end_time = activityModel.getEnd();
                     LocalDateTime start_time = activityModel.getStart();
@@ -82,15 +80,14 @@ public class DatabaseService {
             }
 
             scheduleData.put("Schedule", activityData);
-        }
 
-        Yaml yaml = new Yaml();
-        String yamlDataFormat = yaml.dump(scheduleData);
+            Yaml yaml = new Yaml();
+            String yamlDataFormat = yaml.dump(scheduleData);
+            try(FileWriter fileWriter = new FileWriter(outputPath)) {
+                fileWriter.write(yamlDataFormat);
+            }catch(IOException e) {
+                e.getLocalizedMessage();
+            }
+       }
+ }
 
-        try(FileWriter fileWriter = new FileWriter(outputPath)) {
-            fileWriter.write(yamlDataFormat);
-        }catch(IOException e) {
-            e.getLocalizedMessage();
-        }
-    }
-}

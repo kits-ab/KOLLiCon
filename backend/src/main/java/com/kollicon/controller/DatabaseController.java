@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class DatabaseController {
-    private final DatabaseService databaseService;
 
-    @Autowired
-    public DatabaseController(DatabaseService databaseService) {
-        this.databaseService = databaseService;
-    }
+  @Autowired
+  DatabaseService databaseService;
 
-    @RequestMapping("/generateMdFile")
-    public void generateMdFile() {
-        databaseService.generateMdFile();
+    @RequestMapping("/generateMdFile/{id}")
+    public void generateMdFile(Long id) {
+        databaseService.generateMdFile(id);
     }
 }
