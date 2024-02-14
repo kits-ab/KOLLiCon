@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
@@ -20,6 +20,7 @@ type Activity = {
   winner: boolean;
   type: types.TimeslotType;
   presenter: types.Person[];
+  externalPresenter: types.Person[];
   location: { title: string; coordinates: string };
   title: string;
   details: string;
@@ -27,9 +28,12 @@ type Activity = {
   end: string;
 };
 
-function Activity() {
+function Activity({ onClose }: any) {
   const navigate = useNavigate();
+  const [files, setFiles] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [showPresenter, setShowPresenter] = useState<boolean>(false);
+  const [showExternalPresenter, setShowExternalPresenter] = useState<boolean>(false);
   const [showLocation, setShowLocation] = useState<boolean>(false);
   const [location, setLocation] = useState({
     title: '',
@@ -73,6 +77,10 @@ function Activity() {
       console.error('Error submitting activity:', error);
     }
   };
+  //Function to close the modal
+  const handleCancelButtonClick = () => {
+    onClose();
+  };
 
   //Function to handle the activity input change
   const handleActivityInputChange = (
@@ -84,12 +92,29 @@ function Activity() {
     if (value === types.TimeslotType.Presentation) {
       setShowPresenter(true);
       setShowLocation(false);
-    } else if (value === types.TimeslotType.ExternalPresentation) {
-      setShowPresenter(true);
-      setShowLocation(true);
-    } else {
+      setShowExternalPresenter(false);
+    } else if (
+      value === types.TimeslotType.Airplane ||
+      value === types.TimeslotType.Boat ||
+      value === types.TimeslotType.Bus ||
+      value === types.TimeslotType.CheckIn ||
+      value === types.TimeslotType.Coffee ||
+      value === types.TimeslotType.Drink ||
+      value === types.TimeslotType.Food ||
+      value === types.TimeslotType.Hotel ||
+      value === types.TimeslotType.Running ||
+      value === types.TimeslotType.Skiing ||
+      value === types.TimeslotType.Train ||
+      value === types.TimeslotType.Workshop ||
+      value === types.TimeslotType.Location
+    ) {
       setShowPresenter(false);
+      setShowExternalPresenter(false);
       setShowLocation(true);
+    } else if (value === types.TimeslotType.ExternalPresentation) {
+      setShowPresenter(false);
+      setShowExternalPresenter(true);
+      setShowLocation(false);
     }
   };
 
@@ -103,6 +128,17 @@ function Activity() {
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
+    if (value) {
+      const filteredTitles = files.filter((file: { title: string }) =>
+        file.title.toLowerCase().startsWith(value.toLowerCase()),
+      );
+      // Update suggestions state with filtered titles
+      setSuggestions(filteredTitles);
+      setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
+    } else {
+      // Clear suggestions if the input is empty
+      setSuggestions([]);
+    }
   };
 
   //Function to handle the external presenter change
@@ -113,7 +149,27 @@ function Activity() {
     setExternalPresenter({ ...externalPresenter, [name]: value });
   };
 
-  const addPresenter = () => {
+  const handleSuggestionClick = (selectedTitle: string) => {
+    console.log('this is selected title',typeof(selectedTitle));
+    // Update the presenter name with the selected title
+    setPresenter({ ...presenter, name: selectedTitle, avatarSrc: getProfilePictureUrl(selectedTitle) });
+    // Clear suggestions
+    setSuggestions([]);
+  };
+
+  const addPresenter = async () => {
+    // Check if the profile picture exists before adding the presenter
+    const profilePictureUrl = getProfilePictureUrl(presenter.name);
+    const pictureExists = await profilePictureExists(profilePictureUrl);
+
+    if (!pictureExists) {
+      // Handle case where profile picture doesn't exist
+      console.log(`Profile picture for ${presenter.name} does not exist or is not accessible.`);
+      // You can display an error message or take appropriate action
+      return;
+    }
+
+    // Add presenter to the activity state
     setActivity({
       ...activity,
       presenter: [...activity.presenter, presenter],
@@ -123,7 +179,7 @@ function Activity() {
       avatarSrc: '',
     });
   };
-
+//Add external presenter
   const addExternalPresenter = () => {
     setActivity({
       ...activity,
@@ -134,8 +190,26 @@ function Activity() {
       avatarSrc: '',
     });
   };
-
+//Checks if the profile picture exists in the response
+  async function profilePictureExists(url: string) {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      if (response.ok) {
+        // Check if the Content-Type header indicates an image
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.startsWith('image')) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking profile picture existence:', error);
+      return false;
+    }
+  }
+//Function to get the employees's profile picture via url
   function getProfilePictureUrl(name: string) {
+    console.log(name)
     return `https://raw.githubusercontent.com/kits-ab/kits/master/static/assets/medarbetare_${replaceSpecialCharacters(name)}-avatar.jpg`;
   }
   function replaceSpecialCharacters(url: string) {
@@ -144,30 +218,54 @@ function Activity() {
     return withoutDiacritics.replace(/[\s-]/g, '').toLowerCase();
   }
 
+  //Function to get all employees's title
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.github.com/repos/kits-ab/kits/contents/content/medarbetare`,
+        );
+        if (response.status === 200) {
+          const filesData = response.data
+            .filter((item: { type: string }) => item.type === 'file')
+            .map(async (item: { download_url: string }) => {
+              const mdContentResponse = await axios.get(item.download_url);
+              const mdContent = mdContentResponse.data;
+              const titleMatch = mdContent.match(/^title: (.*)$/m);
+              const title = titleMatch ? titleMatch[1] : 'Untitled';
+              return { title };
+            });
+
+          Promise.all(filesData).then((fileTitles) => {
+            setFiles(fileTitles);
+            console.log(fileTitles);
+          });
+        } else {
+          console.error('Error fetching files:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching files:', error.message);
+      }
+    };
+
+    fetchFiles();
+  }, []);
+
   return (
     <>
       <div style={{ width: '100%', height: '100%' }}>
         <img src='' alt='' />
         <GlobalStyles />
-        <EventsWrapper style={{paddingBottom:'10%'}}>
+        <EventsWrapper style={{ paddingBottom: '10%' }}>
           <Timeslot
             endTime={new Date()}
             heading='Registrera Activitiet'
             startTime={new Date()}
-            type={types.TimeslotType.ExternalPresentation}
+            type={types.TimeslotType.Presentation}
           >
             <form onSubmit={handleSubmit}>
               <StyledDiv>
                 <PStyled style={{ color: '#D4D4D4' }}>Activitiet info</PStyled>
-                <StyledSelect
-                  name='type'
-                  value={activity.type}
-                  onChange={handleActivityInputChange}
-                >
-                  {/* Add options for the select Schema */}
-                  <option> Schema</option>
-                  <option> Säkerhet konfrens</option>
-                </StyledSelect>
                 <StyledSelect
                   name='type'
                   value={activity.type}
@@ -183,23 +281,37 @@ function Activity() {
                     </option>
                   ))}
                 </StyledSelect>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    position: 'relative',
+                  }}
+                >
+                  <label htmlFor=''>sluttid</label>
+                  <label htmlFor=''>starttid</label>
+                </div>
+                <div
+                  style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}
+                >
+                  <StyledInput
+                    style={{ width: '40%', marginRight: '-1%', height: '30px' }}
+                    type='datetime-local'
+                    name='start'
+                    placeholder='Starttid'
+                    value={activity.start}
+                    onChange={handleActivityInputChange}
+                  />
 
-                <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-around'}}>
-                <StyledInput style={{width:'40%', marginRight:'-1%'}}
-                  type='datetime-local'
-                  name='start'
-                  placeholder='Starttid'
-                  value={activity.start}
-                  onChange={handleActivityInputChange}
-                />
-                <StyledInput style={{width:'40%'}}
-                  type='datetime-local'
-                  name='end'
-                  placeholder='Sluttid'
-                  value={activity.end}
-                  onChange={handleActivityInputChange}
-                />
-
+                  <StyledInput
+                    style={{ width: '40%', height: '30px', fontSize: '' }}
+                    type='datetime-local'
+                    name='end'
+                    placeholder='Sluttid'
+                    value={activity.end}
+                    onChange={handleActivityInputChange}
+                  />
                 </div>
                 <StyledInput
                   type='text'
@@ -229,10 +341,27 @@ function Activity() {
                       onChange={handlePresenterChange}
                     />
 
+                    {/* Display suggestions */}
+                    {suggestions.length > 0 && (
+                      <div style={{display:'flex', justifyContent:'start', textAlign:'start'}}>
+                        <li style={{ marginLeft:'6%', width:'88%', listStyle:'none'}}>
+                          {suggestions.map((item: { title: string }, index) => (
+                            <li style={{ color: '#cccccc', backgroundColor:'#424241', border:'1px solid gray', borderRadius:'5px', margin:'4px'}} key={index} onClick={() => handleSuggestionClick(item.title)}>
+                              {item.title}
+                            </li>
+                          ))}
+                        </li>
+                      </div>
+                    )}
+
                     <StyledButton type='button' onClick={addPresenter}>
                       Lägg till
                     </StyledButton>
                     <StyledLine />
+                    </StyledDiv>
+                    )}
+                    {showExternalPresenter && (
+                    <StyledDiv>
                     <PStyled style={{ color: '#D4D4D4' }}>Externa</PStyled>
                     <StyledInput
                       type='text'
@@ -241,13 +370,6 @@ function Activity() {
                       value={externalPresenter.name}
                       onChange={handleExternalPresenterChange}
                     />
-                    {/* <StyledInput
-                      type='text'
-                      name='avatarSrc'
-                      placeholder='Bild'
-                      value={externalPresenter.avatarSrc}
-                      onChange={handleExternalPresenterChange}
-                    /> */}
                     <StyledInput type='file' id='file' />
 
                     <StyledButton type='button' onClick={addExternalPresenter}>
@@ -298,7 +420,7 @@ function Activity() {
                       border: '1px solid gray',
                       backgroundColor: 'transparent',
                     }}
-                    type='submit'
+                    onClick={handleCancelButtonClick}
                   >
                     Avbryt
                   </Button>
