@@ -5,6 +5,7 @@ import com.kollicon.model.LocationModel;
 import com.kollicon.model.PresenterModel;
 import com.kollicon.model.ScheduleModel;
 import com.kollicon.repository.*;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public class DatabaseService {
 
 
 
-        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/titta.md";
+        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/attempt.md";
 
         ScheduleModel scheduleModels = scheduleRepository.findById(1);
         PresenterModel presenterModel = presenterRepository.findById(1);
@@ -61,52 +62,35 @@ public class DatabaseService {
         // Add conference data. This data goes to the top of the markdown file.
         allData.add(conferenceData);
 
-        // Iterate through the activities of a particular schedule. (Select schedule at line 45 above)
-        for(ActivityModel activityModel : activityRepository.findByScheduleId(scheduleModels.getId())) {
-            // Get location of selected schedule.
-                LocationModel locationModel = locationRepository.findById(activityModel.getId()).orElse(null);
+        // Bryt ut denna och iterera igenom enbart activityModels
 
-            if(locationModel != null) {
-                    // Divide coordinates data into latitude and longitude
+        List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModels.getId());
+
+
+        for(int i = 0; i<activityModel.size(); i++) {
+            LocationModel locationModel = locationRepository.findById(activityModel.get(i).getId()).orElse(null); {
+
+                if(locationModel != null) {
                     String [] coordinates = locationModel.getCoordinates().split("\\.");
                     Float latitude = Float.parseFloat(coordinates[0]);
                     Float longitude = Float.parseFloat(coordinates[1]);
 
-                    // Redefine end and start time of activity
-                    LocalDateTime end_time = activityModel.getEnd();
-                    LocalDateTime start_time = activityModel.getStart();
+                    LocalDateTime end_time = activityModel.get(i).getEnd();
+                    LocalDateTime start_time = activityModel.get(i).getStart();
 
-                    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-                    end_time.format(format);
-                    start_time.format(format);
+                    end_time.format(activityFormat);
+                    start_time.format(activityFormat);
 
-                    // Add activity data to HashMap activityInformation
                     Map<String, Object> activityInformation = new HashMap<>();
-                    activityInformation.put("winner", activityModel.getWinner());
-                    activityInformation.put("end",end_time.format(format));
-                    activityInformation.put("start", start_time.format(format));
-                    activityInformation.put("type",  activityModel.getType());
-                    activityInformation.put("title", activityModel.getTitle());
-                    activityInformation.put("details", activityModel.getDetails());
+                    activityInformation.put("winner", activityModel.get(i).getWinner());
+                    activityInformation.put("end", end_time.format(activityFormat));
+                    activityInformation.put("start", start_time.format(activityFormat));
+                    activityInformation.put("type", activityModel.get(i).getType());
+                    activityInformation.put("title", activityModel.get(i).getTitle());
+                    activityInformation.put("details", activityModel.get(i).getDetails());
 
-                    // Get all presenters
-                    List<PresenterModel> presenterModels1 = presenterRepository.findByActivityId((long) activityModel.
-                            getSchedule().getId());
-
-                    // Iterate through all presenters
-                int i = 0;
-                for(PresenterModel presenterModel1 : presenterModels1) {
-                    if(
-                        presenterModel1.getActivity().getId() == scheduleModels.getId() && presenterModel1.getActivity().getPresenter().size() != i)  {
-                        i++;
-                        String name = presenterModel1.getName();
-                        System.out.println("Name: " + name.replace(" ", "").toLowerCase());
-                    }
-                }
-
-                    // Add coordinates and title to HashMap
-                    List<String> presenterInfo = new ArrayList<>();
                     Map<String, Object> locationInfo = new HashMap<>();
                     ArrayList<Float> coordinatesMap = new ArrayList<>();
 
@@ -117,14 +101,29 @@ public class DatabaseService {
                     locationInfo.put("title", locationModel.getTitle());
 
                     activityInformation.put("location", locationInfo);
-                    activityInformation.put("presenters", presenterInfo);
 
                     activityData.add(activityInformation);
+                    System.out.println(activityData);
                 }
             }
+        }
 
-            scheduleData.put("Schedule", activityData);
-            allData.add(scheduleData);
+       List<PresenterModel> presenterModels = presenterRepository.findAll();
+        List<Object> presenters = new ArrayList<>();
+        Map<String, Object> presenterMap = new HashMap<>();
+
+
+        for(int i = 0; i<presenterModels.size(); i++) {
+            if(presenterModels.get(i).getActivity().getId() == scheduleModels.getId()) {
+                presenters.add(presenterModels.get(i).getName());
+            }
+        }
+        presenterMap.put("presenters", presenters);
+        activityData.add(presenterMap);
+        scheduleData.put("Schedule", activityData);
+
+
+        allData.add(scheduleData);
 
             Yaml yaml = new Yaml();
             String yamlDataFormat = yaml.dump(allData);
