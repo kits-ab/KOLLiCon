@@ -33,13 +33,10 @@ public class DatabaseService {
 
     public void generateMdFile(@PathVariable Long id) {
 
-
-
         String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/attempt.md";
 
         ScheduleModel scheduleModels = scheduleRepository.findById(1);
         PresenterModel presenterModel = presenterRepository.findById(1);
-
 
         ArrayList<Object> allData = new ArrayList<>(); // Contains all the other lists
         Map<String, Object> conferenceData = new HashMap<>(); // Contains conference data.
@@ -84,6 +81,8 @@ public class DatabaseService {
                     start_time.format(activityFormat);
 
                     Map<String, Object> activityInformation = new HashMap<>();
+                    List<PresenterModel> presenterModels = presenterRepository.findAll();
+
                     activityInformation.put("winner", activityModel.get(i).getWinner());
                     activityInformation.put("end", end_time.format(activityFormat));
                     activityInformation.put("start", start_time.format(activityFormat));
@@ -102,37 +101,30 @@ public class DatabaseService {
 
                     activityInformation.put("location", locationInfo);
 
+                    List<Object> presenters = new ArrayList<>();
+
+                    for(int j = 0; j<presenterModels.size(); j++) {
+                        if(presenterModels.get(j).getActivity().getId() == activityModel.get(i).getId()) {
+                            presenters.add(presenterModels.get(j).getName());
+                      }
+                    }
+
+                    activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
-                    System.out.println(activityData);
                 }
             }
         }
 
-       List<PresenterModel> presenterModels = presenterRepository.findAll();
-        List<Object> presenters = new ArrayList<>();
-        Map<String, Object> presenterMap = new HashMap<>();
-
-
-        for(int i = 0; i<presenterModels.size(); i++) {
-            if(presenterModels.get(i).getActivity().getId() == scheduleModels.getId()) {
-                presenters.add(presenterModels.get(i).getName());
-            }
-        }
-        presenterMap.put("presenters", presenters);
-        activityData.add(presenterMap);
         scheduleData.put("Schedule", activityData);
-
-
         allData.add(scheduleData);
 
-            Yaml yaml = new Yaml();
-            String yamlDataFormat = yaml.dump(allData);
-            try(FileWriter fileWriter = new FileWriter(outputPath)) {
-                fileWriter.write(yamlDataFormat);
-            }catch(IOException e) {
-                e.getLocalizedMessage();
-            }
-       }
-
-
+        Yaml yaml = new Yaml();
+        String yamlDataFormat = yaml.dump(allData);
+        try(FileWriter fileWriter = new FileWriter(outputPath)) {
+            fileWriter.write(yamlDataFormat);
+        }catch(IOException e) {
+            e.getLocalizedMessage();
+        }
+    }
 }
+
