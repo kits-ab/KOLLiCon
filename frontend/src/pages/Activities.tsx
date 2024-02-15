@@ -55,12 +55,12 @@ export const Activities = () => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    {
-      console.log('activitiesData: ', activitiesData);
-    }
+    // {
+    //   console.log('activitiesData: ', activitiesData);
+    // }
 
     activitiesData?.map((activity: ActivityType) => {
-      console.log('Activity: ', activity);
+      // console.log('Activity: ', activity);
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
 
@@ -82,9 +82,9 @@ export const Activities = () => {
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
-    {
-      console.log('separatedActivities: ', separatedActivities);
-    }
+    // {
+    //   console.log('separatedActivities: ', separatedActivities);
+    // }
 
     return separatedActivities;
   };
@@ -136,6 +136,7 @@ export const Activities = () => {
                   <React.Fragment key={key}>
                     <DateText>{date}</DateText>
                     <a
+                      style={{ cursor: 'pointer' }}
                       onClick={() => {
                         setSelectedActivityId(activity.id);
                         expandInfo();
@@ -168,6 +169,7 @@ export const Activities = () => {
                 return (
                   <React.Fragment key={key}>
                     <a
+                      style={{ cursor: 'pointer' }}
                       onClick={() => {
                         setSelectedActivityId(activity.id);
                         expandInfo();

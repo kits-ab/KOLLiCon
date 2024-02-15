@@ -14,25 +14,10 @@ import {
   Location,
   Text,
   Timeslot,
+  Vertical,
   colors,
 } from '@kokitotsos/react-components';
 import styled from '@emotion/styled';
-
-// interface ActivityType {
-//   id: number;
-//   title: string;
-//   details: string;
-//   start: string;
-//   end: string;
-//   location?: {
-//     type: string;
-//     coordinates: string;
-//   };
-//   presenter: {
-//     name: string;
-//     imgSource: string;
-//   }[];
-// }
 
 const FlexDivRow = styled.div`
   display: flex;
@@ -49,18 +34,22 @@ interface ExpandInfoProps {
 const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, children }) => {
   const [activity, setActivity] = useState({
     data: {} as ActivityType,
-    splitStart: '',
-    splitEnd: '',
+    location: [] as number[],
+    start: new Date(),
+    end: new Date(),
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/activity/${activityId}`);
+        const coordinates = response.data.location.coordinates.split(',');
         setActivity({
           data: response.data,
-          splitStart: response.data.start.split('T')[1],
-          splitEnd: response.data.end.split('T')[1],
+          location: coordinates,
+          start: new Date(response.data.start),
+          end: new Date(response.data.end),
+          // time: [response.data.start, response.data.end],
         });
       } catch (error) {
         console.error('Error fetching activity:', error);
@@ -69,9 +58,10 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
     fetchData();
   }, [activityId]);
 
+  console.log(activity.data);
+
   return (
     <div>
-      {/* <StyledButton onClick={() => setOpen(true)}>Open Drawer</StyledButton>; */}
       <Drawer
         variant='persistent'
         anchor='right'
@@ -80,7 +70,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
           style: {
             backgroundColor: '#262626',
             height: '100%',
-            width: '90%',
+            width: '100%',
+            maxWidth: '600px',
             padding: '20px',
             borderRadius: '0px',
             color: '#DBDBD8',
@@ -89,7 +80,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
         onClick={(event) => event.stopPropagation()}
       >
         <IconButton
-          style={{ justifyContent: 'start' }}
+          style={{ justifyContent: 'start', maxWidth: '30px' }}
           onClick={(event) => {
             event.stopPropagation();
             setOpen(false);
@@ -97,62 +88,26 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
         >
           <ArrowBackIosIcon style={{ color: '#DBDBD8' }} />
         </IconButton>
-        <FlexDivRow
-          style={{
-            borderRadius: '5px',
-            backgroundColor: '#3A3A39',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              margin: '0px 0px 10px 10px',
-              width: '100%',
-            }}
-          >
-            <FlexDivRow style={{ justifyContent: 'space-between' }}>
-              <Avatar
-                style={{ marginBottom: '20px' }}
-                person={{
-                  id: 'lorem',
-                  name: 'Lorem Ipsum',
-                  avatarSrc: 'https://picsum.photos/200',
-                }}
-                showFallback
-                width={80}
-              />
-              <div style={{ display: 'flex', flexDirection: 'column', marginRight: '30px' }}>
-                <Text>
-                  <h2>{activity.splitStart}</h2>
-                  <h2>{activity.splitEnd}</h2>
-                </Text>
-              </div>
-            </FlexDivRow>
 
-            {activity.data.presenter?.map((presenter) => (
-              <Contact
-                key={presenter.name}
-                info={{
-                  name: presenter.name,
-                  role: 'Intern',
-                }}
-                type={0}
-              />
-            ))}
-
-            <ContentHeading>{activity.data.title}</ContentHeading>
-          </div>
-        </FlexDivRow>
-        <Text>
+        <Timeslot
+          heading={activity.data.title}
+          type={activity.data.type}
+          presenters={activity.data.presenter}
+          startTime={activity.start}
+          endTime={activity.end}
+          showEndTime={true}
+        ></Timeslot>
+        <Text style={{ margin: '20px 0px 20px 0px' }}>
           <p>{activity.data.details}</p>
-          {activity.data.location && <p>{activity.data.location.coordinates}</p>}
         </Text>
-        {activity.data.location && (
-          <Location coordinates={[57.7001813, 11.9567863]} subtitle='Test2' title='Test' />
-        )}
-        {/* // <Location coordinates={[57.7001813, 11.9567863]} subtitle='Test2' title='Test' /> */}
+        {activity.location &&
+          activity.location[0] !== undefined &&
+          activity.location[1] !== undefined && (
+            <Location
+              coordinates={[activity.location[0], activity.location[1]]}
+              title={activity.data.location.title}
+            />
+          )}
       </Drawer>
     </div>
   );
