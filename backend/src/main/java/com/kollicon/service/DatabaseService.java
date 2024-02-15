@@ -56,24 +56,22 @@ public class DatabaseService {
         conferenceData.put("image", presenterModel.getAvatarSrc());
         conferenceData.put("active", scheduleModels.isActive());
 
-        // Add conference data. This data goes to the top of the markdown file.
         allData.add(conferenceData);
-
-        // Bryt ut denna och iterera igenom enbart activityModels
 
         List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModels.getId());
 
 
-        for(int i = 0; i<activityModel.size(); i++) {
-            LocationModel locationModel = locationRepository.findById(activityModel.get(i).getId()).orElse(null); {
+        for (ActivityModel model : activityModel) {
+            LocationModel locationModel = locationRepository.findById(model.getId()).orElse(null);
+            {
 
-                if(locationModel != null) {
-                    String [] coordinates = locationModel.getCoordinates().split("\\.");
+                if (locationModel != null) {
+                    String[] coordinates = locationModel.getCoordinates().split("\\.");
                     Float latitude = Float.parseFloat(coordinates[0]);
                     Float longitude = Float.parseFloat(coordinates[1]);
 
-                    LocalDateTime end_time = activityModel.get(i).getEnd();
-                    LocalDateTime start_time = activityModel.get(i).getStart();
+                    LocalDateTime end_time = model.getEnd();
+                    LocalDateTime start_time = model.getStart();
 
                     DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -83,12 +81,12 @@ public class DatabaseService {
                     Map<String, Object> activityInformation = new HashMap<>();
                     List<PresenterModel> presenterModels = presenterRepository.findAll();
 
-                    activityInformation.put("winner", activityModel.get(i).getWinner());
+                    activityInformation.put("winner", model.getWinner());
                     activityInformation.put("end", end_time.format(activityFormat));
                     activityInformation.put("start", start_time.format(activityFormat));
-                    activityInformation.put("type", activityModel.get(i).getType());
-                    activityInformation.put("title", activityModel.get(i).getTitle());
-                    activityInformation.put("details", activityModel.get(i).getDetails());
+                    activityInformation.put("type", model.getType());
+                    activityInformation.put("title", model.getTitle());
+                    activityInformation.put("details", model.getDetails());
 
                     Map<String, Object> locationInfo = new HashMap<>();
                     ArrayList<Float> coordinatesMap = new ArrayList<>();
@@ -103,10 +101,10 @@ public class DatabaseService {
 
                     List<Object> presenters = new ArrayList<>();
 
-                    for(int j = 0; j<presenterModels.size(); j++) {
-                        if(presenterModels.get(j).getActivity().getId() == activityModel.get(i).getId()) {
-                            presenters.add(presenterModels.get(j).getName());
-                      }
+                    for (PresenterModel value : presenterModels) {
+                        if (value.getActivity().getId() == model.getId()) {
+                            presenters.add(value.getName());
+                        }
                     }
 
                     activityInformation.put("presenters", presenters);
