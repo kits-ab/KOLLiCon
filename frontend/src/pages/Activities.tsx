@@ -15,6 +15,7 @@ import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Activity from './Activity';
+import { set } from 'react-hook-form';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -105,6 +106,10 @@ export const Activities = () => {
     // navigate('/activity');
   };
 
+  const deactivateDrawer = () => {
+    setOpen(false);
+  }
+
   return (
     <>
       <GlobalStyles />
@@ -163,7 +168,7 @@ export const Activities = () => {
             style:{height:'100%', overflow:'scroll', backgroundColor: '#262626', borderRadius:'0'}
           }}
         >
-          <Activity />
+          <Activity onClose={deactivateDrawer}/>
         </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />
