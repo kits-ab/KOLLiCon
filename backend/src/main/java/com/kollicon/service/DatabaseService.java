@@ -117,7 +117,7 @@ public class DatabaseService {
                     activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
 
-                    // Initiate all activities attributes if location does NOT exist.
+                // Initiate all activities attributes if location does NOT exist.
                 } else {
 
                     LocalDateTime end_time = model.getEnd();
