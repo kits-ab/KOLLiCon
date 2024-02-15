@@ -38,14 +38,16 @@ public class DatabaseService {
         ScheduleModel scheduleModels = scheduleRepository.findById(1);
         PresenterModel presenterModel = presenterRepository.findById(1);
 
-        ArrayList<Object> allData = new ArrayList<>(); // Contains all the other lists
-        Map<String, Object> conferenceData = new HashMap<>(); // Contains conference data.
-        Map<String, List<Map<String, Object>>> scheduleData = new HashMap<>(); // Contains schedule data
-        List<Map<String, Object>> activityData = new ArrayList<>(); // Contains activity data
+        List<Map<String, Object>> activityData = new ArrayList<>(); // Activity attributes
+        Map<String, List<Map<String, Object>>> scheduleData = new HashMap<>(); // List of activities
+        Map<String, Object> conferenceData = new HashMap<>(); // Conference data at top of markdown file
+        ArrayList<Object> allData = new ArrayList<>(); // All of the above.
+
+
 
         DateTimeFormatter conferenceTimeFormat = DateTimeFormatter.ISO_LOCAL_DATE;
 
-        // Declare conference data.
+        // Declare conference data and add to allData.
         conferenceData.put("type", scheduleModels.getType());
         conferenceData.put("id", scheduleModels.getId());
         conferenceData.put("title", scheduleModels.getTitle());
@@ -55,17 +57,20 @@ public class DatabaseService {
         conferenceData.put("end", scheduleModels.getEnd().format(conferenceTimeFormat));
         conferenceData.put("image", presenterModel.getAvatarSrc());
         conferenceData.put("active", scheduleModels.isActive());
-
         allData.add(conferenceData);
 
+        // Select activities inside chosen schedule.
         List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModels.getId());
 
-
+        // Iterate through all activities.
         for (ActivityModel model : activityModel) {
             LocationModel locationModel = locationRepository.findById(model.getId()).orElse(null);
             {
 
+                // Initiate all activities attributes.
                 if (locationModel != null) {
+
+                    // Add values to attributes belonging to activity.
                     String[] coordinates = locationModel.getCoordinates().split("\\.");
                     Float latitude = Float.parseFloat(coordinates[0]);
                     Float longitude = Float.parseFloat(coordinates[1]);
@@ -79,7 +84,6 @@ public class DatabaseService {
                     start_time.format(activityFormat);
 
                     Map<String, Object> activityInformation = new HashMap<>();
-                    List<PresenterModel> presenterModels = presenterRepository.findAll();
 
                     activityInformation.put("winner", model.getWinner());
                     activityInformation.put("end", end_time.format(activityFormat));
@@ -88,6 +92,7 @@ public class DatabaseService {
                     activityInformation.put("title", model.getTitle());
                     activityInformation.put("details", model.getDetails());
 
+                    // List of location and coordinates attributes within activity.
                     Map<String, Object> locationInfo = new HashMap<>();
                     ArrayList<Float> coordinatesMap = new ArrayList<>();
 
@@ -99,23 +104,27 @@ public class DatabaseService {
 
                     activityInformation.put("location", locationInfo);
 
+                    // Iterate through all presenters and add to activity
+                    List<PresenterModel> presenterModels = presenterRepository.findAll();
                     List<Object> presenters = new ArrayList<>();
-
                     for (PresenterModel value : presenterModels) {
                         if (value.getActivity().getId() == model.getId()) {
                             presenters.add(value.getName());
                         }
                     }
 
+                    // Data that makes up activity added to activityData.
                     activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
                 }
             }
         }
-
+        // Add all activities to the schedule.
         scheduleData.put("Schedule", activityData);
+        // Add schedule to conference.
         allData.add(scheduleData);
 
+        // Add conference to markdown file.
         Yaml yaml = new Yaml();
         String yamlDataFormat = yaml.dump(allData);
         try(FileWriter fileWriter = new FileWriter(outputPath)) {
