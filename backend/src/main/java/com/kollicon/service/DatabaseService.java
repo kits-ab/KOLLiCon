@@ -62,7 +62,7 @@ public class DatabaseService {
             LocationModel locationModel = locationRepository.findById(model.getId()).orElse(null);
             {
 
-                // Initiate all activities attributes.
+                // Initiate all activities attributes if location exists.
                 if (locationModel != null) {
 
                     // Add values to attributes belonging to activity.
@@ -86,7 +86,11 @@ public class DatabaseService {
                     activityInformation.put("start", start_time.format(activityFormat));
                     activityInformation.put("type", model.getType());
                     activityInformation.put("title", model.getTitle());
-                    activityInformation.put("details", model.getDetails());
+
+                    // Details is optional attribute for activity.
+                    if(!model.getDetails().isEmpty()) {
+                        activityInformation.put("details", model.getDetails());
+                    }
 
                     // List of location and coordinates attributes within activity.
                     Map<String, Object> locationInfo = new HashMap<>();
@@ -112,6 +116,8 @@ public class DatabaseService {
                     // Add all activity attributes to the activity list.
                     activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
+
+                    // Initiate all activities attributes if location does NOT exist.
                 } else {
 
                     LocalDateTime end_time = model.getEnd();
@@ -130,7 +136,11 @@ public class DatabaseService {
                     activityInformation.put("start", start_time.format(activityFormat));
                     activityInformation.put("type", model.getType());
                     activityInformation.put("title", model.getTitle());
-                    activityInformation.put("details", model.getDetails());
+
+                    // Details is optional attribute for activity.
+                    if(!model.getDetails().isEmpty()) {
+                        activityInformation.put("details", model.getDetails());
+                    }
 
                     // Iterate through all presenters and add to activity
                     List<PresenterModel> presenterModels = presenterRepository.findAll();
