@@ -76,7 +76,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
         variant='persistent'
         anchor='right'
         open={open}
-        // onClose={() => setOpen(false)}
         PaperProps={{
           style: {
             backgroundColor: '#262626',
@@ -87,8 +86,15 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
             color: '#DBDBD8',
           },
         }}
+        onClick={(event) => event.stopPropagation()}
       >
-        <IconButton style={{ justifyContent: 'start' }} onClick={() => setOpen(false)}>
+        <IconButton
+          style={{ justifyContent: 'start' }}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen(false);
+          }}
+        >
           <ArrowBackIosIcon style={{ color: '#DBDBD8' }} />
         </IconButton>
         <FlexDivRow

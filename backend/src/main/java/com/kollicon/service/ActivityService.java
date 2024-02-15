@@ -1,9 +1,6 @@
 package com.kollicon.service;
 
-import com.kollicon.model.ActivityModel;
-import com.kollicon.model.LocationModel;
-import com.kollicon.model.PresenterModel;
-import com.kollicon.model.ScheduleModel;
+import com.kollicon.model.*;
 import com.kollicon.repository.ActivityRepository;
 import com.kollicon.repository.PresenterRepository;
 import com.kollicon.repository.ScheduleRepository;
@@ -35,6 +32,13 @@ public class ActivityService {
         if (presenters != null) {
             for (PresenterModel presenter : presenters) {
                 presenter.setActivity(activity);
+
+            }
+        }
+        List<ExternalPresenterModel> externalPresenters = activity.getExternalPresenter();
+        if (externalPresenters != null) {
+            for (ExternalPresenterModel ExternalPresenterModel : externalPresenters) {
+                ExternalPresenterModel.setActivity(activity);
 
             }
         }
@@ -77,7 +81,7 @@ public class ActivityService {
                         .orElseThrow(() -> new EntityNotFoundException("Presenter not found with id: " + updatedPresenter.getId()));
 
                 updateFieldIfNotNull(existingPresenter::setName, updatedPresenter.getName());
-                updateFieldIfNotNull(existingPresenter::setImageSrc, updatedPresenter.getImageSrc());
+                updateFieldIfNotNull(existingPresenter::setAvatarSrc, updatedPresenter.getAvatarSrc());
 
                 existingPresenter.setActivity(existingActivity);
 

@@ -14,6 +14,8 @@ import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import Activity from './Activity';
+import { set } from 'react-hook-form';
 import ExpandInfo from '@/components/ExpandInfoComponent';
 
 export const Activities = () => {
@@ -103,8 +105,12 @@ export const Activities = () => {
   }));
 
   const activateDrawer = () => {
-    // setOpen(true);
-    navigate('/activity');
+    setOpen(true);
+    // navigate('/activity');
+  };
+
+  const deactivateDrawer = () => {
+    setOpen(false);
   };
 
   const expandInfo = () => {
@@ -203,8 +209,16 @@ export const Activities = () => {
           open={open}
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
+          PaperProps={{
+            style: {
+              height: '100%',
+              overflow: 'scroll',
+              backgroundColor: '#262626',
+              borderRadius: '0',
+            },
+          }}
         >
-          <InputTest />
+          <Activity onClose={deactivateDrawer} />
         </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />

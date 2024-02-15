@@ -37,6 +37,9 @@ public class ActivityModel {
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = false)
     private List<PresenterModel> presenter;
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
+    @JsonIdentityReference(alwaysAsId = false)
+    private List<ExternalPresenterModel> externalPresenter;
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     @JsonIdentityReference(alwaysAsId = false)
     @OneToOne(cascade = CascadeType.ALL)
@@ -132,5 +135,11 @@ public class ActivityModel {
     }
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+    public List<ExternalPresenterModel> getExternalPresenter() {
+        return externalPresenter;
+    }
+    public void setExternalPresenter(List<ExternalPresenterModel> externalPresenter) {
+        this.externalPresenter = externalPresenter;
     }
 }

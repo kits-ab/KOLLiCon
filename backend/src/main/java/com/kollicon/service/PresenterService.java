@@ -30,7 +30,7 @@ public class PresenterService {
         return presenterRepository.findById(id)
                 .map(existingPresenter -> {
                     if (presenterModel.getName() != null) existingPresenter.setName(presenterModel.getName());
-                    if (presenterModel.getImageSrc() != null) existingPresenter.setImageSrc(presenterModel.getImageSrc());
+                    if (presenterModel.getAvatarSrc() != null) existingPresenter.setAvatarSrc(presenterModel.getAvatarSrc());
                     return presenterRepository.save(existingPresenter);
                 })
                 .orElse(null);
