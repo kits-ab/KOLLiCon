@@ -1,8 +1,10 @@
 package com.kollicon.controller;
 
 import com.kollicon.model.PresenterModel;
+import com.kollicon.service.DatabaseService;
 import com.kollicon.service.PresenterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public class PresenterController {
 
     @Autowired
     PresenterService presenterService;
+
 
     @PostMapping("/presenter")
     public PresenterModel createPresenter(@RequestBody PresenterModel presenterModel) {
@@ -39,4 +42,7 @@ public class PresenterController {
     public List<PresenterModel> getAllPresenters() {
         return presenterService.getAllPresenters();
     }
+
+
+
 }

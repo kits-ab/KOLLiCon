@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScheduleRepository extends JpaRepository<ScheduleModel, Long> {
     ScheduleModel findById(int i);
+
+
+
 }
