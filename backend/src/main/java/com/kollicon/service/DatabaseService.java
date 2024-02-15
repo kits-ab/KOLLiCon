@@ -5,10 +5,8 @@ import com.kollicon.model.LocationModel;
 import com.kollicon.model.PresenterModel;
 import com.kollicon.model.ScheduleModel;
 import com.kollicon.repository.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,19 +33,16 @@ public class DatabaseService {
 
         String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/attempt.md";
 
+        // Select schedule from database.
         ScheduleModel scheduleModels = scheduleRepository.findById(1);
-        PresenterModel presenterModel = presenterRepository.findById(1);
 
         List<Map<String, Object>> activityData = new ArrayList<>(); // Activity attributes
         Map<String, List<Map<String, Object>>> scheduleData = new HashMap<>(); // List of activities
         Map<String, Object> conferenceData = new HashMap<>(); // Conference data at top of markdown file
         ArrayList<Object> allData = new ArrayList<>(); // All of the above.
 
-
-
-        DateTimeFormatter conferenceTimeFormat = DateTimeFormatter.ISO_LOCAL_DATE;
-
         // Declare conference data and add to allData.
+        DateTimeFormatter conferenceTimeFormat = DateTimeFormatter.ISO_LOCAL_DATE;
         conferenceData.put("type", scheduleModels.getType());
         conferenceData.put("id", scheduleModels.getId());
         conferenceData.put("title", scheduleModels.getTitle());
@@ -55,7 +50,7 @@ public class DatabaseService {
         conferenceData.put("location", scheduleModels.getLocation());
         conferenceData.put("start", scheduleModels.getStart().format(conferenceTimeFormat));
         conferenceData.put("end", scheduleModels.getEnd().format(conferenceTimeFormat));
-        conferenceData.put("image", presenterModel.getAvatarSrc());
+        conferenceData.put("image", "img/picture");
         conferenceData.put("active", scheduleModels.isActive());
         allData.add(conferenceData);
 
@@ -83,6 +78,7 @@ public class DatabaseService {
                     end_time.format(activityFormat);
                     start_time.format(activityFormat);
 
+                    // Store all activity attributes in this list.
                     Map<String, Object> activityInformation = new HashMap<>();
 
                     activityInformation.put("winner", model.getWinner());
@@ -113,7 +109,7 @@ public class DatabaseService {
                         }
                     }
 
-                    // Data that makes up activity added to activityData.
+                    // Add all activity attributes to the activity list.
                     activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
                 }
