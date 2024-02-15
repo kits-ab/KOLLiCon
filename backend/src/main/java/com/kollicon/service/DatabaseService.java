@@ -109,7 +109,7 @@ public class DatabaseService {
                     List<Object> presenters = new ArrayList<>();
                     for (PresenterModel value : presenterModels) {
                         if (value.getActivity().getId() == model.getId()) {
-                            presenters.add(value.getName());
+                            presenters.add(value.getName().toLowerCase().replaceAll(" ", ""));
                         }
                     }
 
@@ -147,7 +147,7 @@ public class DatabaseService {
                     List<Object> presenters = new ArrayList<>();
                     for (PresenterModel value : presenterModels) {
                         if (value.getActivity().getId() == model.getId()) {
-                            presenters.add(value.getName());
+                            presenters.add(value.getName().toLowerCase().replaceAll(" ", ""));
                         }
                     }
 
