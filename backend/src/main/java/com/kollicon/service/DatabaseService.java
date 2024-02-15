@@ -112,6 +112,38 @@ public class DatabaseService {
                     // Add all activity attributes to the activity list.
                     activityInformation.put("presenters", presenters);
                     activityData.add(activityInformation);
+                } else {
+
+                    LocalDateTime end_time = model.getEnd();
+                    LocalDateTime start_time = model.getStart();
+
+                    DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                    end_time.format(activityFormat);
+                    start_time.format(activityFormat);
+
+                    // Store all activity attributes in this list.
+                    Map<String, Object> activityInformation = new HashMap<>();
+
+                    activityInformation.put("winner", model.getWinner());
+                    activityInformation.put("end", end_time.format(activityFormat));
+                    activityInformation.put("start", start_time.format(activityFormat));
+                    activityInformation.put("type", model.getType());
+                    activityInformation.put("title", model.getTitle());
+                    activityInformation.put("details", model.getDetails());
+
+                    // Iterate through all presenters and add to activity
+                    List<PresenterModel> presenterModels = presenterRepository.findAll();
+                    List<Object> presenters = new ArrayList<>();
+                    for (PresenterModel value : presenterModels) {
+                        if (value.getActivity().getId() == model.getId()) {
+                            presenters.add(value.getName());
+                        }
+                    }
+
+                    // Add all activity attributes to the activity list.
+                    activityInformation.put("presenters", presenters);
+                    activityData.add(activityInformation);
                 }
             }
         }
@@ -130,4 +162,3 @@ public class DatabaseService {
         }
     }
 }
-
