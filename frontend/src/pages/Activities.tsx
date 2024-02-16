@@ -10,24 +10,20 @@ import axios from 'axios';
 import MenuHeader from './MenuHeader';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import Activity from './Activity';
-import { set } from 'react-hook-form';
 
 export const Activities = () => {
   const fetchData = async () => {
     const response = await axios.get('http://localhost:8080/api/schedule/get/1');
     response.data.activityId.map((activity: any) => {
-      const coor: string = activity.location.coordinates as string;
-      const convertToNumberArrayLocation: number[] = coor.split(',').map(Number);
+      const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
       const start = new Date(activity.start);
       const end = new Date(activity.end);
       activity.start = start;
       activity.end = end;
-      activity.location.coordinates = convertToNumberArrayLocation;
+      activity.location.coordinates = coorNumberArray;
       return activity as ActivityType;
     });
     setActivitiesData(response.data.activityId);
@@ -37,7 +33,6 @@ export const Activities = () => {
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -48,16 +43,47 @@ export const Activities = () => {
     return <div>Error: {err.message}</div>;
   }
 
-  const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
+  const separateActivitiesByDate = (
+    activitiesData: ActivityType[],
+  ): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    {
-      console.log('activitiesData: ', activitiesData);
+
+    const sortedActivities = (activitiesData as ActivityType[]).sort(
+      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+    );
+
+    // Create an array to store the overlapping activities
+    const overlappingActivities: ActivityType[][] = [];
+    // Create a set to store the IDs of the activities that have been pushed to an array
+    const pushedActivities = new Set<number>();
+    // Iterate over the sorted activities
+    for (let i = 1; i < sortedActivities.length; i++) {
+      // If the start time of the current activity is before the end time of the previous activity
+      // and neither activity has been pushed to an array before
+      if (
+        new Date(sortedActivities[i].start).getTime() <
+          new Date(sortedActivities[i - 1].end).getTime() &&
+        !pushedActivities.has(sortedActivities[i].id) &&
+        !pushedActivities.has(sortedActivities[i - 1].id)
+      ) {
+        // Add both activities to the overlappingActivities array
+        overlappingActivities.push([sortedActivities[i - 1], sortedActivities[i]]);
+        activitiesData = activitiesData.filter(
+          (activitiesData) =>
+            activitiesData.id !== sortedActivities[i].id &&
+            activitiesData.id !== sortedActivities[i - 1].id,
+        );
+
+        // Add the IDs of both activities to the pushedActivities set
+        pushedActivities.add(sortedActivities[i].id);
+        pushedActivities.add(sortedActivities[i - 1].id);
+      }
     }
+    // Add the overlapping activities to the activitiesData array
 
     activitiesData?.map((activity: ActivityType) => {
-      console.log('Activity: ', activity);
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
 
@@ -71,19 +97,18 @@ export const Activities = () => {
         separatedActivities[date] = [];
       }
 
+      // Sort the activities by start time
+
       separatedActivities[date].push(activity);
     });
-
-    Object.keys(separatedActivities).map((date) => {
-      separatedActivities[date].sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
-      );
-    });
     {
-      console.log('separatedActivities: ', separatedActivities);
+      console.log(
+        'overlappingActivities and separatedActivities: ',
+        overlappingActivities,
+        separatedActivities,
+      );
     }
-
-    return separatedActivities;
+    return [separatedActivities, overlappingActivities] as any;
   };
 
   if (!activitiesData) return null;
@@ -103,7 +128,6 @@ export const Activities = () => {
 
   const activateDrawer = () => {
     setOpen(true);
-    // navigate('/activity');
   };
 
   const deactivateDrawer = () => {
@@ -116,9 +140,9 @@ export const Activities = () => {
       <ActivitiesWrapper>
         <MenuHeader></MenuHeader>
 
-        {separatedActivities &&
-          Object.keys(separatedActivities).map((date) => {
-            return separatedActivities[date].map((activity: ActivityType, index: number) => {
+        {separatedActivities[0] &&
+          Object.keys(separatedActivities[0]).map((date: string) => {
+            return separatedActivities[0][date].map((activity: ActivityType, index: number) => {
               const key = `${date}-${index}`; // Unique key
               if (index === 0) {
                 return (
@@ -132,7 +156,9 @@ export const Activities = () => {
                       startTime={activity.start}
                       type={activity.type}
                       showEndTime={true}
-                      location={activity.location}
+                      {...(activity.location.coordinates[0] !== 0
+                        ? { location: activity.location }
+                        : {})}
                     >
                       <p>{activity.details}</p>
                     </Timeslot>
@@ -149,7 +175,9 @@ export const Activities = () => {
                     startTime={activity.start}
                     type={activity.type}
                     showEndTime={true}
-                    location={activity.location}
+                    {...(activity.location.coordinates[0] !== 0
+                      ? { location: activity.location }
+                      : {})}
                   >
                     <p>{activity.details}</p>
                   </Timeslot>
