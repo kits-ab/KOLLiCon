@@ -1,37 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import Drawer from '@mui/material/Drawer';
 import axios from 'axios';
-import Box from '@mui/material/Box';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
-import {
-  Article,
-  Avatar,
-  Contact,
-  ContentHeading,
-  GlobalStyles,
-  Location,
-  Text,
-  Timeslot,
-  Vertical,
-  colors,
-} from '@kokitotsos/react-components';
-import styled from '@emotion/styled';
-
-const FlexDivRow = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+import { Location, Text, Timeslot } from '@kokitotsos/react-components';
 
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   activityId: number;
-  children?: React.ReactNode;
 }
 
-const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, children }) => {
+const PaperProps = {
+  style: {
+    backgroundColor: '#262626',
+    height: '100%',
+    width: '100%',
+    maxWidth: '600px',
+    padding: '20px',
+    borderRadius: '0px',
+    color: '#DBDBD8',
+  },
+};
+
+const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) => {
   const [activity, setActivity] = useState({
     data: {} as ActivityType,
     location: [] as number[],
@@ -49,7 +42,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
           location: coordinates,
           start: new Date(response.data.start),
           end: new Date(response.data.end),
-          // time: [response.data.start, response.data.end],
         });
       } catch (error) {
         console.error('Error fetching activity:', error);
@@ -66,27 +58,18 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId, chil
         variant='persistent'
         anchor='right'
         open={open}
-        PaperProps={{
-          style: {
-            backgroundColor: '#262626',
-            height: '100%',
-            width: '100%',
-            maxWidth: '600px',
-            padding: '20px',
-            borderRadius: '0px',
-            color: '#DBDBD8',
-          },
-        }}
         onClick={(event) => event.stopPropagation()}
+        SlideProps={{ timeout: 500 }}
+        PaperProps={PaperProps}
       >
         <IconButton
-          style={{ justifyContent: 'start', maxWidth: '30px' }}
+          sx={{ justifyContent: 'start', maxWidth: '30px' }}
           onClick={(event) => {
             event.stopPropagation();
             setOpen(false);
           }}
         >
-          <ArrowBackIosIcon style={{ color: '#DBDBD8' }} />
+          <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
         </IconButton>
 
         <Timeslot
