@@ -20,9 +20,9 @@ export const sxStyles = {
   };
   
   export const slotPropsStyles = {
-    actionBar: { sx: { backgroundColor: '#414141' } },
-    calendarHeader: { sx: { backgroundColor: '#414141' } },
-    mobilePaper: { sx: { backgroundColor: '#414141' } },
-    toolbar: { sx: { backgroundColor: '#414141' } },
+    actionBar: { sx: { backgroundColor: '#595959' } },
+    calendarHeader: { sx: { backgroundColor: '#595959' } },
+    mobilePaper: { sx: { backgroundColor: '#595959' } },
+    toolbar: { sx: { backgroundColor: '#595959' } },
     textField: { size: 'small' },
   };

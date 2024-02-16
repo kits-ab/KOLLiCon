@@ -444,9 +444,43 @@ function Activity({ onClose }: any) {
                       </Box>
                     )}
 
-                    <StyledButton type='button' onClick={addPresenter}>
+                    <StyledButton style={{marginBottom:'5%'}} type='button' onClick={addPresenter}>
                       Lägg till
                     </StyledButton>
+
+                    {/* List added presenters */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      {activity.presenter.map((presenter, index) => (
+                        <Box
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: '2%',
+                            margin:'0 8% 0 7% '
+                          }}
+                        >
+                          <Box
+                            style={{
+                              marginRight: '1px',
+                              color: '#709756',
+                              maxWidth: '100%',
+                              fontWeight: 'initial',
+                              fontSize: '15px',
+                            }}
+                          >
+                            {presenter.name}
+                          </Box>
+                          <StyledButton
+                            style={{ fontSize: '10px', backgroundColor: '#B42F2F' }}
+                            onClick={() => handleDeletePresenter(index)}
+                          >
+                            Delete
+                          </StyledButton>
+                        </Box>
+                      ))}
+                    </Box>
                     <StyledLine />
                   </StyledDiv>
                 )}
@@ -462,9 +496,44 @@ function Activity({ onClose }: any) {
                     />
                     <StyledInput type='file' id='file' />
 
-                    <StyledButton type='button' onClick={addExternalPresenter}>
+                    <StyledButton style={{marginBottom:'5%'}} type='button' onClick={addExternalPresenter}>
                       Lägg till
                     </StyledButton>
+
+                    {/* List added presenters */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      {activity.presenter.map((presenter, index) => (
+                        <Box
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: '2%',
+                            margin:'0 8% 0 7% '
+                          }}
+                        >
+                          <Box
+                            style={{
+                              marginRight: '1px',
+                              color: '#709756',
+                              maxWidth: '100%',
+                              fontWeight: 'initial',
+                              fontSize: '15px',
+                            }}
+                          >
+                            {presenter.name}
+                          </Box>
+                          <StyledButton
+                            style={{ fontSize: '10px', backgroundColor: '#B42F2F' }}
+                            onClick={() => handleDeletePresenter(index)}
+                          >
+                            Delete
+                          </StyledButton>
+                        </Box>
+                      ))}
+                    </Box>
+
                     <StyledLine />
                   </StyledDiv>
                 )}
