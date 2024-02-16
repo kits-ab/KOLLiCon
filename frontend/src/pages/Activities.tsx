@@ -20,7 +20,7 @@ import { set } from 'react-hook-form';
 export const Activities = () => {
   const fetchData = async () => {
     const response = await axios.get('http://localhost:8080/api/schedule/get/1');
-    response.data.activityId.map((activity: ActivityType) => {
+    response.data.activityId.map((activity: any) => {
       const coor: string = activity.location.coordinates as string;
       const convertToNumberArrayLocation: number[] = coor.split(',').map(Number);
       const start = new Date(activity.start);
@@ -108,7 +108,7 @@ export const Activities = () => {
 
   const deactivateDrawer = () => {
     setOpen(false);
-  }
+  };
 
   return (
     <>
@@ -131,7 +131,8 @@ export const Activities = () => {
                       heading={activity.title}
                       startTime={activity.start}
                       type={activity.type}
-                      // location={activity.location}
+                      showEndTime={true}
+                      location={activity.location}
                     >
                       <p>{activity.details}</p>
                     </Timeslot>
@@ -147,7 +148,8 @@ export const Activities = () => {
                     heading={activity.title}
                     startTime={activity.start}
                     type={activity.type}
-                    // location={activity.location}
+                    showEndTime={true}
+                    location={activity.location}
                   >
                     <p>{activity.details}</p>
                   </Timeslot>
@@ -165,10 +167,15 @@ export const Activities = () => {
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
           PaperProps={{
-            style:{height:'100%', overflow:'scroll', backgroundColor: '#262626', borderRadius:'0'}
+            style: {
+              height: '100%',
+              overflow: 'scroll',
+              backgroundColor: '#262626',
+              borderRadius: '0',
+            },
           }}
         >
-          <Activity onClose={deactivateDrawer}/>
+          <Activity onClose={deactivateDrawer} />
         </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />
