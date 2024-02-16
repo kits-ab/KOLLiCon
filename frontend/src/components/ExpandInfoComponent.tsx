@@ -50,8 +50,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
     fetchData();
   }, [activityId]);
 
-  console.log(activity.data);
-
   return (
     <div>
       <Drawer
