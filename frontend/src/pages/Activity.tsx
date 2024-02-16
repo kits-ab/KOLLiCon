@@ -82,8 +82,7 @@ function Activity({ onClose }: any) {
       const activityData = { ...activity, location: location };
 
       const response = await axios.post('http://localhost:8080/api/activity', activityData);
-      console.log(response.data);
-      navigate('/activities');
+      window.location.reload();
     } catch (error) {
       console.error('Error submitting activity:', error);
     }
@@ -142,7 +141,6 @@ function Activity({ onClose }: any) {
   };
 
   const handleDateChange = (name: string, date: Date) => {
-    console.log(date);
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
   };
 
@@ -191,7 +189,6 @@ function Activity({ onClose }: any) {
     if (!pictureExists) {
       // Handle case where profile picture doesn't exist
       console.log(`Profile picture for ${presenter.name} does not exist or is not accessible.`);
-      // You can display an error message or take appropriate action
       return;
     }
 
@@ -235,7 +232,6 @@ function Activity({ onClose }: any) {
   }
   //Function to get the employees's profile picture via url
   function getProfilePictureUrl(name: string) {
-    console.log(name);
     return `https://raw.githubusercontent.com/kits-ab/kits/master/static/assets/medarbetare_${replaceSpecialCharacters(name)}-avatar.jpg`;
   }
   function replaceSpecialCharacters(url: string) {
@@ -264,7 +260,6 @@ function Activity({ onClose }: any) {
 
           Promise.all(filesData).then((fileTitles) => {
             setFiles(fileTitles);
-            console.log(fileTitles);
           });
         } else {
           console.error('Error fetching files:', response.statusText);
@@ -355,6 +350,7 @@ function Activity({ onClose }: any) {
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker
+                      ampm={false}
                       sx={{ ...sxStyles }}
                       slotProps={slotPropsStyles}
                       label='Starttid'
@@ -364,6 +360,7 @@ function Activity({ onClose }: any) {
                     />
 
                     <DateTimePicker
+                      ampm={false}
                       sx={{ ...sxStyles }}
                       slotProps={slotPropsStyles}
                       label='Sluttid'

@@ -11,12 +11,7 @@ export const sxStyles = {
     },
     '& .MuiPaper-root': {
       color: 'black',
-    },
-    "& .MuiButtonBase-root": {
-        color: "red",
-      },"&.mui-selected": {
-        backgroundcolor: 'red',
-      },
+    }
   };
   
   export const slotPropsStyles = {
