@@ -23,6 +23,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import MapBox from './MapBox';
 
 type Activity = {
   schedule: number;
@@ -553,6 +554,8 @@ function Activity({ onClose }: any) {
                     />
                   </StyledDiv>
                 )}
+                
+                <MapBox/>
 
                 <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '10%' }}>
                   <Button
