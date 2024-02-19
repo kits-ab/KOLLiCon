@@ -26,7 +26,9 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/activity/${activityId}`);
-        const coordinates = response.data.location.coordinates.split(',');
+        const coordinates = response.data.location.coordinates.split(',').map(Number);
+        console.log('coordinates:', coordinates, typeof coordinates[0], typeof coordinates[1]);
+
         setActivity({
           data: response.data,
           location: coordinates,
@@ -39,6 +41,13 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
     };
     fetchData();
   }, [activityId]);
+
+  console.log(
+    'coordinates:',
+    activity.location,
+    typeof activity.location[0],
+    typeof activity.location[1],
+  );
 
   return (
     <div>
@@ -71,14 +80,13 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
         <Text style={{ margin: '20px 0px 20px 0px' }}>
           <p>{activity.data.details}</p>
         </Text>
-        {activity.location &&
-          activity.location[0] !== undefined &&
-          activity.location[1] !== undefined && (
-            <Location
-              coordinates={[activity.location[0], activity.location[1]]}
-              title={activity.data.location.title}
-            />
-          )}
+        {/* render inverted because of the mapbox component saving the coordinates as [lat, long] */}
+        {activity.location.length === 2 && (
+          <Location
+            coordinates={[activity.location[1], activity.location[0]]}
+            title={activity.data.location.title}
+          />
+        )}
       </StyledDrawer>
     </div>
   );
