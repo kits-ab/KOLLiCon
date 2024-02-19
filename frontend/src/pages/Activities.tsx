@@ -16,6 +16,7 @@ import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Activity from './Activity';
 import { set } from 'react-hook-form';
+import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -37,6 +38,8 @@ export const Activities = () => {
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
+  const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -52,12 +55,12 @@ export const Activities = () => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    {
-      console.log('activitiesData: ', activitiesData);
-    }
+    // {
+    //   console.log('activitiesData: ', activitiesData);
+    // }
 
     activitiesData?.map((activity: ActivityType) => {
-      console.log('Activity: ', activity);
+      // console.log('Activity: ', activity);
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
 
@@ -79,9 +82,9 @@ export const Activities = () => {
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
-    {
-      console.log('separatedActivities: ', separatedActivities);
-    }
+    // {
+    //   console.log('separatedActivities: ', separatedActivities);
+    // }
 
     return separatedActivities;
   };
@@ -108,7 +111,15 @@ export const Activities = () => {
 
   const deactivateDrawer = () => {
     setOpen(false);
-  }
+  };
+
+  const expandInfo = () => {
+    if (expandInfoOpen) {
+      setExpandInfoOpen(false);
+    } else {
+      setExpandInfoOpen(true);
+    }
+  };
 
   return (
     <>
@@ -124,33 +135,69 @@ export const Activities = () => {
                 return (
                   <React.Fragment key={key}>
                     <DateText>{date}</DateText>
-                    <Timeslot
-                      key={key}
-                      presenters={activity.presenter}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      // location={activity.location}
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
                     >
-                      <p>{activity.details}</p>
-                    </Timeslot>
+                      <Timeslot
+                        key={key}
+                        presenters={activity.presenter}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        // location={activity.location}
+                      >
+                        <p>{activity.details}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityId={activity.id}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        >
+                          {/* <button onClick={expandInfo}>Close Drawer</button> */}
+                        </ExpandInfo>
+                      )}
+                    </a>
                   </React.Fragment>
                 );
               } else {
                 return (
-                  <Timeslot
-                    key={key}
-                    connectToPrevious={index !== 0}
-                    presenters={activity.presenter}
-                    endTime={activity.end}
-                    heading={activity.title}
-                    startTime={activity.start}
-                    type={activity.type}
-                    // location={activity.location}
-                  >
-                    <p>{activity.details}</p>
-                  </Timeslot>
+                  <React.Fragment key={key}>
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
+                    >
+                      <Timeslot
+                        key={key}
+                        connectToPrevious={index !== 0}
+                        presenters={activity.presenter}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        // location={activity.location}
+                      >
+                        <p>{activity.details}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityId={activity.id}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        >
+                          {/* <button onClick={expandInfo}>Close Drawer</button> */}
+                        </ExpandInfo>
+                      )}
+                    </a>
+                  </React.Fragment>
                 );
               }
             });
@@ -165,10 +212,15 @@ export const Activities = () => {
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
           PaperProps={{
-            style:{height:'100%', overflow:'scroll', backgroundColor: '#262626', borderRadius:'0'}
+            style: {
+              height: '100%',
+              overflow: 'scroll',
+              backgroundColor: '#262626',
+              borderRadius: '0',
+            },
           }}
         >
-          <Activity onClose={deactivateDrawer}/>
+          <Activity onClose={deactivateDrawer} />
         </SwipeableDrawer>
       </ActivitiesWrapper>
       <KolliconFooter />
