@@ -3,11 +3,13 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../styles/MapBox.css';
+import { StyledButton, StyledLine } from '../styles/StyledActivity';
 
-const MapBox = ({ onCoordinatesChange }: { onCoordinatesChange: (coords: number[]) => void }) => {
+const MapBox = ({ onCoordinatesChange, resetLocation }: { onCoordinatesChange: (coords: number[]) => void; resetLocation: () => void }) => {
   const [coordinates, setCoordinates] = useState(null);
   const geocoderRef = useRef(null);
   const mapRef = useRef('');
+  const initialCenter = [11.967017, 57.707233];
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1Ijoia29raXRvdHNvcyIsImEiOiJjaXk0d3R5bjEwMDJsMnlscWhtOGlydDl3In0.Xfr-Sr_D4JJVK2kVNsm4vA';
@@ -15,7 +17,7 @@ const MapBox = ({ onCoordinatesChange }: { onCoordinatesChange: (coords: number[
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
-      center: [11.967017, 57.707233],
+      center: initialCenter,
       zoom: 12,
     });
     // Update the type of mapRef.current
@@ -61,6 +63,21 @@ const MapBox = ({ onCoordinatesChange }: { onCoordinatesChange: (coords: number[
     }
   }, []);
 
+  // Function to clear the search box
+  const clearSearchBox = () => {
+    if (geocoderRef.current) {
+      (geocoderRef.current as MapboxGeocoder).clear();
+      resetLocation();
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: initialCenter,
+          essential: true,
+        });
+      }
+      setCoordinates(null);
+    }
+  };
+
   console.log(coordinates);
 
   return (
@@ -70,12 +87,26 @@ const MapBox = ({ onCoordinatesChange }: { onCoordinatesChange: (coords: number[
         flexDirection: 'column',
         justifyContent: 'center',
         margin: '0 7% 0 7%',
-        border: '1px solid gray',
-        borderRadius: '5px',
       }}
     >
-      <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
-      <div id='map' style={{ width: '100%', height: '200px' }}></div>
+      <div style={{ border: '1px solid gray', borderRadius: '5px 5px 0 0' }}>
+        <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
+        <div id='map' style={{ width: '100%', height: '160px' }}></div>
+      </div>
+
+      <StyledButton
+        style={{
+          margin: '4% 0 -1% 40%',
+          maxWidth: '20%',
+          padding: '4px',
+          backgroundColor: '#963939',
+          fontSize: '11px',
+        }}
+        onClick={clearSearchBox}
+      >
+        Rensa
+      </StyledButton>
+      <StyledLine style={{ marginBottom: '-6%' }} />
     </div>
   );
 };

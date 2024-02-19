@@ -43,6 +43,16 @@
   .mapboxgl-ctrl-geocoder--input,
   .mapboxgl-ctrl-geocoder--input:focus {
     color: #cecece;
+    height: 40px;
+  }
+
+  .mapboxgl-ctrl-geocoder--icon-search {
+    top:10px;
+  }
+
+  .mapboxgl-ctrl-geocoder--icon-close{
+    height: 20px;
+    margin-right:6px;
   }
   
   .mapboxgl-ctrl-geocoder--button {
