@@ -70,8 +70,8 @@ function Activity({ onClose }: any) {
     presenter: [],
     externalPresenter: [],
     location: { title: '', coordinates: '' },
-    title: '',
-    details: '',
+    title: null,
+    details: null,
     start: '',
     end: '',
   } as unknown as Activity);

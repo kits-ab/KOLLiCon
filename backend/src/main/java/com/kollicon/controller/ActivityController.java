@@ -3,14 +3,18 @@ package com.kollicon.controller;
 import com.kollicon.model.ActivityModel;
 import com.kollicon.repository.ActivityRepository;
 import com.kollicon.service.ActivityService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:5173")
+@Validated
 public class ActivityController {
 
     @Autowired
@@ -19,8 +23,9 @@ public class ActivityController {
     private ActivityRepository activityRepository;
 
     @PostMapping("/activity")
-    public ActivityModel createActivity (@RequestBody ActivityModel activity) {
-        return activityService.createActivity(activity);
+    public ResponseEntity<ActivityModel> createActivity(@Valid @RequestBody ActivityModel activity) {
+        ActivityModel createdActivity = activityService.createActivity(activity);
+        return new ResponseEntity<>(createdActivity, HttpStatus.CREATED);
     }
     @GetMapping("/activity/{id}")
     public ActivityModel getActivity (@PathVariable Long id) {
