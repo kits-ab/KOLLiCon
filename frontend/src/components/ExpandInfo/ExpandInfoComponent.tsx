@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import Drawer from '@mui/material/Drawer';
 import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
+import { useStyledDrawer } from './StyledExpandInfo';
 
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   activityId: number;
 }
-
-const PaperProps = {
-  style: {
-    backgroundColor: '#262626',
-    height: '100%',
-    width: '100%',
-    maxWidth: '600px',
-    padding: '20px',
-    borderRadius: '0px',
-    color: '#DBDBD8',
-  },
-};
 
 const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) => {
   const [activity, setActivity] = useState({
@@ -31,6 +19,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
     start: new Date(),
     end: new Date(),
   });
+
+  const StyledDrawer = useStyledDrawer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,13 +42,13 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
 
   return (
     <div>
-      <Drawer
-        variant='persistent'
+      <StyledDrawer
+        SlideProps={{ timeout: 500 }}
+        variant='temporary'
         anchor='right'
         open={open}
         onClick={(event) => event.stopPropagation()}
-        SlideProps={{ timeout: 500 }}
-        PaperProps={PaperProps}
+        hideBackdrop={false}
       >
         <IconButton
           sx={{ justifyContent: 'start', maxWidth: '30px' }}
@@ -89,7 +79,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
               title={activity.data.location.title}
             />
           )}
-      </Drawer>
+      </StyledDrawer>
     </div>
   );
 };

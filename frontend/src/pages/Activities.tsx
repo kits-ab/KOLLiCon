@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Activity from './Activity';
 import { set } from 'react-hook-form';
-import ExpandInfo from '@/components/ExpandInfoComponent';
+import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 
 export const Activities = () => {
   const fetchData = async () => {
