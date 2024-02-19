@@ -23,6 +23,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import MapBox from './MapBox';
+import StyledVideoContainer from '@/styles/StyledVideoContainer';
 
 type Activity = {
   schedule: number;
@@ -140,6 +142,14 @@ function Activity({ onClose }: any) {
     setLocation({ ...location, [name]: value });
   };
 
+  //Function to convert the array to string and add coordinates to the location
+  const handleCoordinates = (coords: number[]) => {
+    setLocation(prevLocation => ({
+      ...prevLocation,
+      coordinates: coords.join(','),
+    }));
+  };
+
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
   };
@@ -160,7 +170,6 @@ function Activity({ onClose }: any) {
       setSuggestions([]);
     }
   };
-
   //Function to handle the external presenter change
   const handleExternalPresenterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -441,7 +450,11 @@ function Activity({ onClose }: any) {
                       </Box>
                     )}
 
-                    <StyledButton style={{marginBottom:'5%'}} type='button' onClick={addPresenter}>
+                    <StyledButton
+                      style={{ marginBottom: '5%' }}
+                      type='button'
+                      onClick={addPresenter}
+                    >
                       Lägg till
                     </StyledButton>
 
@@ -455,7 +468,7 @@ function Activity({ onClose }: any) {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             marginTop: '2%',
-                            margin:'0 8% 0 7% '
+                            margin: '0 8% 0 7% ',
                           }}
                         >
                           <Box
@@ -493,7 +506,11 @@ function Activity({ onClose }: any) {
                     />
                     <StyledInput type='file' id='file' />
 
-                    <StyledButton style={{marginBottom:'5%'}} type='button' onClick={addExternalPresenter}>
+                    <StyledButton
+                      style={{ marginBottom: '5%' }}
+                      type='button'
+                      onClick={addExternalPresenter}
+                    >
                       Lägg till
                     </StyledButton>
 
@@ -507,7 +524,7 @@ function Activity({ onClose }: any) {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             marginTop: '2%',
-                            margin:'0 8% 0 7% '
+                            margin: '0 8% 0 7% ',
                           }}
                         >
                           <Box
@@ -536,7 +553,6 @@ function Activity({ onClose }: any) {
                 )}
                 {showLocation && (
                   <StyledDiv>
-                    <PStyled style={{ color: '#D4D4D4' }}>Location</PStyled>
                     <StyledInput
                       type='text'
                       name='title'
@@ -544,13 +560,7 @@ function Activity({ onClose }: any) {
                       value={location.title}
                       onChange={handleLocationChange}
                     />
-                    <StyledInput
-                      type='text'
-                      name='coordinates'
-                      placeholder='Coordinates'
-                      value={location.coordinates}
-                      onChange={handleLocationChange}
-                    />
+                     <MapBox onCoordinatesChange={handleCoordinates} />
                   </StyledDiv>
                 )}
 
