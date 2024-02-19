@@ -4,7 +4,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../styles/MapBox.css';
 
-const MapBox = () => {
+const MapBox = ({ onCoordinatesChange }: { onCoordinatesChange: (coords: number[]) => void }) => {
   const [coordinates, setCoordinates] = useState(null);
   const geocoderRef = useRef(null);
   const mapRef = useRef('');
@@ -16,7 +16,7 @@ const MapBox = () => {
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
       center: [11.967017, 57.707233],
-      zoom: 13,
+      zoom: 12,
     });
     // Update the type of mapRef.current
     mapRef.current = map;
@@ -54,7 +54,9 @@ const MapBox = () => {
       geocoder.on('result', (event) => {
         const { result } = event;
         const { geometry } = result;
+        const { coordinates } = geometry;
         setCoordinates(geometry.coordinates);
+        onCoordinatesChange(coordinates);
       });
     }
   }, []);
