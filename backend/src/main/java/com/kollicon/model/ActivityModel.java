@@ -44,10 +44,10 @@ public class ActivityModel {
     @JsonIdentityReference(alwaysAsId = false)
     @OneToOne(cascade = CascadeType.ALL)
     private LocationModel location;
-    @NotNull(message = "Title is required")
+    @NotBlank(message = "Title is required")
     @Column(name = "title")
     private String title;
-    @NotNull(message = "Details is required")
+    @NotBlank(message = "Details is required")
     @Column(name = "details")
     private String details;
     @NotNull(message = "Start date is required")
