@@ -9,6 +9,7 @@ const MapBox = ({ onCoordinatesChange, resetLocation }: { onCoordinatesChange: (
   const [coordinates, setCoordinates] = useState(null);
   const geocoderRef = useRef(null);
   const mapRef = useRef('');
+  const [marker, setMarker] = useState(null);
   const initialCenter = [11.967017, 57.707233];
   useEffect(() => {
     mapboxgl.accessToken =
@@ -18,7 +19,7 @@ const MapBox = ({ onCoordinatesChange, resetLocation }: { onCoordinatesChange: (
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
       center: initialCenter,
-      zoom: 12,
+      zoom: 11,
     });
     // Update the type of mapRef.current
     mapRef.current = map;
@@ -31,6 +32,8 @@ const MapBox = ({ onCoordinatesChange, resetLocation }: { onCoordinatesChange: (
       mapRef.current.flyTo({
         center: coordinates,
         essential: true,
+        animate: false,
+        zoom: 15,
       });
     }
   }, [coordinates]);
@@ -63,15 +66,40 @@ const MapBox = ({ onCoordinatesChange, resetLocation }: { onCoordinatesChange: (
     }
   }, []);
 
+  useEffect(() => {
+    if (coordinates && mapRef.current) {
+      // Cast mapRef.current to mapboxgl.Map
+      const map = mapRef.current as unknown as mapboxgl.Map; 
+      // Set map center
+      map.setCenter(coordinates);
+      
+      // Create or update marker
+      if (!marker) {
+        const newMarker = new mapboxgl.Marker()
+          .setLngLat(coordinates)
+          .addTo(map);
+        setMarker(newMarker);
+      } else {
+        (marker as mapboxgl.Marker).setLngLat(coordinates);
+      }
+    }
+  }, [coordinates]);
+
   // Function to clear the search box
   const clearSearchBox = () => {
     if (geocoderRef.current) {
       (geocoderRef.current as MapboxGeocoder).clear();
       resetLocation();
-      if (mapRef.current) {
-        mapRef.current.flyTo({
-          center: initialCenter,
+      // Add a type check to ensure mapRef.current is not a string
+      if (mapRef.current && typeof mapRef.current !== 'string') {
+        // Cast mapRef.current to mapboxgl.Map 
+        (mapRef.current as mapboxgl.Map).flyTo({ 
+          // Convert initialCenter to LngLatLike
+          center: initialCenter as mapboxgl.LngLatLike, 
           essential: true,
+          animate: true,
+          zoom: 11,
+          duration: 1500
         });
       }
       setCoordinates(null);

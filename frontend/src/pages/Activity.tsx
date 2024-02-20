@@ -148,7 +148,7 @@ function Activity({ onClose }: any) {
   };
 
   const handleResetLocation = () => {
-    setLocation({title: '',  coordinates: ''})
+    setLocation({...location, coordinates: ''})
   }
 
   const handleDateChange = (name: string, date: Date) => {
@@ -177,7 +177,12 @@ function Activity({ onClose }: any) {
     updatedPresenters.splice(index, 1);
     setActivity({ ...activity, presenter: updatedPresenters });
   };
-
+  const handleDeleteExternalPresenter = (index: number) => {
+    const updatedExternalPresenters = [...activity.externalPresenter];
+    updatedExternalPresenters.splice(index, 1);
+    setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
+  };
+  
   //Function to handle the external presenter change
   const handleExternalPresenterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -494,7 +499,7 @@ function Activity({ onClose }: any) {
                             style={{ fontSize: '10px', backgroundColor: '#963939', cursor: 'pointer'}}
                             onClick={() => handleDeletePresenter(index)}
                           >
-                            Delete
+                            Ta bort
                           </StyledButton>
                         </Box>
                       ))}
@@ -524,7 +529,7 @@ function Activity({ onClose }: any) {
 
                     {/* List added presenters */}
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      {activity.presenter.map((presenter, index) => (
+                      {activity.externalPresenter.map((externalPresenter, index) => (
                         <Box
                           key={index}
                           style={{
@@ -544,13 +549,13 @@ function Activity({ onClose }: any) {
                               fontSize: '15px',
                             }}
                           >
-                            {presenter.name}
+                            {externalPresenter.name}
                           </Box>
                           <StyledButton
                             style={{ fontSize: '10px', backgroundColor: '#963939', cursor: 'pointer' }}
-                            onClick={() => handleDeletePresenter(index)}
+                            onClick={() => handleDeleteExternalPresenter(index)}
                           >
-                            Delete
+                            Ta bort
                           </StyledButton>
                         </Box>
                       ))}

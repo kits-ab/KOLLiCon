@@ -1,7 +1,10 @@
 .suggestions-wrapper .suggestions {
 
   }
-  
+
+  .MuiPickersLayout-root {
+    background-color: #b0b3b3;
+  }
   .suggestions-wrapper .suggestions li {
     margin-left: 0px;
     background-color: #4b4b4b;
