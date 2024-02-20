@@ -132,7 +132,10 @@ export const Activities = () => {
                       startTime={activity.start}
                       type={activity.type}
                       showEndTime={true}
-                      location={activity.location}
+                      // only use prop location if location is not null
+                      {...(activity.location.coordinates[0] !== 0
+                        ? { location: activity.location }
+                        : {})}
                     >
                       <p>{activity.details}</p>
                     </Timeslot>
@@ -149,7 +152,9 @@ export const Activities = () => {
                     startTime={activity.start}
                     type={activity.type}
                     showEndTime={true}
-                    location={activity.location}
+                    {...(activity.location.coordinates[0] !== 0
+                      ? { location: activity.location }
+                      : {})}
                   >
                     <p>{activity.details}</p>
                   </Timeslot>
