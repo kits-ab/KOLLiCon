@@ -9,8 +9,8 @@ import {
   StyledInput,
   StyledLine,
   StyledTextArea,
-} from '../styles/StyledActivity';
-import { sxStyles, slotPropsStyles } from '@/styles/StyledDateTimePicker';
+} from './StyledActivity';
+import { sxStyles, slotPropsStyles } from '@/components/Activity/StyledDateTimePicker';
 import Button from '@/components/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,7 +22,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
-import MapBox from './MapBox';
+import MapBox from '../MapBox/MapBox';
 
 type Activity = {
   schedule: number;
@@ -148,8 +148,8 @@ function Activity({ onClose }: any) {
   };
 
   const handleResetLocation = () => {
-    setLocation({...location, coordinates: ''})
-  }
+    setLocation({ ...location, coordinates: '' });
+  };
 
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
@@ -182,7 +182,7 @@ function Activity({ onClose }: any) {
     updatedExternalPresenters.splice(index, 1);
     setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
   };
-  
+
   //Function to handle the external presenter change
   const handleExternalPresenterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -496,7 +496,11 @@ function Activity({ onClose }: any) {
                             {presenter.name}
                           </Box>
                           <StyledButton
-                            style={{ fontSize: '10px', backgroundColor: '#963939', cursor: 'pointer'}}
+                            style={{
+                              fontSize: '10px',
+                              backgroundColor: '#963939',
+                              cursor: 'pointer',
+                            }}
                             onClick={() => handleDeletePresenter(index)}
                           >
                             Ta bort
@@ -520,7 +524,7 @@ function Activity({ onClose }: any) {
                     <StyledInput type='file' id='file' />
 
                     <StyledButton
-                      style={{ marginBottom: '5%', cursor: 'pointer'}}
+                      style={{ marginBottom: '5%', cursor: 'pointer' }}
                       type='button'
                       onClick={addExternalPresenter}
                     >
@@ -552,7 +556,11 @@ function Activity({ onClose }: any) {
                             {externalPresenter.name}
                           </Box>
                           <StyledButton
-                            style={{ fontSize: '10px', backgroundColor: '#963939', cursor: 'pointer' }}
+                            style={{
+                              fontSize: '10px',
+                              backgroundColor: '#963939',
+                              cursor: 'pointer',
+                            }}
                             onClick={() => handleDeleteExternalPresenter(index)}
                           >
                             Ta bort
@@ -567,14 +575,17 @@ function Activity({ onClose }: any) {
                 {showLocation && (
                   <StyledDiv>
                     <StyledInput
-                    style={{marginTop:'1%'}}
+                      style={{ marginTop: '1%' }}
                       type='text'
                       name='title'
                       placeholder='Titel'
                       value={location.title}
                       onChange={handleLocationChange}
                     />
-                    <MapBox onCoordinatesChange={handleCoordinates} resetLocation={handleResetLocation} />
+                    <MapBox
+                      onCoordinatesChange={handleCoordinates}
+                      resetLocation={handleResetLocation}
+                    />
                   </StyledDiv>
                 )}
 
