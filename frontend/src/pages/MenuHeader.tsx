@@ -28,7 +28,7 @@ const StyledBox = styled('div')(() => ({
 }));
 
 const LogoutChildPart = styled('div')(() => ({
-  backgroundColor: '#343434',
+  backgroundColor: '#393939',
   height: '60%',
   display: 'flex',
   alignItems: 'center',
@@ -36,15 +36,21 @@ const LogoutChildPart = styled('div')(() => ({
   color: 'white',
 }));
 
-const BeerWithMe = styled('div')(() => ({
-  backgroundColor: 'rgba(38,38,38,0.97)',
+const MenuDiv = styled('div')(() => ({
   height: '40%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
   flexDirection: 'column',
+  marginTop: '20px',
 }));
+
+const menuItems = [
+  { label: 'Schema', link: '' },
+  { label: 'Min profil', link: '' },
+  { label: 'Tidigare KitsCons', link: '' },
+];
 
 export default function SwipeableEdgeDrawer(props: Props) {
   const navigate = useNavigate();
@@ -69,9 +75,8 @@ export default function SwipeableEdgeDrawer(props: Props) {
         <Global
           styles={{
             '.MuiDrawer-root > .MuiPaper-root': {
-              height: `calc(30% - ${drawerBleeding}px)`,
               overflow: 'visible',
-              backgroundColor: 'black',
+              backgroundColor: '#262626',
               borderRadius: '20px 20px 0px 0px',
             },
           }}
@@ -91,40 +96,33 @@ export default function SwipeableEdgeDrawer(props: Props) {
           disableSwipeToOpen={false}
           ModalProps={{
             keepMounted: true,
+            slotProps: {
+              backdrop: { sx: { backgroundColor: 'transparent' } },
+            },
           }}
         >
           <StyledBox />
 
-          <BeerWithMe>
+          <MenuDiv>
             <Text>
-              <p style={{ textAlign: 'center', marginBottom: '15px', fontSize: '20px' }}>Schema</p>
-              <p
-                style={{
-                  textAlign: 'center',
-                  marginBottom: '15px',
-                  marginTop: '20px',
-                  fontSize: '20px',
-                }}
-              >
-                Min profil
-              </p>
-              <p
-                style={{
-                  textAlign: 'center',
-                  marginBottom: '15px',
-                  marginTop: '20px',
-                  fontSize: '20px',
-                }}
-              >
-                Tidigare KitsCons
-              </p>
+              {menuItems.map((menuItem, index) => (
+                <Link
+                  key={index}
+                  to={menuItem.link}
+                  style={{ textDecoration: 'none', color: 'white' }}
+                >
+                  <p style={{ textAlign: 'center', fontSize: '1.1rem', margin: '13px 0 13px 0' }}>
+                    {menuItem.label}
+                  </p>
+                </Link>
+              ))}
               <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
-                <p
+                <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '70%',
+                    marginBottom: '10px',
                   }}
                 >
                   <img
@@ -136,15 +134,14 @@ export default function SwipeableEdgeDrawer(props: Props) {
                       marginRight: '10px',
                       cursor: 'pointer',
                       alignItems: 'top',
-
                       marginTop: '10px',
                     }}
                   />
-                  <p style={{ fontSize: '20px' }}>BeerWithMe</p>
-                </p>
+                  <p style={{ fontSize: '1.1rem' }}>BeerWithMe</p>
+                </div>
               </Link>
             </Text>
-          </BeerWithMe>
+          </MenuDiv>
 
           <LogoutChildPart>
             <ExitToAppIcon
