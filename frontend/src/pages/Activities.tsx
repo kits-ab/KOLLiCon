@@ -114,11 +114,7 @@ export const Activities = () => {
   };
 
   const expandInfo = () => {
-    if (expandInfoOpen) {
-      setExpandInfoOpen(false);
-    } else {
-      setExpandInfoOpen(true);
-    }
+    setExpandInfoOpen(!expandInfoOpen);
   };
 
   return (
@@ -155,12 +151,10 @@ export const Activities = () => {
                       </Timeslot>
                       {selectedActivityId === activity.id && (
                         <ExpandInfo
-                          activityId={activity.id}
+                          activityProp={activity}
                           open={expandInfoOpen}
                           setOpen={setExpandInfoOpen}
-                        >
-                          {/* <button onClick={expandInfo}>Close Drawer</button> */}
-                        </ExpandInfo>
+                        ></ExpandInfo>
                       )}
                     </a>
                   </React.Fragment>
@@ -171,7 +165,7 @@ export const Activities = () => {
                     <a
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
-                        setSelectedActivityId(activity.id);
+                        setSelectedActivityId(activity.id); // TODO: This is not working
                         expandInfo();
                       }}
                     >
@@ -183,13 +177,13 @@ export const Activities = () => {
                         heading={activity.title}
                         startTime={activity.start}
                         type={activity.type}
-                        // location={activity.location}
+                        // location={activity.location.coordinates}
                       >
                         <p>{activity.details}</p>
                       </Timeslot>
                       {selectedActivityId === activity.id && (
                         <ExpandInfo
-                          activityId={activity.id}
+                          activityProp={activity}
                           open={expandInfoOpen}
                           setOpen={setExpandInfoOpen}
                         >

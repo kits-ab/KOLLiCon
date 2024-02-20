@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
@@ -9,10 +8,10 @@ import { useStyledDrawer } from './StyledExpandInfo';
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activityId: number;
+  activityProp: ActivityType;
 }
 
-const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) => {
+const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) => {
   const [activity, setActivity] = useState({
     data: {} as ActivityType,
     location: [] as number[],
@@ -23,27 +22,22 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
   const StyledDrawer = useStyledDrawer();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/activity/${activityId}`);
-        const coordinates = response.data.location.coordinates.split(',');
-        setActivity({
-          data: response.data,
-          location: coordinates,
-          start: new Date(response.data.start),
-          end: new Date(response.data.end),
-        });
-      } catch (error) {
-        console.error('Error fetching activity:', error);
-      }
-    };
-    fetchData();
-  }, [activityId]);
+    const coordinates = Array.isArray(activityProp.location.coordinates)
+      ? activityProp.location.coordinates
+      : [];
+
+    setActivity({
+      data: activityProp,
+      location: coordinates,
+      start: new Date(activityProp.start),
+      end: new Date(activityProp.end),
+    });
+  }, [activityProp]);
 
   return (
     <div>
       <StyledDrawer
-        SlideProps={{ timeout: 500 }}
+        SlideProps={{ timeout: 5000 }}
         variant='temporary'
         anchor='right'
         open={open}
