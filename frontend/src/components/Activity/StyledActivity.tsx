@@ -51,10 +51,11 @@ export const StyledInput = styled.input`
   margin: 2% 7%;
   border: 1px solid gray;
   color: #cccccc;
+  min-height: 45px;
   ::placeholder {
     color: #cccccc;
     position: absolute;
-    padding: 7px 10px;
+    padding: 13px 0px 0 10px;
     left: 0px;
     top: 0px;
     right: 10px;

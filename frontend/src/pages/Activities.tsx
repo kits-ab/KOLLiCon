@@ -14,7 +14,7 @@ import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import Activity from './Activity';
+import Activity from '../components/Activity/Activity';
 import { set } from 'react-hook-form';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 

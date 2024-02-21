@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +31,12 @@ public class ScheduleModel {
     private String title;
     @Column(name = "tag_line")
     private String tagLine;
+
+    @Column(name = "image_url")
+    private String imageURL;
+
+    @Column(name= "description", length= 3000)
+    private String description;
     @Column(name = "location")
     private String location;
     @Column(name = "start_time")
@@ -42,6 +49,22 @@ public class ScheduleModel {
     private boolean active;
 
     public ScheduleModel() {
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public long getId() {

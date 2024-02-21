@@ -37,7 +37,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
   return (
     <div>
       <StyledDrawer
-        SlideProps={{ timeout: 5000 }}
+        SlideProps={{ timeout: 500 }}
         variant='temporary'
         anchor='right'
         open={open}
