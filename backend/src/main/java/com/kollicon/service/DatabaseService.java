@@ -33,7 +33,7 @@ public class DatabaseService {
 
     public void generateMdFile(@PathVariable Long id) {
 
-        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/playing.md";
+        String outputPath = "D:\\KITS\\KolliC\\backend\\src\\main\\MdFiles\\KitsCon.md";
         Map<String, Object> ScheduleData = new LinkedHashMap ();
 
         // Get schedule
@@ -72,14 +72,14 @@ public class DatabaseService {
             activityMap.put("title", model.getTitle());
             activityMap.put("type", model.getType());
 
-            List<Float> storeCoordinatesInThisList = new ArrayList<>();
+            List<Double> storeCoordinatesInThisList = new ArrayList<>();
             Map<String, Object> addCoordinatesToThisMapFromList = new HashMap<>();
 
             if (model.getLocation() != null) {
 
-                String[] coordinates = model.getLocation().getCoordinates().split("\\.");
-                float latitude = Float.parseFloat(coordinates[0]);
-                float longitude = Float.parseFloat(coordinates[1]);
+                String[] coordinates = model.getLocation().getCoordinates().split(",");
+                double latitude = Double.parseDouble(coordinates[0]);
+                double longitude = Double.parseDouble(coordinates[1]);
 
                 storeCoordinatesInThisList.add(latitude);
                 storeCoordinatesInThisList.add(longitude);
