@@ -64,6 +64,7 @@ export const Activities = () => {
       // console.log('Activity: ', activity);
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
+      const today = new Date();
 
       if (activity.presenter === null) {
         activity.presenter = [];
@@ -75,7 +76,9 @@ export const Activities = () => {
         separatedActivities[date] = [];
       }
 
-      separatedActivities[date].push(activity);
+      if (today <= activity.end) {
+        separatedActivities[date].push(activity);
+      }
     });
 
     Object.keys(separatedActivities).map((date) => {
