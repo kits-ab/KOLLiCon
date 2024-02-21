@@ -168,13 +168,14 @@ export default function SwipeableEdgeDrawer(props: Props) {
               }}
             />
             <Typography
+            component="div" style={{padding: '20px 0 20px 0'}}
               cursor='pointer'
               onClick={() => {
                 signOut();
                 logoutPage();
               }}
             >
-              <p>Logout</p>
+              Logout
             </Typography>
           </LogoutChildPart>
         </SwipeableDrawer>
