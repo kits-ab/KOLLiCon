@@ -1,7 +1,6 @@
-import { Timeslot, GlobalStyles } from '@kokitotsos/react-components';
-import React, { useState } from 'react';
+import { GlobalStyles } from '@kokitotsos/react-components';
+import { useState } from 'react';
 import 'normalize.css';
-import DateText from '@/styles/DateText';
 import ActivitiesWrapper from '@/styles/ActivitiesWrapper';
 import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
@@ -12,11 +11,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import Activity from '../components/Activity/Activity';
-import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 import FloatingButton from '../components/Common/FloatingAddButton';
-import Box from '@mui/material/Box';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 
 export const Activities = () => {
@@ -32,15 +28,15 @@ export const Activities = () => {
       activity.location.coordinates = convertToNumberArrayLocation;
       return activity as ActivityType;
     });
+    setScheduleTime(response.data.end);
     setActivitiesData(response.data.activityId);
     return response.data as Schedule;
   };
-
+  const [scheduleTime, setScheduleTime] = useState<Date | null>(null);
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
-  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -80,6 +76,7 @@ export const Activities = () => {
           activitiesData={activitiesData}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
+          scheduleTime={scheduleTime}
         />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>

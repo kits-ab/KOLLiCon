@@ -9,10 +9,11 @@ interface ActivitiesProps {
   activitiesData: [] | any;
   selectedActivityId: number | null;
   setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
+  scheduleTime: Date;
 }
 
 export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, setSelectedActivityId, selectedActivityId } = props;
+  const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
 
   const expandInfo = () => {
@@ -30,6 +31,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
     activitiesData?.map((activity: ActivityType) => {
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
+      const today = new Date();
 
       if (activity.presenter === null) {
         activity.presenter = [];
@@ -41,7 +43,14 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
         separatedActivities[date] = [];
       }
 
-      separatedActivities[date].push(activity);
+      const scheduleEndTime = new Date(scheduleTime);
+      if (today > scheduleEndTime) {
+        separatedActivities[date].push(activity);
+      } else {
+        if (today <= activity.end) {
+          separatedActivities[date].push(activity);
+        }
+      }
     });
 
     Object.keys(separatedActivities).map((date) => {

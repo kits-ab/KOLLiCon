@@ -4,18 +4,20 @@ import com.kollicon.model.ActivityModel;
 import com.kollicon.model.LocationModel;
 import com.kollicon.model.PresenterModel;
 import com.kollicon.model.ScheduleModel;
-import com.kollicon.repository.*;
-import org.springframework.stereotype.Service;
-
-import java.time.format.DateTimeFormatter;
+import com.kollicon.repository.ActivityRepository;
+import com.kollicon.repository.LocationRepository;
+import com.kollicon.repository.PresenterRepository;
+import com.kollicon.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class DatabaseService {
@@ -23,148 +25,95 @@ public class DatabaseService {
     @Autowired
     private ScheduleRepository scheduleRepository;
     @Autowired
-    private ActivityRepository activityRepository;
+    ActivityRepository activityRepository;
     @Autowired
-    private LocationRepository locationRepository;
-
-    @Autowired PresenterRepository presenterRepository;
+    LocationRepository locationRepository;
+    @Autowired
+    PresenterRepository presenterRepository;
 
     public void generateMdFile(@PathVariable Long id) {
 
-        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/attempt.md";
+        String outputPath = "C:/Users/magnu/OneDrive/Skrivbord/playing.md";
+        Map<String, Object> ScheduleData = new LinkedHashMap ();
 
-        // Select schedule from database.
-        ScheduleModel scheduleModels = scheduleRepository.findById(1);
+        // Get schedule
+        Optional<ScheduleModel> scheduleModelOptional = scheduleRepository.findById(id);
+        ScheduleModel scheduleModel =
+                scheduleModelOptional.orElseThrow(() -> new NoSuchElementException("Schedule not found!"));
 
-        List<Map<String, Object>> activityData = new ArrayList<>(); // Activity attributes
-        Map<String, List<Map<String, Object>>> scheduleData = new HashMap<>(); // List of activities
-        Map<String, Object> conferenceData = new HashMap<>(); // Conference data at top of markdown file
-        ArrayList<Object> allData = new ArrayList<>(); // All of the above.
+        DateTimeFormatter conferenceTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // Declare conference data and add to allData.
-        DateTimeFormatter conferenceTimeFormat = DateTimeFormatter.ISO_LOCAL_DATE;
-        conferenceData.put("type", scheduleModels.getType());
-        conferenceData.put("id", scheduleModels.getId());
-        conferenceData.put("title", scheduleModels.getTitle());
-        conferenceData.put("tagLine", scheduleModels.getTagLine());
-        conferenceData.put("location", scheduleModels.getLocation());
-        conferenceData.put("start", scheduleModels.getStart().format(conferenceTimeFormat));
-        conferenceData.put("end", scheduleModels.getEnd().format(conferenceTimeFormat));
-        conferenceData.put("image", "img/picture");
-        conferenceData.put("active", scheduleModels.isActive());
-        allData.add(conferenceData);
+        ScheduleData.put("type", scheduleModel.getType());
+        ScheduleData.put("id", scheduleModel.getId());
+        ScheduleData.put("title", scheduleModel.getTitle());
+        ScheduleData.put("tagLine", scheduleModel.getTagLine());
+        ScheduleData.put("location", scheduleModel.getLocation());
+        ScheduleData.put("start", scheduleModel.getStart().format(conferenceTimeFormat));
+        ScheduleData.put("end", scheduleModel.getEnd().format(conferenceTimeFormat));
+        ScheduleData.put("image", "img/picture");
+        ScheduleData.put("active", scheduleModel.isActive());
 
-        // Select activities inside chosen schedule.
-        List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModels.getId());
 
-        // Iterate through all activities.
+        // Iterate through activities
+        List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModel.getId());
+
+        List<Map<String, Object>> activities = new ArrayList<>();
+
         for (ActivityModel model : activityModel) {
-            LocationModel locationModel = locationRepository.findById(model.getId()).orElse(null);
-            {
 
-                // Initiate all activities attributes if location exists.
-                if (locationModel != null) {
 
-                    // Add values to attributes belonging to activity.
-                    String[] coordinates = locationModel.getCoordinates().split("\\.");
-                    Float latitude = Float.parseFloat(coordinates[0]);
-                    Float longitude = Float.parseFloat(coordinates[1]);
+            Map<String, Object> activityMap = new HashMap<>();
+            DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-                    LocalDateTime end_time = model.getEnd();
-                    LocalDateTime start_time = model.getStart();
+            activityMap.put("winner", model.getWinner());
+            activityMap.put("start", model.getStart().format(activityFormat));
+            activityMap.put("end", model.getEnd().format(activityFormat));
+            activityMap.put("details", model.getDetails());
+            activityMap.put("title", model.getTitle());
+            activityMap.put("type", model.getType());
 
-                    DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            List<Float> storeCoordinatesInThisList = new ArrayList<>();
+            Map<String, Object> addCoordinatesToThisMapFromList = new HashMap<>();
 
-                    end_time.format(activityFormat);
-                    start_time.format(activityFormat);
+            if (model.getLocation() != null) {
 
-                    // Store all activity attributes in this list.
-                    Map<String, Object> activityInformation = new HashMap<>();
+                String[] coordinates = model.getLocation().getCoordinates().split("\\.");
+                float latitude = Float.parseFloat(coordinates[0]);
+                float longitude = Float.parseFloat(coordinates[1]);
 
-                    activityInformation.put("winner", model.getWinner());
-                    activityInformation.put("end", end_time.format(activityFormat));
-                    activityInformation.put("start", start_time.format(activityFormat));
-                    activityInformation.put("type", model.getType());
-                    activityInformation.put("title", model.getTitle());
+                storeCoordinatesInThisList.add(latitude);
+                storeCoordinatesInThisList.add(longitude);
+                addCoordinatesToThisMapFromList.put("coordinates", storeCoordinatesInThisList);
+                addCoordinatesToThisMapFromList.put("title", model.getLocation().getTitle());
 
-                    // Details is optional attribute for activity.
-                    if(!model.getDetails().isEmpty()) {
-                        activityInformation.put("details", model.getDetails());
-                    }
+                activityMap.put("location", addCoordinatesToThisMapFromList);
+            }
 
-                    // List of location and coordinates attributes within activity.
-                    Map<String, Object> locationInfo = new HashMap<>();
-                    ArrayList<Float> coordinatesMap = new ArrayList<>();
+            // Kolla nu om presenters finns i aktiviteten
+            List<PresenterModel> allPresenters = presenterRepository.findAll();
+            List<Object> selectedPresenter = new ArrayList<>();
 
-                    coordinatesMap.add(longitude);
-                    coordinatesMap.add(latitude);
-
-                    locationInfo.put("coordinates", coordinatesMap);
-                    locationInfo.put("title", locationModel.getTitle());
-
-                    activityInformation.put("location", locationInfo);
-
-                    // Iterate through all presenters and add to activity
-                    List<PresenterModel> presenterModels = presenterRepository.findAll();
-                    List<Object> presenters = new ArrayList<>();
-                    for (PresenterModel value : presenterModels) {
-                        if (value.getActivity().getId() == model.getId()) {
-                            presenters.add(value.getName().toLowerCase().replaceAll(" ", ""));
-                        }
-                    }
-
-                    // Add all activity attributes to the activity list.
-                    activityInformation.put("presenters", presenters);
-                    activityData.add(activityInformation);
-
-                // Initiate all activities attributes if location does NOT exist.
-                } else {
-
-                    LocalDateTime end_time = model.getEnd();
-                    LocalDateTime start_time = model.getStart();
-
-                    DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-                    end_time.format(activityFormat);
-                    start_time.format(activityFormat);
-
-                    // Store all activity attributes in this list.
-                    Map<String, Object> activityInformation = new HashMap<>();
-
-                    activityInformation.put("winner", model.getWinner());
-                    activityInformation.put("end", end_time.format(activityFormat));
-                    activityInformation.put("start", start_time.format(activityFormat));
-                    activityInformation.put("type", model.getType());
-                    activityInformation.put("title", model.getTitle());
-
-                    // Details is optional attribute for activity.
-                    if(!model.getDetails().isEmpty()) {
-                        activityInformation.put("details", model.getDetails());
-                    }
-
-                    // Iterate through all presenters and add to activity
-                    List<PresenterModel> presenterModels = presenterRepository.findAll();
-                    List<Object> presenters = new ArrayList<>();
-                    for (PresenterModel value : presenterModels) {
-                        if (value.getActivity().getId() == model.getId()) {
-                            presenters.add(value.getName().toLowerCase().replaceAll(" ", ""));
-                        }
-                    }
-
-                    // Add all activity attributes to the activity list.
-                    activityInformation.put("presenters", presenters);
-                    activityData.add(activityInformation);
+            for (PresenterModel allPresenter : allPresenters) {
+                if (model.getId() == allPresenter.getActivity().getId()) {
+                    selectedPresenter.add(allPresenter.getName().toLowerCase().replaceAll(" ", ""));
+                    activityMap.put("presenters", selectedPresenter);
                 }
             }
+            activities.add(activityMap);
         }
-        // Add all activities to the schedule.
-        scheduleData.put("Schedule", activityData);
-        // Add schedule to conference.
-        allData.add(scheduleData);
 
-        // Add conference to markdown file.
-        Yaml yaml = new Yaml();
-        String yamlDataFormat = yaml.dump(allData);
+        ScheduleData.put("scheme", activities);
+
+        String scheduleDescription = scheduleModel.getDescription();
+
+        // YAML DOCUMENTATION
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        Yaml yaml = new Yaml(options);
+        String yamlDataFormat = yaml.dump(ScheduleData);
+
+        yamlDataFormat = "---\n" + yamlDataFormat + "---\n\n" + scheduleDescription;
         try(FileWriter fileWriter = new FileWriter(outputPath)) {
             fileWriter.write(yamlDataFormat);
         }catch(IOException e) {
