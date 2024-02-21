@@ -56,9 +56,6 @@ public class DatabaseService {
 
         // Iterate through activities
         List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModel.getId());
-        for(int i = 0; i<activityModel.size(); i++) {
-            System.out.println(activityModel.get(i).getId());
-        }
 
         List<Map<String, Object>> activities = new ArrayList<>();
 
@@ -98,9 +95,6 @@ public class DatabaseService {
 
             for (PresenterModel allPresenter : allPresenters) {
                 if (model.getId() == allPresenter.getActivity().getId()) {
-
-                    System.out.println("presenter: " + allPresenter.getName() + allPresenter.getActivity().getId());
-                    System.out.println("activity: " + model.getDetails() + model.getId());
                     selectedPresenter.add(allPresenter.getName().toLowerCase().replaceAll(" ", ""));
                     activityMap.put("presenters", selectedPresenter);
                 }
@@ -110,12 +104,7 @@ public class DatabaseService {
 
         ScheduleData.put("scheme", activities);
 
-        // allPresenter.getActivity().getId() == model.getId()
-
         String scheduleDescription = scheduleModel.getDescription();
-
-
-
 
         // YAML DOCUMENTATION
         DumperOptions options = new DumperOptions();
