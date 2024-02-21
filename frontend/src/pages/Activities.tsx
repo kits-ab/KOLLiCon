@@ -30,6 +30,7 @@ export const Activities = () => {
       activity.start = start;
       activity.end = end;
       activity.location.coordinates = convertToNumberArrayLocation;
+      setScheduleTime(response.data.end);
       return activity as ActivityType;
     });
     setActivitiesData(response.data.activityId);
@@ -42,6 +43,7 @@ export const Activities = () => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const [scheduleTime, setScheduleTime] = useState<Date | null>(null);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -76,8 +78,13 @@ export const Activities = () => {
         separatedActivities[date] = [];
       }
 
-      if (today <= activity.end) {
+      const scheduleEndTime = new Date(scheduleTime);
+      if (today > scheduleEndTime) {
         separatedActivities[date].push(activity);
+      } else {
+        if (today <= activity.end) {
+          separatedActivities[date].push(activity);
+        }
       }
     });
 
