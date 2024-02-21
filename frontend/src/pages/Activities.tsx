@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import Activity from '../components/Activity/Activity';
 import { set } from 'react-hook-form';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
+import  FloatingButton  from '../components/Common/FloatingAddButton';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -63,6 +64,7 @@ export const Activities = () => {
       // console.log('Activity: ', activity);
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
+      const today = new Date();
 
       if (activity.presenter === null) {
         activity.presenter = [];
@@ -74,7 +76,9 @@ export const Activities = () => {
         separatedActivities[date] = [];
       }
 
-      separatedActivities[date].push(activity);
+      if (today <= activity.end) {
+        separatedActivities[date].push(activity);
+      }
     });
 
     Object.keys(separatedActivities).map((date) => {
@@ -196,8 +200,11 @@ export const Activities = () => {
               }
             });
           })}
+
+          <FloatingButton activateDrawer={activateDrawer}/>
+
         <AddAcitivityStyling>
-          <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
+          <AddIcon style={{ fontSize: '60px', cursor:'pointer' }} onClick={activateDrawer} />
         </AddAcitivityStyling>
 
         <SwipeableDrawer

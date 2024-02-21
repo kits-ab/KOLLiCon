@@ -3,7 +3,8 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
-import { useStyledDrawer } from './StyledExpandInfo';
+import Drawer from '@mui/material/Drawer';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -19,8 +20,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
     end: new Date(),
   });
 
-  const StyledDrawer = useStyledDrawer();
-
   useEffect(() => {
     const coordinates = Array.isArray(activityProp.location.coordinates)
       ? activityProp.location.coordinates
@@ -34,11 +33,18 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
     });
   }, [activityProp]);
 
+  const matches = useMediaQuery('(min-width:600px)');
+
   return (
     <div>
-      <StyledDrawer
-        SlideProps={{ timeout: 500 }}
-        variant='temporary'
+      <Drawer
+        PaperProps={{
+          sx: {
+            width: matches ? '50%' : '100%',
+            padding: '20px',
+          },
+        }}
+        variant='persistent'
         anchor='right'
         open={open}
         onClick={(event) => event.stopPropagation()}
@@ -69,11 +75,11 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
           activity.location[0] !== undefined &&
           activity.location[1] !== undefined && (
             <Location
-              coordinates={[activity.location[0], activity.location[1]]}
+              coordinates={[activity.location[1], activity.location[0]]}
               title={activity.data.location.title}
             />
           )}
-      </StyledDrawer>
+      </Drawer>
     </div>
   );
 };
