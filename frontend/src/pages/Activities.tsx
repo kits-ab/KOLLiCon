@@ -10,12 +10,11 @@ import axios from 'axios';
 import MenuHeader from './MenuHeader';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import InputTest from './InputTest';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Activity from './Activity';
-import { set } from 'react-hook-form';
+import Box from '@mui/material/Box';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -103,12 +102,13 @@ export const Activities = () => {
 
   const activateDrawer = () => {
     setOpen(true);
-    // navigate('/activity');
   };
 
   const deactivateDrawer = () => {
     setOpen(false);
   };
+
+  const skipIndices = new Set<number>();
 
   return (
     <>
@@ -119,7 +119,11 @@ export const Activities = () => {
         {separatedActivities &&
           Object.keys(separatedActivities).map((date) => {
             return separatedActivities[date].map((activity: ActivityType, index: number) => {
-              const key = `${date}-${index}`; // Unique key
+              const nextActivity = separatedActivities[date][index + 1];
+              const key = `${date}-${index}`;
+              if (skipIndices.has(index)) {
+                return null;
+              }
               if (index === 0) {
                 return (
                   <React.Fragment key={key}>
@@ -132,7 +136,6 @@ export const Activities = () => {
                       startTime={activity.start}
                       type={activity.type}
                       showEndTime={true}
-                      // only use prop location if location is not null
                       {...(activity.location.coordinates[0] !== 0
                         ? { location: activity.location }
                         : {})}
@@ -141,23 +144,66 @@ export const Activities = () => {
                     </Timeslot>
                   </React.Fragment>
                 );
+              } else if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
+                skipIndices.add(index + 1);
+                return (
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Timeslot
+                      style={{ marginRight: '20px' }}
+                      key={key}
+                      presenters={activity.presenter}
+                      endTime={activity.end}
+                      heading={activity.title}
+                      startTime={activity.start}
+                      type={activity.type}
+                      showEndTime={true}
+                      {...(activity.location.coordinates[0] !== 0
+                        ? { location: activity.location }
+                        : {})}
+                    >
+                      <p>{activity.details}</p>
+                    </Timeslot>
+                    <Timeslot
+                      key={`${date}-${index + 1}`}
+                      presenters={nextActivity.presenter}
+                      endTime={nextActivity.end}
+                      heading={nextActivity.title}
+                      startTime={nextActivity.start}
+                      type={nextActivity.type}
+                      showEndTime={true}
+                      {...(nextActivity.location.coordinates[0] !== 0
+                        ? { location: nextActivity.location }
+                        : {})}
+                    >
+                      <p>{nextActivity.details}</p>
+                    </Timeslot>
+                  </Box>
+                );
               } else {
                 return (
-                  <Timeslot
-                    key={key}
-                    connectToPrevious={index !== 0}
-                    presenters={activity.presenter}
-                    endTime={activity.end}
-                    heading={activity.title}
-                    startTime={activity.start}
-                    type={activity.type}
-                    showEndTime={true}
-                    {...(activity.location.coordinates[0] !== 0
-                      ? { location: activity.location }
-                      : {})}
-                  >
-                    <p>{activity.details}</p>
-                  </Timeslot>
+                  <React.Fragment key={key}>
+                    <Timeslot
+                      key={key}
+                      presenters={activity.presenter}
+                      endTime={activity.end}
+                      heading={activity.title}
+                      startTime={activity.start}
+                      type={activity.type}
+                      showEndTime={true}
+                      {...(activity.location.coordinates[0] !== 0
+                        ? { location: activity.location }
+                        : {})}
+                    >
+                      <p>{activity.details}</p>
+                    </Timeslot>
+                  </React.Fragment>
                 );
               }
             });
