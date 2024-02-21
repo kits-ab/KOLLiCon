@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
 import {
@@ -10,8 +9,8 @@ import {
   StyledInput,
   StyledLine,
   StyledTextArea,
-} from '../styles/StyledActivity';
-import { sxStyles, slotPropsStyles } from '@/styles/StyledDateTimePicker';
+} from './StyledActivity';
+import { sxStyles, slotPropsStyles } from '@/components/Activity/StyledDateTimePicker';
 import Button from '@/components/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,8 +22,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
-import MapBox from './MapBox';
-import StyledVideoContainer from '@/styles/StyledVideoContainer';
+import MapBox from '../MapBox/MapBox';
 
 type Activity = {
   schedule: number;
@@ -41,7 +39,6 @@ type Activity = {
 };
 
 function Activity({ onClose }: any) {
-  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [showPresenter, setShowPresenter] = useState<boolean>(false);
@@ -83,7 +80,7 @@ function Activity({ onClose }: any) {
     try {
       const activityData = { ...activity, location: location };
 
-      const response = await axios.post('http://localhost:8080/api/activity', activityData);
+      await axios.post('http://localhost:8080/api/activity', activityData);
       window.location.reload();
     } catch (error) {
       console.error('Error submitting activity:', error);
@@ -144,10 +141,14 @@ function Activity({ onClose }: any) {
 
   //Function to convert the array to string and add coordinates to the location
   const handleCoordinates = (coords: number[]) => {
-    setLocation(prevLocation => ({
+    setLocation((prevLocation) => ({
       ...prevLocation,
       coordinates: coords.join(','),
     }));
+  };
+
+  const handleResetLocation = () => {
+    setLocation({ ...location, coordinates: '' });
   };
 
   const handleDateChange = (name: string, date: Date) => {
@@ -170,6 +171,18 @@ function Activity({ onClose }: any) {
       setSuggestions([]);
     }
   };
+
+  const handleDeletePresenter = (index: number) => {
+    const updatedPresenters = [...activity.presenter];
+    updatedPresenters.splice(index, 1);
+    setActivity({ ...activity, presenter: updatedPresenters });
+  };
+  const handleDeleteExternalPresenter = (index: number) => {
+    const updatedExternalPresenters = [...activity.externalPresenter];
+    updatedExternalPresenters.splice(index, 1);
+    setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
+  };
+
   //Function to handle the external presenter change
   const handleExternalPresenterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -387,7 +400,7 @@ function Activity({ onClose }: any) {
                   onChange={handleOnInputChange}
                 />
                 <StyledTextArea
-                  style={{ height: '140px' }}
+                  style={{ height: '100px' }}
                   type='text'
                   name='details'
                   placeholder='Beskrivning'
@@ -451,7 +464,7 @@ function Activity({ onClose }: any) {
                     )}
 
                     <StyledButton
-                      style={{ marginBottom: '5%' }}
+                      style={{ marginBottom: '5%', cursor: 'pointer' }}
                       type='button'
                       onClick={addPresenter}
                     >
@@ -483,10 +496,14 @@ function Activity({ onClose }: any) {
                             {presenter.name}
                           </Box>
                           <StyledButton
-                            style={{ fontSize: '10px', backgroundColor: '#B42F2F' }}
+                            style={{
+                              fontSize: '10px',
+                              backgroundColor: '#963939',
+                              cursor: 'pointer',
+                            }}
                             onClick={() => handleDeletePresenter(index)}
                           >
-                            Delete
+                            Ta bort
                           </StyledButton>
                         </Box>
                       ))}
@@ -507,7 +524,7 @@ function Activity({ onClose }: any) {
                     <StyledInput type='file' id='file' />
 
                     <StyledButton
-                      style={{ marginBottom: '5%' }}
+                      style={{ marginBottom: '5%', cursor: 'pointer' }}
                       type='button'
                       onClick={addExternalPresenter}
                     >
@@ -516,7 +533,7 @@ function Activity({ onClose }: any) {
 
                     {/* List added presenters */}
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      {activity.presenter.map((presenter, index) => (
+                      {activity.externalPresenter.map((externalPresenter, index) => (
                         <Box
                           key={index}
                           style={{
@@ -536,13 +553,17 @@ function Activity({ onClose }: any) {
                               fontSize: '15px',
                             }}
                           >
-                            {presenter.name}
+                            {externalPresenter.name}
                           </Box>
                           <StyledButton
-                            style={{ fontSize: '10px', backgroundColor: '#B42F2F' }}
-                            onClick={() => handleDeletePresenter(index)}
+                            style={{
+                              fontSize: '10px',
+                              backgroundColor: '#963939',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => handleDeleteExternalPresenter(index)}
                           >
-                            Delete
+                            Ta bort
                           </StyledButton>
                         </Box>
                       ))}
@@ -554,13 +575,17 @@ function Activity({ onClose }: any) {
                 {showLocation && (
                   <StyledDiv>
                     <StyledInput
+                      style={{ marginTop: '1%' }}
                       type='text'
                       name='title'
                       placeholder='Titel'
                       value={location.title}
                       onChange={handleLocationChange}
                     />
-                     <MapBox onCoordinatesChange={handleCoordinates} />
+                    <MapBox
+                      onCoordinatesChange={handleCoordinates}
+                      resetLocation={handleResetLocation}
+                    />
                   </StyledDiv>
                 )}
 
