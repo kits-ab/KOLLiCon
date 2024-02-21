@@ -19,13 +19,12 @@ export const Activities = () => {
   const fetchData = async () => {
     const response = await axios.get('http://localhost:8080/api/schedule/get/1');
     response.data.activityId.map((activity: any) => {
-      const coor: string = activity.location.coordinates as string;
-      const convertToNumberArrayLocation: number[] = coor.split(',').map(Number);
+      const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
       const start = new Date(activity.start);
       const end = new Date(activity.end);
       activity.start = start;
       activity.end = end;
-      activity.location.coordinates = convertToNumberArrayLocation;
+      activity.location.coordinates = coorNumberArray;
       return activity as ActivityType;
     });
     setScheduleTime(response.data.end);
