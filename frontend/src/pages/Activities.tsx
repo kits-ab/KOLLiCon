@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import Activity from '../components/Activity/Activity';
 import { set } from 'react-hook-form';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
+import  FloatingButton  from '../components/Common/FloatingAddButton';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -202,8 +203,11 @@ export const Activities = () => {
               }
             });
           })}
+
+          <FloatingButton activateDrawer={activateDrawer}/>
+
         <AddAcitivityStyling>
-          <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
+          <AddIcon style={{ fontSize: '60px', cursor:'pointer' }} onClick={activateDrawer} />
         </AddAcitivityStyling>
 
         <SwipeableDrawer
