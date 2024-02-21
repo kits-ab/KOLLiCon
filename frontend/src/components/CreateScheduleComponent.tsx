@@ -7,13 +7,16 @@ import {
   StyledInput,
   PStyled,
   StyledDiv,
-} from '@/styles/StyledActivity';
+  StyledTextArea,
+} from '@/components/Activity/StyledActivity';
 
 interface Props {
   userId: string;
   title: string;
   type: string;
   tagLine: string;
+  description: string;
+  imageURL: string;
   location: string;
   active: boolean;
   start: string;
@@ -41,6 +44,8 @@ const ScheduleForm = () => {
       title: '',
       type: '',
       tagLine: '',
+      description: '',
+      imageURL: '',
       location: '',
       active: true,
       start: '',
@@ -79,6 +84,12 @@ const ScheduleForm = () => {
             {errors.end && <p>{errors.end.message}</p>}
             <StyledInput placeholder='Type' {...register('type')} />
             <StyledInput placeholder='Tag Line' {...register('tagLine')} />
+            <StyledTextArea
+              style={{ height: '100px' }}
+              placeholder='Description'
+              {...register('description')}
+            />
+            <StyledInput placeholder='Image' {...register('imageURL')} />
             <StyledInput placeholder='Location' {...register('location')} />
             <StyledButton onClick={handleSubmit(onSubmit)}>Submit</StyledButton>
           </StyledDiv>

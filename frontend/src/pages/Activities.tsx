@@ -13,8 +13,11 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import Activity from './Activity';
+import Activity from '../components/Activity/Activity';
+import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
+import FloatingButton from '../components/Common/FloatingAddButton';
 import Box from '@mui/material/Box';
+import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 
 export const Activities = () => {
   const fetchData = async () => {
@@ -36,6 +39,7 @@ export const Activities = () => {
   const { data, isLoading, error } = useQuery<Schedule>('scheduleData', fetchData);
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -46,47 +50,6 @@ export const Activities = () => {
     const err = error as Error;
     return <div>Error: {err.message}</div>;
   }
-
-  const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
-    const separatedActivities: { [key: string]: ActivityType[] } = {};
-
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    {
-      console.log('activitiesData: ', activitiesData);
-    }
-
-    activitiesData?.map((activity: ActivityType) => {
-      console.log('Activity: ', activity);
-      let date = activity.start.toLocaleDateString('sv-SE', options);
-      date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
-
-      if (activity.presenter === null) {
-        activity.presenter = [];
-      }
-      if (activity.review_id === null) {
-        activity.review_id = [];
-      }
-      if (!separatedActivities[date]) {
-        separatedActivities[date] = [];
-      }
-
-      separatedActivities[date].push(activity);
-    });
-
-    Object.keys(separatedActivities).map((date) => {
-      separatedActivities[date].sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
-      );
-    });
-    {
-      console.log('separatedActivities: ', separatedActivities);
-    }
-
-    return separatedActivities;
-  };
-
-  if (!activitiesData) return null;
-  const separatedActivities = separateActivitiesByDate(activitiesData);
 
   const AddAcitivityStyling = styled('div')(() => ({
     color: 'white',
@@ -108,110 +71,20 @@ export const Activities = () => {
     setOpen(false);
   };
 
-  const skipIndices = new Set<number>();
-
   return (
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuHeader></MenuHeader>
-
-        {separatedActivities &&
-          Object.keys(separatedActivities).map((date) => {
-            return separatedActivities[date].map((activity: ActivityType, index: number) => {
-              const nextActivity = separatedActivities[date][index + 1];
-              const key = `${date}-${index}`;
-              if (skipIndices.has(index)) {
-                return null;
-              }
-              if (index === 0) {
-                return (
-                  <React.Fragment key={key}>
-                    <DateText>{date}</DateText>
-                    <Timeslot
-                      key={key}
-                      presenters={activity.presenter}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? { location: activity.location }
-                        : {})}
-                    >
-                      <p>{activity.details}</p>
-                    </Timeslot>
-                  </React.Fragment>
-                );
-              } else if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
-                skipIndices.add(index + 1);
-                return (
-                  <Box
-                    sx={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Timeslot
-                      style={{ marginRight: '20px' }}
-                      key={key}
-                      presenters={activity.presenter}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? { location: activity.location }
-                        : {})}
-                    >
-                      <p>{activity.details}</p>
-                    </Timeslot>
-                    <Timeslot
-                      key={`${date}-${index + 1}`}
-                      presenters={nextActivity.presenter}
-                      endTime={nextActivity.end}
-                      heading={nextActivity.title}
-                      startTime={nextActivity.start}
-                      type={nextActivity.type}
-                      showEndTime={true}
-                      {...(nextActivity.location.coordinates[0] !== 0
-                        ? { location: nextActivity.location }
-                        : {})}
-                    >
-                      <p>{nextActivity.details}</p>
-                    </Timeslot>
-                  </Box>
-                );
-              } else {
-                return (
-                  <React.Fragment key={key}>
-                    <Timeslot
-                      key={key}
-                      presenters={activity.presenter}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? { location: activity.location }
-                        : {})}
-                    >
-                      <p>{activity.details}</p>
-                    </Timeslot>
-                  </React.Fragment>
-                );
-              }
-            });
-          })}
+        <ActivitiesNew
+          activitiesData={activitiesData}
+          selectedActivityId={selectedActivityId}
+          setSelectedActivityId={setSelectedActivityId}
+        />
+        <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>
-          <AddIcon style={{ fontSize: '60px' }} onClick={activateDrawer} />
+          <AddIcon style={{ fontSize: '60px', cursor: 'pointer' }} onClick={activateDrawer} />
         </AddAcitivityStyling>
-
         <SwipeableDrawer
           anchor='bottom'
           open={open}
