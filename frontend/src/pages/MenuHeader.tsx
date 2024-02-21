@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '../assets/BearWithMe.png';
+import Box from '@mui/material/Box';
 
 const drawerBleeding = 11;
 
@@ -21,12 +22,6 @@ const Root = styled('div')(() => ({
   height: '80px',
 }));
 
-const StyledBox = styled('div')(() => ({
-  backgroundColor: 'rgba(38,38,38,0.97)',
-  height: '100%',
-  borderRadius: '20px 20px 0px 0px',
-}));
-
 const LogoutChildPart = styled('div')(() => ({
   backgroundColor: '#393939',
   height: '60%',
@@ -34,6 +29,7 @@ const LogoutChildPart = styled('div')(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
+  cursor: 'pointer',
 }));
 
 const MenuDiv = styled('div')(() => ({
@@ -50,7 +46,27 @@ const menuItems = [
   { label: 'Schema', link: '' },
   { label: 'Min profil', link: '' },
   { label: 'Tidigare KitsCons', link: '' },
+  { label: 'Exportera Markdownfil', link: '' },
 ];
+
+const MenuItem = styled('p')(() => ({
+  textAlign: 'center',
+  fontSize: '1.1rem',
+  cursor: 'pointer',
+  '&:hover': {
+    color: '#8cab78',
+  },
+}));
+
+const FixedMenuIcon = styled(MenuIcon)(() => ({
+  position: 'fixed',
+  color: 'gray',
+  top: 0,
+  right: 0,
+  zIndex: 1000,
+  height: 50,
+  width: 50,
+}));
 
 export default function SwipeableEdgeDrawer(props: Props) {
   const navigate = useNavigate();
@@ -81,11 +97,11 @@ export default function SwipeableEdgeDrawer(props: Props) {
             },
           }}
         />
-        <MenuIcon
-          sx={{ height: 50, width: 50, zIndex: 1000 }}
-          style={{ color: 'white', position: 'fixed' }}
-          onClick={toggleDrawer(true)}
-        />
+
+        <Box>
+          <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
+        </Box>
+
         <SwipeableDrawer
           container={container}
           anchor='bottom'
@@ -101,8 +117,6 @@ export default function SwipeableEdgeDrawer(props: Props) {
             },
           }}
         >
-          <StyledBox />
-
           <MenuDiv>
             <Text>
               {menuItems.map((menuItem, index) => (
@@ -111,9 +125,11 @@ export default function SwipeableEdgeDrawer(props: Props) {
                   to={menuItem.link}
                   style={{ textDecoration: 'none', color: 'white' }}
                 >
-                  <p style={{ textAlign: 'center', fontSize: '1.1rem', margin: '13px 0 13px 0' }}>
+                  <MenuItem
+                    style={{ textAlign: 'center', fontSize: '1.1rem', margin: '13px 0 13px 0' }}
+                  >
                     {menuItem.label}
-                  </p>
+                  </MenuItem>
                 </Link>
               ))}
               <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
@@ -137,7 +153,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
                       marginTop: '10px',
                     }}
                   />
-                  <p style={{ fontSize: '1.1rem' }}>BeerWithMe</p>
+                  <MenuItem style={{ fontSize: '1.1rem' }}>BeerWithMe</MenuItem>
                 </div>
               </Link>
             </Text>
@@ -145,12 +161,14 @@ export default function SwipeableEdgeDrawer(props: Props) {
 
           <LogoutChildPart>
             <ExitToAppIcon
+              cursor='pointer'
               onClick={() => {
                 signOut();
                 logoutPage();
               }}
             />
             <Typography
+              cursor='pointer'
               onClick={() => {
                 signOut();
                 logoutPage();
