@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.naming.NameNotFoundException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +29,9 @@ public class ScheduleService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    public List<ScheduleModel> findAllSchedules() {
+        return  scheduleRepository.findAll();
+    }
 
     public ScheduleModel createSchedule(ScheduleModel schedule) {
             return scheduleRepository.save(schedule);

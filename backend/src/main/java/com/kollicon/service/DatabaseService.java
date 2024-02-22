@@ -33,7 +33,7 @@ public class DatabaseService {
 
     public void generateMdFile(@PathVariable Long id) {
 
-        String outputPath = "D:\\KITS\\KolliC\\backend\\src\\main\\MdFiles\\KitsCon.md";
+        String outputPath = "C:\\Users\\magnu\\OneDrive\\Skrivbord\\alireza.md";
         Map<String, Object> ScheduleData = new LinkedHashMap ();
 
         // Get schedule
