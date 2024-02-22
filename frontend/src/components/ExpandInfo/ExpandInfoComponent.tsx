@@ -71,14 +71,13 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         <Text style={{ margin: '20px 0px 20px 0px' }}>
           <p>{activity.data.details}</p>
         </Text>
-        {activity.location &&
-          activity.location[0] !== undefined &&
-          activity.location[1] !== undefined && (
-            <Location
-              coordinates={[activity.location[1], activity.location[0]]}
-              title={activity.data.location.title}
-            />
-          )}
+        {/* render inverted because of the mapbox component saving the coordinates as [lat, long] */}
+        {activity.location.length === 2 && (
+          <Location
+            coordinates={[activity.location[0], activity.location[1]]}
+            title={activity.data.location.title}
+          />
+        )}
       </Drawer>
     </div>
   );
