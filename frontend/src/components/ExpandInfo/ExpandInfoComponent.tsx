@@ -83,7 +83,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
         {/* render inverted because of the mapbox component saving the coordinates as [lat, long] */}
         {activity.location.length === 2 && (
           <Location
-            coordinates={[activity.location[1], activity.location[0]]}
+            coordinates={[activity.location[0], activity.location[1]]}
             title={activity.data.location.title}
           />
         )}

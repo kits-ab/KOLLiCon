@@ -286,7 +286,7 @@ function Activity({ onClose }: any) {
         } else {
           console.error('Error fetching files:', response.statusText);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching files:', error.message);
       }
     };
@@ -378,7 +378,7 @@ function Activity({ onClose }: any) {
                       label='Starttid'
                       name='start'
                       value={activity.start || null}
-                      onChange={(date) => handleDateChange('start', date)}
+                      onChange={(date: any) => handleDateChange('start', date)}
                     />
 
                     <DateTimePicker
@@ -388,7 +388,7 @@ function Activity({ onClose }: any) {
                       label='Sluttid'
                       name='end'
                       value={activity.end || null}
-                      onChange={(date) => handleDateChange('end', date)}
+                      onChange={(date: any) => handleDateChange('end', date)}
                     />
                   </LocalizationProvider>
                 </Box>
