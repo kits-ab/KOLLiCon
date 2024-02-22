@@ -13,10 +13,10 @@ const MapBox = ({
   resetLocation: () => void;
 }) => {
   const [coordinates, setCoordinates] = useState(null);
+  // const [switchedCoordinates, setSwitchedCoordinates] = useState(null);
   const geocoderRef = useRef(null);
   const mapRef = useRef('');
   const [marker, setMarker] = useState(null);
-  const initialCenter = [11.967017, 57.707233];
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1Ijoia29raXRvdHNvcyIsImEiOiJjaXk0d3R5bjEwMDJsMnlscWhtOGlydDl3In0.Xfr-Sr_D4JJVK2kVNsm4vA';
@@ -24,7 +24,7 @@ const MapBox = ({
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
-      center: initialCenter,
+      center: [11.967017, 57.707233],
       zoom: 11,
     });
     // Update the type of mapRef.current
@@ -67,7 +67,10 @@ const MapBox = ({
         const { geometry } = result;
         const { coordinates } = geometry;
         setCoordinates(geometry.coordinates);
-        onCoordinatesChange(coordinates);
+
+        // Switch the coordinates to [long, lat] and send it to activity component
+        const switchedCoordinates: number[] = [coordinates[1], coordinates[0]];
+        onCoordinatesChange(switchedCoordinates);
       });
     }
   }, []);
@@ -90,7 +93,8 @@ const MapBox = ({
   }, [coordinates]);
 
   // Function to clear the search box
-  const clearSearchBox = () => {
+  const clearSearchBox = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
     if (geocoderRef.current) {
       (geocoderRef.current as MapboxGeocoder).clear();
       resetLocation();
@@ -99,7 +103,7 @@ const MapBox = ({
         // Cast mapRef.current to mapboxgl.Map
         (mapRef.current as mapboxgl.Map).flyTo({
           // Convert initialCenter to LngLatLike
-          center: initialCenter as mapboxgl.LngLatLike,
+          center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
           essential: true,
           animate: true,
           zoom: 11,
@@ -109,8 +113,6 @@ const MapBox = ({
       setCoordinates(null);
     }
   };
-
-  console.log(coordinates);
 
   return (
     <div
