@@ -83,7 +83,6 @@ export default function SwipeableEdgeDrawer(props: Props) {
   };
 
   const printScheduleToMarkdownFile = async (value: number) => {
-    console.log('was also called wht value = ' + value);
     await axios.post(`http://localhost:8080/api/generateMdFile/${value}`);
   };
 
@@ -160,13 +159,13 @@ export default function SwipeableEdgeDrawer(props: Props) {
                   </Link>
                   {menuItem.dropdownOptions && (
                     <select
-                      style={{ width: '140px' }}
+                      style={{ width: '140px', backgroundColor: '#424241', color: '#cccccc' }}
                       onClick={fetchAllSchedules}
                       onChange={(event) => setSelectedSchedule(Number(event.target.value))}
                     >
                       {menuItem.dropdownOptions.map((option) => (
                         <option key={option.value} value={option.value}>
-                          {option.label}
+                          Schedule #{option.label}
                         </option>
                       ))}
                     </select>
