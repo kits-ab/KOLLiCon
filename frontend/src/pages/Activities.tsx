@@ -11,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from './KolliconFooter';
 import { styled } from '@mui/material/styles';
-import Activity from '../components/Activity/Activity';
+import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 

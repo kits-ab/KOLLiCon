@@ -10,7 +10,7 @@ import {
   StyledLine,
   StyledTextArea,
 } from './StyledActivity';
-import { sxStyles, slotPropsStyles } from '@/components/Activity/StyledDateTimePicker';
+import { sxStyles, slotPropsStyles } from '@/components/RegisterActivity/StyledDateTimePicker';
 import Button from '@/components/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
