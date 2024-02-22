@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../MapBox/MapBox.css';
-import { StyledButton, StyledLine } from '../Activity/StyledActivity';
+import { StyledButton, StyledLine } from '../RegisterActivity/StyledActivity';
 
 const MapBox = ({
   onCoordinatesChange,
@@ -93,7 +93,7 @@ const MapBox = ({
   }, [coordinates]);
 
   // Function to clear the search box
-  const clearSearchBox = (e: { preventDefault: () => void; }) => {
+  const clearSearchBox = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (geocoderRef.current) {
       (geocoderRef.current as MapboxGeocoder).clear();
