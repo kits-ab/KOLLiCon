@@ -2,6 +2,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Drawer from '@mui/material/Drawer';
 import styled from '@emotion/styled';
 
+// Används inte längre
+
 export const useStyledDrawer = () => {
   const matches = useMediaQuery('(min-width:600px)');
 
@@ -12,6 +14,7 @@ export const useStyledDrawer = () => {
       padding: 20px;
       border-radius: 0px;
       color: #dbdbd8;
+      transition: transform 500ms cubic-bezier(0, 0, 0.2, 1) 0ms;
       width: ${matches ? '50%' : '100%'};
     }
   `;

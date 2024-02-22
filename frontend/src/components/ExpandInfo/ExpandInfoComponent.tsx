@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
-import { useStyledDrawer } from './StyledExpandInfo';
+import Drawer from '@mui/material/Drawer';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activityId: number;
+  activityProp: ActivityType;
 }
 
-const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) => {
+const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) => {
   const [activity, setActivity] = useState({
     data: {} as ActivityType,
     location: [] as number[],
@@ -20,40 +20,31 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
     end: new Date(),
   });
 
-  const StyledDrawer = useStyledDrawer();
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/activity/${activityId}`);
-        const coordinates = response.data.location.coordinates.split(',').map(Number);
-        console.log('coordinates:', coordinates, typeof coordinates[0], typeof coordinates[1]);
+    const coordinates = Array.isArray(activityProp.location.coordinates)
+      ? activityProp.location.coordinates
+      : [];
 
-        setActivity({
-          data: response.data,
-          location: coordinates,
-          start: new Date(response.data.start),
-          end: new Date(response.data.end),
-        });
-      } catch (error) {
-        console.error('Error fetching activity:', error);
-      }
-    };
-    fetchData();
-  }, [activityId]);
+    setActivity({
+      data: activityProp,
+      location: coordinates,
+      start: new Date(activityProp.start),
+      end: new Date(activityProp.end),
+    });
+  }, [activityProp]);
 
-  console.log(
-    'coordinates:',
-    activity.location,
-    typeof activity.location[0],
-    typeof activity.location[1],
-  );
+  const matches = useMediaQuery('(min-width:600px)');
 
   return (
     <div>
-      <StyledDrawer
-        SlideProps={{ timeout: 500 }}
-        variant='temporary'
+      <Drawer
+        PaperProps={{
+          sx: {
+            width: matches ? '50%' : '100%',
+            padding: '20px',
+          },
+        }}
+        variant='persistent'
         anchor='right'
         open={open}
         onClick={(event) => event.stopPropagation()}
@@ -87,7 +78,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityId }) =>
             title={activity.data.location.title}
           />
         )}
-      </StyledDrawer>
+      </Drawer>
     </div>
   );
 };

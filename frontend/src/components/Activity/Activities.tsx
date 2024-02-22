@@ -17,11 +17,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
 
   const expandInfo = () => {
-    if (expandInfoOpen) {
-      setExpandInfoOpen(false);
-    } else {
-      setExpandInfoOpen(true);
-    }
+    setExpandInfoOpen(!expandInfoOpen);
   };
   const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
@@ -102,7 +98,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     </Timeslot>
                     {selectedActivityId === activity.id && (
                       <ExpandInfo
-                        activityId={activity.id}
+                        activityProp={activity}
                         open={expandInfoOpen}
                         setOpen={setExpandInfoOpen}
                       >
@@ -121,7 +117,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                   nextActivity={nextActivity}
                   skipIndices={skipIndices}
                   index={index}
-                  key={key}
+                  uniqueKey={key}
                   setSelectedActivityId={setSelectedActivityId}
                   expandInfo={expandInfo}
                   expandInfoOpen={expandInfoOpen}
@@ -155,7 +151,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     </Timeslot>
                     {selectedActivityId === activity.id && (
                       <ExpandInfo
-                        activityId={activity.id}
+                        activityProp={activity}
                         open={expandInfoOpen}
                         setOpen={setExpandInfoOpen}
                       >

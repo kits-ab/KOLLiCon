@@ -65,7 +65,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           <p>{activity.details.slice(0, 200)}</p>
         </Timeslot>
         {selectedActivityId === activity.id && (
-          <ExpandInfo activityId={activity.id} open={expandInfoOpen} setOpen={setExpandInfoOpen}>
+          <ExpandInfo activityProp={activity} open={expandInfoOpen} setOpen={setExpandInfoOpen}>
             {/* <button onClick={expandInfo}>Close Drawer</button> */}
           </ExpandInfo>
         )}
@@ -96,11 +96,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           <p>{activity.details.slice(0, 200)}</p>
         </Timeslot>
         {selectedActivityId === nextActivity.id && (
-          <ExpandInfo
-            activityId={nextActivity.id}
-            open={expandInfoOpen}
-            setOpen={setExpandInfoOpen}
-          >
+          <ExpandInfo activityProp={nextActivity} open={expandInfoOpen} setOpen={setExpandInfoOpen}>
             {/* <button onClick={expandInfo}>Close Drawer</button> */}
           </ExpandInfo>
         )}
