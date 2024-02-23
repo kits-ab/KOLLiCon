@@ -71,12 +71,17 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         <Text style={{ margin: '20px 0px 20px 0px' }}>
           <p>{activity.data.details}</p>
         </Text>
-        {/* render inverted because of the mapbox component saving the coordinates as [lat, long] */}
         {activity.location.length === 2 && (
-          <Location
-            coordinates={[activity.location[0], activity.location[1]]}
-            title={activity.data.location.title}
-          />
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${activity.location[0]},${activity.location[1]}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Location
+              coordinates={[activity.location[0], activity.location[1]]}
+              title={activity.data.location.title}
+            />
+          </a>
         )}
       </Drawer>
     </div>
