@@ -43,10 +43,10 @@ const MenuDiv = styled('div')(() => ({
 }));
 
 const menuItems = [
-  { label: 'Schema', link: '' },
-  { label: 'Min profil', link: '' },
-  { label: 'Tidigare KitsCons', link: '' },
-  { label: 'Exportera Markdownfil', link: '' },
+  { label: 'Schema'},
+  { label: 'Min profil'},
+  { label: 'Tidigare KitsCons'},
+  { label: 'Exportera Markdownfil'},
 ];
 
 const MenuItem = styled('p')(() => ({
@@ -82,6 +82,25 @@ export default function SwipeableEdgeDrawer(props: Props) {
 
   const logoutPage = () => {
     navigate('/login');
+  };
+
+  const handleMenuItemClick = (label: string) => {
+    switch (label) {
+      case 'Schema':
+
+        break;
+      case 'Min profil':
+
+        break;
+      case 'Tidigare KitsCons':
+
+        break;
+      case 'Exportera Markdownfil':
+        
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -120,17 +139,18 @@ export default function SwipeableEdgeDrawer(props: Props) {
           <MenuDiv>
             <Text>
               {menuItems.map((menuItem, index) => (
-                <Link
+                <MenuItem
                   key={index}
-                  to={menuItem.link}
-                  style={{ textDecoration: 'none', color: 'white' }}
+                  onClick={() => handleMenuItemClick(menuItem.label)}
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '1.1rem',
+                    margin: '13px 0 13px 0',
+                    cursor: 'pointer',
+                  }}
                 >
-                  <MenuItem
-                    style={{ textAlign: 'center', fontSize: '1.1rem', margin: '13px 0 13px 0' }}
-                  >
-                    {menuItem.label}
-                  </MenuItem>
-                </Link>
+                  {menuItem.label}
+                </MenuItem>
               ))}
               <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
                 <div
@@ -168,8 +188,8 @@ export default function SwipeableEdgeDrawer(props: Props) {
               }}
             />
             <Typography
-            component="div" style={{padding: '20px 0 20px 0'}}
-              cursor='pointer'
+              component='div'
+              style={{ padding: '20px 0 20px 0' }}
               onClick={() => {
                 signOut();
                 logoutPage();
