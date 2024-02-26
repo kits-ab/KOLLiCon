@@ -33,6 +33,15 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
     });
   }, [activityProp]);
 
+  const getMapLink = (coordinates: number[]) => {
+    const userAgent = navigator.userAgent;
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+      return `maps://maps.apple.com/?q=${coordinates[0]},${coordinates[1]}`;
+    } else {
+      return `https://www.google.com/maps/search/?api=1&query=${coordinates[0]},${coordinates[1]}`;
+    }
+  };
+
   const matches = useMediaQuery('(min-width:600px)');
 
   return (
@@ -72,14 +81,10 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
           <p>{activity.data.details}</p>
         </Text>
         {activity.location.length === 2 && (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${activity.location[0]},${activity.location[1]}`}
-            target='_blank'
-            rel='noopener noreferrer'
-          >
+          <a href={getMapLink(activity.location)} target='_blank' rel='noopener noreferrer'>
             <Location
               coordinates={[activity.location[0], activity.location[1]]}
-              title={activity.data.location.title}
+              title={activity.data.location.title ? activity.data.location.title : 'Aktivitet'}
             />
           </a>
         )}
