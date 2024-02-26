@@ -1,5 +1,5 @@
 import { types } from '@kokitotsos/react-components';
-import { Person } from '@kokitotsos/react-components/dist/types';
+import { ExternalPresenter, Person } from '@kokitotsos/react-components/dist/types';
 
 export type ActivityType = {
   id: number;
@@ -8,6 +8,7 @@ export type ActivityType = {
   winner: boolean;
   type: types.TimeslotType;
   presenter?: Person[] | [];
+  externalPresenter?: ExternalPresenter[] | [];
   location: { id: number; activity: number; coordinates: number[]; title?: string };
   title: string;
   details: string;

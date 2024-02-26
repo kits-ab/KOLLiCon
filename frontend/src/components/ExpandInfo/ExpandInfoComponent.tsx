@@ -5,6 +5,8 @@ import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { Person } from '@kokitotsos/react-components/dist/types/Person';
+import { ExternalPresenter } from '@kokitotsos/react-components/dist/types/ExternalPresenter';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -72,7 +74,13 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         <Timeslot
           heading={activity.data.title}
           type={activity.data.type}
-          presenters={activity.data.presenter}
+          presenters={activity.data.presenter as Person[]}
+          externalPresenter={
+            {
+              name: activity.data.externalPresenter?.[0]?.name ?? '',
+              avatarSrc: activity.data.externalPresenter?.[0]?.avatarSrc,
+            } as ExternalPresenter
+          }
           startTime={activity.start}
           endTime={activity.end}
           showEndTime={true}
