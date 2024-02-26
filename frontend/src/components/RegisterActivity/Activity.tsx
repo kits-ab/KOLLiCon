@@ -38,6 +38,8 @@ type Activity = {
   end: string;
 };
 
+const backendIP = import.meta.env.VITE_API_URL;
+
 function Activity({ onClose }: any) {
   const [files, setFiles] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
@@ -80,7 +82,7 @@ function Activity({ onClose }: any) {
     try {
       const activityData = { ...activity, location: location };
 
-      await axios.post('http://localhost:8080/api/activity', activityData);
+      await axios.post(`${backendIP}/api/activity`, activityData);
       window.location.reload();
     } catch (error) {
       console.error('Error submitting activity:', error);

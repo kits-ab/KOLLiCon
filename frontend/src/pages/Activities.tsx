@@ -15,9 +15,11 @@ import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 
+const backendIP = import.meta.env.VITE_API_URL;
+
 export const Activities = () => {
   const fetchData = async () => {
-    const response = await axios.get('http://localhost:8080/api/schedule/get/1');
+    const response = await axios.get(`${backendIP}/api/schedule/get/1`);
     response.data.activityId.map((activity: any) => {
       const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
       const start = new Date(activity.start);
