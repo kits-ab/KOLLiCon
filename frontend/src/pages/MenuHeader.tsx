@@ -79,10 +79,12 @@ export default function SwipeableEdgeDrawer(props: Props) {
   const fetchAllSchedules = async () => {
     const responseOfSchedules = await axios.get('http://localhost:8080/api/allschedule');
     const theSchedules = responseOfSchedules.data;
+    console.log('here = ' + theSchedules);
     setSchedules(theSchedules);
   };
 
   const printScheduleToMarkdownFile = async (value: number) => {
+    // console.log(value);
     await axios.post(`http://localhost:8080/api/generateMdFile/${value}`);
   };
 
@@ -165,7 +167,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
                     >
                       {menuItem.dropdownOptions.map((option) => (
                         <option key={option.value} value={option.value}>
-                          Schedule #{option.label}
+                          {option.label}
                         </option>
                       ))}
                     </select>
