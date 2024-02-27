@@ -9,7 +9,13 @@ export type ActivityType = {
   type: types.TimeslotType;
   presenter?: Person[] | [];
   externalPresenter?: ExternalPresenter[] | [];
-  location: { id: number; activity: number; coordinates: number[]; title?: string };
+  location: {
+    id: number;
+    activity: number;
+    coordinates: number[];
+    title: string;
+    subtitle: string;
+  };
   title: string;
   details: string;
   start: Date;

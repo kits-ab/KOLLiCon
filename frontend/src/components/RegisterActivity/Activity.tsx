@@ -25,7 +25,7 @@ type Activity = {
   type: types.TimeslotType;
   presenter: types.Person[];
   externalPresenter: types.Person[];
-  location: { title: string; coordinates: string };
+  location: { title: string; coordinates: string, subtitle: string};
   title: string;
   details: string;
   start: string;
@@ -43,6 +43,7 @@ function Activity({ onClose }: any) {
   const [type, setType] = useState<types.TimeslotType | ''>('');
   const [location, setLocation] = useState({
     title: '',
+    subtitle: '',
     coordinates: '',
   });
 
@@ -63,7 +64,7 @@ function Activity({ onClose }: any) {
     type: undefined,
     presenter: [],
     externalPresenter: [],
-    location: { title: '', coordinates: '' },
+    location: { title: '',subtitle:'', coordinates: '' },
     title: '',
     details: '',
     start: '',
@@ -626,6 +627,21 @@ function Activity({ onClose }: any) {
                       name='title'
                       placeholder='Titel'
                       value={location.title}
+                      onChange={handleLocationChange}
+                    />
+                    <Input
+                      sx={{
+                        margin: '0 7% 2% 7% ',
+                        padding: '2% 0 2% 3%',
+                        backgroundColor: '#424241',
+                        color: '#cccccc',
+                        border: '1px solid gray',
+                        borderRadius: '6px',
+                      }}
+                      type='text'
+                      name='subtitle'
+                      placeholder='Subtitle'
+                      value={location.subtitle}
                       onChange={handleLocationChange}
                     />
                     <MapBox

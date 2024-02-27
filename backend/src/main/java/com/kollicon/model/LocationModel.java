@@ -21,6 +21,9 @@ public class LocationModel {
     @NotNull(message = "title can not be empty")
     @Column(name = "title")
     private String title;
+    @NotNull(message = "title can not be empty")
+    @Column(name= "subtitle")
+    private String subtitle;
     @OneToOne(mappedBy = "location")
     @JsonIdentityReference(alwaysAsId = true)
     private ActivityModel activity;
@@ -51,5 +54,11 @@ public class LocationModel {
     }
     public void setActivity(ActivityModel activity) {
         this.activity = activity;
+    }
+    public String getSubtitle() {
+        return subtitle;
+    }
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 }
