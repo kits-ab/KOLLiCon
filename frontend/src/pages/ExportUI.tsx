@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { set } from 'react-hook-form';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -22,6 +23,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
   const [schedules, setSchedules] = useState([]);
+  const [make, setMake] = useState({});
+  const [title, setTitle] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,7 +35,6 @@ export default function CustomizedDialogs() {
 
   const fetchAllSchedules = async () => {
     const responseOfSchedules = await axios.get('http://localhost:8080/api/allschedule');
-    console.log(responseOfSchedules.data);
     setSchedules(responseOfSchedules.data);
   };
 
@@ -40,15 +42,14 @@ export default function CustomizedDialogs() {
     fetchAllSchedules();
   }, []);
 
-  const selectedSchedule = async (selectedSchedule) => {
-    await axios.post(`http://localhost:8080/api/generateMdFile/${selectedSchedule.id}`);
-    const yolo = await axios.get(`http://localhost:8080/api/${selectedSchedule.id}/getyaml`);
+  const selectedSchedule = () => {
+    console.log(title);
 
-    const blob = new Blob([yolo.data], { type: 'application/md' });
+    const blob = new Blob([make], { type: 'application/md' });
 
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${String(selectedSchedule.title)}.md`;
+    link.download = `${String(title)}.md`;
 
     document.body.appendChild(link);
 
@@ -59,6 +60,12 @@ export default function CustomizedDialogs() {
     setTimeout(() => {
       URL.revokeObjectURL(link.href);
     }, 100);
+  };
+
+  const recieveTheScheduleObject = async (schedule) => {
+    await axios.post(`http://localhost:8080/api/generateMdFile/${schedule.id}`);
+    const yolo = await axios.get(`http://localhost:8080/api/${schedule.id}/getyaml`);
+    setMake(yolo.data);
   };
 
   return (
@@ -88,7 +95,20 @@ export default function CustomizedDialogs() {
         </IconButton>
 
         {schedules.map((value: { id: string }, index: number) => (
-          <DialogContent key={index} onClick={() => selectedSchedule(value)} dividers>
+          <DialogContent
+            key={index}
+            onClick={() => {
+              recieveTheScheduleObject(value);
+              setTitle(value.title);
+            }}
+            dividers
+            sx={{
+              '&:hover': {
+                backgroundColor: '#555555',
+                cursor: 'pointer',
+              },
+            }}
+          >
             {String(value.title)}
           </DialogContent>
         ))}
@@ -97,7 +117,12 @@ export default function CustomizedDialogs() {
           <Button autoFocus onClick={handleClose}>
             Close
           </Button>
-          <Button autoFocus onClick={handleClose}>
+          <Button
+            onClick={() => {
+              handleClose();
+              selectedSchedule();
+            }}
+          >
             Save
           </Button>
         </DialogActions>
