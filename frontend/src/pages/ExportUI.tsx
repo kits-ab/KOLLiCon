@@ -42,14 +42,13 @@ export default function CustomizedDialogs() {
 
   const selectedSchedule = async (selectedSchedule) => {
     await axios.post(`http://localhost:8080/api/generateMdFile/${selectedSchedule.id}`);
+    const yolo = await axios.get(`http://localhost:8080/api/${selectedSchedule.id}/getyaml`);
 
-    const scheduleJSON = JSON.stringify(selectedSchedule);
-    const blob = new Blob([scheduleJSON], { type: 'application/json' });
+    const blob = new Blob([yolo.data], { type: 'application/md' });
 
-    console.log(scheduleJSON);
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${String(selectedSchedule.title)}.json`;
+    link.download = `${String(selectedSchedule.title)}.md`;
 
     document.body.appendChild(link);
 

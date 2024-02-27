@@ -31,6 +31,8 @@ public class DatabaseService {
     @Autowired
     PresenterRepository presenterRepository;
 
+    private String generatedYamlObject;
+
     public void generateMdFile(@PathVariable Long id) {
 
         String outputPath = "C:\\Users\\magnu\\OneDrive\\Skrivbord\\alireza.md";
@@ -114,10 +116,18 @@ public class DatabaseService {
         String yamlDataFormat = yaml.dump(ScheduleData);
 
         yamlDataFormat = "---\n" + yamlDataFormat + "---\n\n" + scheduleDescription;
+        generatedYamlObject = yamlDataFormat;
+
         try(FileWriter fileWriter = new FileWriter(outputPath)) {
             fileWriter.write(yamlDataFormat);
         }catch(IOException e) {
             e.getLocalizedMessage();
         }
     }
+
+    public String getGeneratedYamlObject() {
+        return generatedYamlObject;
+    }
+
+
 }
