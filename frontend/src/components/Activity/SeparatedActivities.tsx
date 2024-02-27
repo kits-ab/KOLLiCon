@@ -2,6 +2,7 @@ import { Timeslot } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
+import { Person, TimeslotType } from '@kokitotsos/react-components/dist/types';
 
 interface SeparatedActivitiesProps {
   date: string;
@@ -31,6 +32,15 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
     selectedActivityId,
   } = props;
 
+  const getPresenters = (activityType: TimeslotType, currentActivity: ActivityType) => {
+    if (activityType === 'presentation' && currentActivity.presenter) {
+      return currentActivity.presenter as Person[];
+    } else if (activityType === 'externalpresentation' && currentActivity.externalPresenter) {
+      return currentActivity.externalPresenter as Person[];
+    }
+    return [];
+  };
+
   return (
     <Box
       key={uniqueKey}
@@ -54,7 +64,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       >
         <Timeslot
           key={uniqueKey}
-          presenters={activity.presenter}
+          presenters={getPresenters(activity.type, activity)}
           endTime={activity.end}
           heading={activity.title}
           startTime={activity.start}
@@ -65,9 +75,11 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           <p>{activity.details.slice(0, 200)}</p>
         </Timeslot>
         {selectedActivityId === activity.id && (
-          <ExpandInfo activityProp={activity} open={expandInfoOpen} setOpen={setExpandInfoOpen}>
-            {/* <button onClick={expandInfo}>Close Drawer</button> */}
-          </ExpandInfo>
+          <ExpandInfo
+            activityProp={activity}
+            open={expandInfoOpen}
+            setOpen={setExpandInfoOpen}
+          ></ExpandInfo>
         )}
       </a>
       <a
@@ -83,7 +95,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       >
         <Timeslot
           key={`${date}-${index + 1}`}
-          presenters={nextActivity.presenter}
+          presenters={getPresenters(nextActivity.type, nextActivity)}
           endTime={nextActivity.end}
           heading={nextActivity.title}
           startTime={nextActivity.start}
@@ -96,9 +108,11 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           <p>{activity.details.slice(0, 200)}</p>
         </Timeslot>
         {selectedActivityId === nextActivity.id && (
-          <ExpandInfo activityProp={nextActivity} open={expandInfoOpen} setOpen={setExpandInfoOpen}>
-            {/* <button onClick={expandInfo}>Close Drawer</button> */}
-          </ExpandInfo>
+          <ExpandInfo
+            activityProp={nextActivity}
+            open={expandInfoOpen}
+            setOpen={setExpandInfoOpen}
+          ></ExpandInfo>
         )}
       </a>
     </Box>
