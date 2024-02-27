@@ -85,6 +85,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
             <Location
               coordinates={[activity.location[0], activity.location[1]]}
               title={activity.data.location.title ? activity.data.location.title : 'Aktivitet'}
+              subtitle={activity.data.location.subtitle ? activity.data.location.subtitle : 'Subtitle'}
             />
           </a>
         )}
