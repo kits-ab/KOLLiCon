@@ -1,15 +1,7 @@
 import { useState, useEffect } from 'react';
 import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
-import {
-  EventsWrapper,
-  PStyled,
-  StyledButton,
-  StyledDiv,
-  StyledInput,
-  StyledLine,
-  StyledTextArea,
-} from './StyledActivity';
+import { EventsWrapper, PStyled, StyledButton, StyledDiv, StyledLine } from './StyledActivity';
 import { sxStyles, slotPropsStyles } from '@/components/RegisterActivity/StyledDateTimePicker';
 import Button from '@/components/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -23,6 +15,8 @@ import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MapBox from '../MapBox/MapBox';
+import Input from '@mui/joy/Input';
+import Textarea from '@mui/joy/Textarea';
 
 type Activity = {
   schedule: number;
@@ -304,17 +298,17 @@ function Activity({ onClose }: any) {
         <EventsWrapper style={{ paddingBottom: '10%' }}>
           <Timeslot
             endTime={new Date()}
-            heading='Registrera Activitiet'
+            heading='Registrera Aktivitiet'
             startTime={new Date()}
             type={types.TimeslotType.Presentation}
           >
             <form onSubmit={handleSubmit}>
               <StyledDiv>
-                <PStyled style={{ color: '#D4D4D4' }}>Activitiet info</PStyled>
+                <PStyled style={{ color: '#D4D4D4' }}>Aktivitiet info</PStyled>
 
                 <FormControl
                   sx={{
-                    margin: '0 7% 2% 7%',
+                    margin: '0 7% 1% 7%',
                     height: '-20px',
                     '& .MuiInputBase-root': {
                       color: 'gray',
@@ -394,15 +388,31 @@ function Activity({ onClose }: any) {
                     />
                   </LocalizationProvider>
                 </Box>
-                <StyledInput
+                <Input
+                  sx={{
+                    margin: '0 7% 0 7% ',
+                    padding: '2% 0 2% 3%',
+                    backgroundColor: '#424241',
+                    color: '#cccccc',
+                    border: '1px solid gray',
+                    borderRadius: '6px',
+                  }}
                   type='text'
                   name='title'
                   placeholder='Titel'
                   value={activity.title}
                   onChange={handleOnInputChange}
                 />
-                <StyledTextArea
-                  style={{ height: '100px' }}
+                <Textarea
+                  sx={{
+                    height: '100px',
+                    margin: '2% 7% 0 7% ',
+                    padding: '2% 0 0% 3%',
+                    backgroundColor: '#424241',
+                    color: '#cccccc',
+                    border: '1px solid gray',
+                    borderRadius: '6px',
+                  }}
                   type='text'
                   name='details'
                   placeholder='Beskrivning'
@@ -414,7 +424,15 @@ function Activity({ onClose }: any) {
                 {showPresenter && (
                   <StyledDiv>
                     <PStyled style={{ color: '#D4D4D4' }}>Interna</PStyled>
-                    <StyledInput
+                    <Input
+                      sx={{
+                        margin: '0 7% 2% 7% ',
+                        padding: '2% 0 2% 3%',
+                        backgroundColor: '#424241',
+                        color: '#cccccc',
+                        border: '1px solid gray',
+                        borderRadius: '6px',
+                      }}
                       type='text'
                       name='name'
                       placeholder='Presentatör'
@@ -516,14 +534,33 @@ function Activity({ onClose }: any) {
                 {showExternalPresenter && (
                   <StyledDiv>
                     <PStyled style={{ color: '#D4D4D4' }}>Externa</PStyled>
-                    <StyledInput
+                    <Input
+                      sx={{
+                        margin: '0 7% 3% 7% ',
+                        padding: '2% 0 2% 3%',
+                        backgroundColor: '#424241',
+                        color: '#cccccc',
+                        border: '1px solid gray',
+                        borderRadius: '6px',
+                      }}
                       type='text'
                       name='name'
                       placeholder='Presentatör'
                       value={externalPresenter.name}
                       onChange={handleExternalPresenterChange}
                     />
-                    <StyledInput type='file' id='file' />
+                    <Input
+                      sx={{
+                        margin: '0 7% 3% 7% ',
+                        padding: '1% 0 1% 3%',
+                        backgroundColor: '#424241',
+                        color: '#cccccc',
+                        border: '1px solid gray',
+                        borderRadius: '6px',
+                      }}
+                      type='file'
+                      id='file'
+                    />
 
                     <StyledButton
                       style={{ marginBottom: '5%', cursor: 'pointer' }}
@@ -576,8 +613,15 @@ function Activity({ onClose }: any) {
                 )}
                 {showLocation && (
                   <StyledDiv>
-                    <StyledInput
-                      style={{ marginTop: '1%' }}
+                    <Input
+                      sx={{
+                        margin: '0 7% 2% 7% ',
+                        padding: '2% 0 2% 3%',
+                        backgroundColor: '#424241',
+                        color: '#cccccc',
+                        border: '1px solid gray',
+                        borderRadius: '6px',
+                      }}
                       type='text'
                       name='title'
                       placeholder='Titel'
