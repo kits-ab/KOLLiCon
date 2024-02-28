@@ -14,7 +14,7 @@ import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
-import ExportUI from './ExportUI';
+import TheMenu from './TheMenu';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -73,7 +73,7 @@ export const Activities = () => {
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
-        <MenuHeader></MenuHeader>
+        <TheMenu></TheMenu>
 
         <ActivitiesNew
           activitiesData={activitiesData}
