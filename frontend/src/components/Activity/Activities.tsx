@@ -4,6 +4,7 @@ import { Timeslot } from '@kokitotsos/react-components';
 import DateText from '@/styles/DateText';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 import React, { useState } from 'react';
+import { Person } from '@kokitotsos/react-components/dist/types/Person';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -61,6 +62,14 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const separatedActivities = separateActivitiesByDate(activitiesData);
   const skipIndices = new Set<number>();
 
+  const getPresenters = (currentActivity: ActivityType) => {
+    if (currentActivity.type === 'presentation') {
+      return currentActivity.presenter as Person[];
+    } else if (currentActivity.type === 'externalpresentation') {
+      return currentActivity.externalPresenter as Person[];
+    }
+  };
+
   return (
     <React.Fragment key={'activities'}>
       {separatedActivities &&
@@ -84,7 +93,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                   >
                     <Timeslot
                       key={key}
-                      presenters={activity.presenter}
+                      presenters={getPresenters(activity) as Person[]}
                       endTime={activity.end}
                       heading={activity.title}
                       startTime={activity.start}
@@ -137,7 +146,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                   >
                     <Timeslot
                       key={key}
-                      presenters={activity.presenter}
+                      presenters={getPresenters(activity) as Person[]}
                       endTime={activity.end}
                       heading={activity.title}
                       startTime={activity.start}
