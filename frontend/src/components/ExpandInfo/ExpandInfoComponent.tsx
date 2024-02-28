@@ -84,12 +84,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
           heading={activity.data.title}
           type={activity.data.type}
           presenters={getPresenters(activity.data.type) as Person[]}
-          // externalPresenter={
-          //   {
-          //     name: activity.data.externalPresenter?.[0]?.name ?? '',
-          //     avatarSrc: activity.data.externalPresenter?.[0]?.avatarSrc,
-          //   } as ExternalPresenter
-          // }
           startTime={activity.start}
           endTime={activity.end}
           showEndTime={true}
