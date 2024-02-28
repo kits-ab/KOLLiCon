@@ -25,7 +25,7 @@ type Activity = {
   type: types.TimeslotType;
   presenter: types.Person[];
   externalPresenter: types.Person[];
-  location: { title: string; coordinates: string, subtitle: string};
+  location: { title: string; coordinates: string; subtitle: string };
   title: string;
   details: string;
   start: string;
@@ -64,7 +64,7 @@ function Activity({ onClose }: any) {
     type: undefined,
     presenter: [],
     externalPresenter: [],
-    location: { title: '',subtitle:'', coordinates: '' },
+    location: { title: '', subtitle: '', coordinates: '' },
     title: '',
     details: '',
     start: '',
@@ -263,22 +263,34 @@ function Activity({ onClose }: any) {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
+        // Fetch the list of files in the medarbetare directory
         const response = await axios.get(
           `https://api.github.com/repos/kits-ab/kits/contents/content/medarbetare`,
         );
         if (response.status === 200) {
           const filesData = response.data
             .filter((item: { type: string }) => item.type === 'file')
+            // Fetch the content of each file
             .map(async (item: { download_url: string }) => {
               const mdContentResponse = await axios.get(item.download_url);
               const mdContent = mdContentResponse.data;
+              // Extract title and alumni attributes from the markdown content
               const titleMatch = mdContent.match(/^title: (.*)$/m);
+              const alumniMatch = mdContent.match(/^alumni: (.*)$/m);
+              // map the extracted values to an object
               const title = titleMatch ? titleMatch[1] : 'Untitled';
-              return { title };
+              // set alumni to false if it doesn't exist otherwhise keep the value
+              const alumni = alumniMatch ? alumniMatch[1] : false;
+              // return the object
+              return { title, alumni };
             });
 
           Promise.all(filesData).then((fileTitles) => {
-            setFiles(fileTitles);
+            // Include files where alumni is false or where the alumni attribute doesn't exist
+            const filteredFiles = fileTitles.filter(
+              (file) => !file.alumni || file.alumni === 'false',
+            );
+            setFiles(filteredFiles);
           });
         } else {
           console.error('Error fetching files:', response.statusText);
