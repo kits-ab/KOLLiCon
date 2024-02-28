@@ -8,7 +8,13 @@ export type ActivityType = {
   winner: boolean;
   type: types.TimeslotType;
   presenter?: Person[] | [];
-  location: { id: number; activity: number; coordinates: number[]; title?: string };
+  location: {
+    id: number;
+    activity: number;
+    coordinates: number[];
+    title: string;
+    subtitle: string;
+  };
   title: string;
   details: string;
   start: Date;

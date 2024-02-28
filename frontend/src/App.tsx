@@ -9,7 +9,8 @@ import { Activities } from './pages/Activities';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Activity from './components/RegisterActivity/Activity';
 import ScheduleForm from './components/CreateScheduleComponent';
-import ScheduleUserInterface from './pages/ExportUI';
+import ExportUI from './pages/ExportUI';
+import ExportFileUI from './pages/ExportFileUI';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -27,7 +28,7 @@ function App() {
         <Route path='/activities' element={<Activities />} />
         <Route path='/activity' element={<Activity />} />
         <Route path='/postschedule' element={<ScheduleForm />} />
-        <Route path='/ui' element={<ScheduleUserInterface />} />
+        <Route path='/ui' element={<ExportFileUI />} />
       </Routes>
     </QueryClientProvider>
   );

@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -8,8 +9,9 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { set } from 'react-hook-form';
+import useEffect from 'react';
+import useState from 'react';
+import set from 'react-hook-form';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -20,11 +22,11 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedDialogs() {
+function ExportFileUI() {
   const [open, setOpen] = React.useState(false);
-  const [schedules, setSchedules] = useState([]);
-  const [make, setMake] = useState({});
-  const [title, setTitle] = useState('');
+  const [schedules, setSchedules] = React.useState([]);
+  const [make, setMake] = React.useState({});
+  const [title, setTitle] = React.useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -38,9 +40,15 @@ export default function CustomizedDialogs() {
     setSchedules(responseOfSchedules.data);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchAllSchedules();
   }, []);
+
+  const recieveTheScheduleObject = async (schedule) => {
+    await axios.post(`http://localhost:8080/api/generateMdFile/${schedule.id}`);
+    const yolo = await axios.get(`http://localhost:8080/api/${schedule.id}/getyaml`);
+    setMake(yolo.data);
+  };
 
   const selectedSchedule = () => {
     console.log(title);
@@ -62,14 +70,8 @@ export default function CustomizedDialogs() {
     }, 100);
   };
 
-  const recieveTheScheduleObject = async (schedule) => {
-    await axios.post(`http://localhost:8080/api/generateMdFile/${schedule.id}`);
-    const yolo = await axios.get(`http://localhost:8080/api/${schedule.id}/getyaml`);
-    setMake(yolo.data);
-  };
-
   return (
-    <React.Fragment>
+    <>
       <Button variant='outlined' onClick={handleClickOpen}>
         Open dialog
       </Button>
@@ -79,20 +81,8 @@ export default function CustomizedDialogs() {
           sx={{ m: 3, p: 3, width: '150px', marginLeft: '100px' }}
           id='customized-dialog-title'
         >
-          Exportera
+          Exportera markdownfile
         </DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
 
         {schedules.map((value: { id: string }, index: number) => (
           <DialogContent
@@ -127,6 +117,8 @@ export default function CustomizedDialogs() {
           </Button>
         </DialogActions>
       </BootstrapDialog>
-    </React.Fragment>
+    </>
   );
 }
+
+export default ExportFileUI;

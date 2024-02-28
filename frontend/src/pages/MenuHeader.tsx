@@ -10,25 +10,14 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '../assets/BearWithMe.png';
 import Box from '@mui/material/Box';
-import axios from 'axios';
-import { set } from 'react-hook-form';
-import { Schedule } from '@mui/icons-material';
-
 const drawerBleeding = 11;
-
 interface Props {
   window?: () => Window;
 }
-
-interface Schedule {
-  id: string;
-}
-
 const Root = styled('div')(() => ({
   marginLeft: '88%',
   height: '80px',
 }));
-
 const LogoutChildPart = styled('div')(() => ({
   backgroundColor: '#393939',
   height: '60%',
@@ -38,7 +27,6 @@ const LogoutChildPart = styled('div')(() => ({
   color: 'white',
   cursor: 'pointer',
 }));
-
 const MenuDiv = styled('div')(() => ({
   height: '40%',
   display: 'flex',
@@ -48,16 +36,20 @@ const MenuDiv = styled('div')(() => ({
   flexDirection: 'column',
   marginTop: '20px',
 }));
-
+const menuItems = [
+  { label: 'Schema' },
+  { label: 'Min profil' },
+  { label: 'Tidigare KitsCons' },
+  { label: 'Exportera Markdownfil' },
+];
 const MenuItem = styled('p')(() => ({
   textAlign: 'center',
   fontSize: '1.1rem',
   cursor: 'pointer',
   '&:hover': {
-    color: '#8cab78',
+    color: '#8CAB78',
   },
 }));
-
 const FixedMenuIcon = styled(MenuIcon)(() => ({
   position: 'fixed',
   color: 'gray',
@@ -67,50 +59,31 @@ const FixedMenuIcon = styled(MenuIcon)(() => ({
   height: 50,
   width: 50,
 }));
-
 export default function SwipeableEdgeDrawer(props: Props) {
   const navigate = useNavigate();
-
   const { window } = props;
   const [open, setOpen] = React.useState(false);
-  const [schedules, setSchedules] = React.useState<Schedule[]>([]);
-  const [selectedSchedule, setSelectedSchedule] = React.useState<Number | null>(null);
-
-  const fetchAllSchedules = async () => {
-    const responseOfSchedules = await axios.get('http://localhost:8080/api/allschedule');
-    const theSchedules = responseOfSchedules.data;
-    console.log('here = ' + theSchedules);
-    setSchedules(theSchedules);
-  };
-
-  const printScheduleToMarkdownFile = async (value: number) => {
-    // console.log(value);
-    await axios.post(`http://localhost:8080/api/generateMdFile/${value}`);
-  };
-
-  const menuItems = [
-    { label: '', link: '' },
-    { label: '', link: '' },
-    { label: '', link: '' },
-    {
-      label: '',
-      dropdownOptions: schedules.map((valueSchedule) => ({
-        label: valueSchedule.id,
-        value: valueSchedule.id,
-      })),
-    },
-  ];
-
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
-
   const container = window !== undefined ? () => window().document.body : undefined;
-
   const logoutPage = () => {
     navigate('/login');
   };
-
+  const handleMenuItemClick = (label: string) => {
+    switch (label) {
+      case 'Schema':
+        break;
+      case 'Min profil':
+        break;
+      case 'Tidigare KitsCons':
+        break;
+      case 'Exportera Markdownfil':
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <>
       <GlobalStyles />
@@ -124,11 +97,9 @@ export default function SwipeableEdgeDrawer(props: Props) {
             },
           }}
         />
-
         <Box>
           <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
         </Box>
-
         <SwipeableDrawer
           container={container}
           anchor='bottom'
@@ -147,49 +118,19 @@ export default function SwipeableEdgeDrawer(props: Props) {
           <MenuDiv>
             <Text>
               {menuItems.map((menuItem, index) => (
-                <div key={index}>
-                  <Link
-                    key={index}
-                    to={menuItem.link}
-                    style={{ textDecoration: 'none', color: 'white' }}
-                  >
-                    <MenuItem
-                      style={{ textAlign: 'center', fontSize: '1.1rem', margin: '13px 0 13px 0' }}
-                    >
-                      {menuItem.label}
-                    </MenuItem>
-                  </Link>
-                  {menuItem.dropdownOptions && (
-                    <select
-                      style={{ width: '140px', backgroundColor: '#424241', color: '#cccccc' }}
-                      onClick={fetchAllSchedules}
-                      onChange={(event) => setSelectedSchedule(Number(event.target.value))}
-                    >
-                      {menuItem.dropdownOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
+                <MenuItem
+                  key={index}
+                  onClick={() => handleMenuItemClick(menuItem.label)}
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '1.1rem',
+                    margin: '13px 0 13px 0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {menuItem.label}
+                </MenuItem>
               ))}
-              <button
-                style={{
-                  backgroundColor: '#596b4d',
-                  padding: '6px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  marginTop: '10%',
-                  marginLeft: '10%',
-                  color: '#d4d4d4',
-                  fontSize: '15px',
-                  marginBottom: '20px',
-                }}
-                onClick={() => printScheduleToMarkdownFile(selectedSchedule)}
-              >
-                Exportera md fil
-              </button>
               <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
                 <div
                   style={{
@@ -216,7 +157,6 @@ export default function SwipeableEdgeDrawer(props: Props) {
               </Link>
             </Text>
           </MenuDiv>
-
           <LogoutChildPart>
             <ExitToAppIcon
               cursor='pointer'
@@ -228,7 +168,6 @@ export default function SwipeableEdgeDrawer(props: Props) {
             <Typography
               component='div'
               style={{ padding: '20px 0 20px 0' }}
-              cursor='pointer'
               onClick={() => {
                 signOut();
                 logoutPage();
