@@ -25,7 +25,7 @@ type Activity = {
   type: types.TimeslotType;
   presenter: types.Person[];
   externalPresenter: types.Person[];
-  location: { title: string; coordinates: string, subtitle: string};
+  location: { title: string; coordinates: string; subtitle: string };
   title: string;
   details: string;
   start: string;
@@ -64,7 +64,7 @@ function Activity({ onClose }: any) {
     type: undefined,
     presenter: [],
     externalPresenter: [],
-    location: { title: '',subtitle:'', coordinates: '' },
+    location: { title: '', subtitle: '', coordinates: '' },
     title: '',
     details: '',
     start: '',
@@ -155,7 +155,7 @@ function Activity({ onClose }: any) {
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
+        setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
     if (value) {
       const filteredTitles = files.filter((file: { title: string }) =>
         file.title.toLowerCase().startsWith(value.toLowerCase()),
@@ -189,7 +189,6 @@ function Activity({ onClose }: any) {
   };
 
   const handleSuggestionClick = (selectedTitle: string) => {
-    console.log('this is selected title', typeof selectedTitle);
     // Update the presenter name with the selected title
     setPresenter({
       ...presenter,
@@ -205,12 +204,14 @@ function Activity({ onClose }: any) {
     const profilePictureUrl = getProfilePictureUrl(presenter.name);
     const pictureExists = await profilePictureExists(profilePictureUrl);
 
-    if (!pictureExists) {
-      // Handle case where profile picture doesn't exist
-      console.log(`Profile picture for ${presenter.name} does not exist or is not accessible.`);
+    // Check if the title exists in the files state
+    const titleExists = files.some((file: { title: string }) => file.title.toLowerCase() === presenter.name.toLowerCase());
+    
+    if (!pictureExists || !titleExists) {
+      // Handle case where profile picture doesn't exist or title doesn't exist in files state
+      console.log(`Profile picture for ${presenter.name} does not exist or is not accessible, or the title does not exist.`);
       return;
-    }
-
+    }  
     // Add presenter to the activity state
     setActivity({
       ...activity,
@@ -221,6 +222,7 @@ function Activity({ onClose }: any) {
       avatarSrc: '',
     });
   };
+  
   //Add external presenter
   const addExternalPresenter = () => {
     setActivity({
@@ -263,22 +265,34 @@ function Activity({ onClose }: any) {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
+        // Fetch the list of files in the medarbetare directory
         const response = await axios.get(
           `https://api.github.com/repos/kits-ab/kits/contents/content/medarbetare`,
         );
         if (response.status === 200) {
           const filesData = response.data
             .filter((item: { type: string }) => item.type === 'file')
+            // Fetch the content of each file
             .map(async (item: { download_url: string }) => {
               const mdContentResponse = await axios.get(item.download_url);
               const mdContent = mdContentResponse.data;
+              // Extract title and alumni attributes from the markdown content
               const titleMatch = mdContent.match(/^title: (.*)$/m);
+              const alumniMatch = mdContent.match(/^alumni: (.*)$/m);
+              // map the extracted values to an object
               const title = titleMatch ? titleMatch[1] : 'Untitled';
-              return { title };
+              // set alumni to false if it doesn't exist otherwhise keep the value
+              const alumni = alumniMatch ? alumniMatch[1] : false;
+              // return the object
+              return { title, alumni };
             });
 
           Promise.all(filesData).then((fileTitles) => {
-            setFiles(fileTitles);
+            // Include files where alumni is false or where the alumni attribute doesn't exist
+            const filteredFiles = fileTitles.filter(
+              (file) => !file.alumni || file.alumni === 'false',
+            );
+            setFiles(filteredFiles);
           });
         } else {
           console.error('Error fetching files:', response.statusText);
