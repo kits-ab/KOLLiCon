@@ -105,7 +105,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
             ? { location: nextActivity.location }
             : {})}
         >
-          <p>{activity.details.slice(0, 200)}</p>
+          <p>{nextActivity.details.slice(0, 200)}</p>
         </Timeslot>
         {selectedActivityId === nextActivity.id && (
           <ExpandInfo
