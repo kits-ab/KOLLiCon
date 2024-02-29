@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -7,8 +6,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import axios from 'axios';
-import useEffect from 'react';
-import useState from 'react';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -19,8 +16,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-function ExportFileUI() {
-  const [open, setOpen] = React.useState(false);
+function ExportFileUI({ onClose }) {
+  const [open, setOpen] = React.useState(true);
   const [schedules, setSchedules] = React.useState([]);
   const [make, setMake] = React.useState({});
   const [title, setTitle] = React.useState('');
@@ -29,7 +26,7 @@ function ExportFileUI() {
     setOpen(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    setOpen(true);
   };
 
   const fetchAllSchedules = async () => {
@@ -41,6 +38,7 @@ function ExportFileUI() {
     fetchAllSchedules();
   }, []);
 
+  // Man får göra yolo till en lista eller array för att få ett flertal objekt.
   const recieveTheScheduleObject = async (schedule) => {
     await axios.post(`http://localhost:8080/api/generateMdFile/${schedule.id}`);
     const yolo = await axios.get(`http://localhost:8080/api/${schedule.id}/getyaml`);
@@ -101,12 +99,12 @@ function ExportFileUI() {
         ))}
 
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={onClose}>
             Close
           </Button>
           <Button
             onClick={() => {
-              handleClose();
+              onClose();
               selectedSchedule();
             }}
           >

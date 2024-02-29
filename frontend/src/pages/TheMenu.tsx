@@ -10,7 +10,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '../assets/BearWithMe.png';
 import Box from '@mui/material/Box';
-import useState from 'react';
+import ExportFileUI from './ExportFileUI';
 
 const drawerBleeding = 11;
 
@@ -72,6 +72,7 @@ function TheMenu(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const [display, SetDisplay] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -79,6 +80,11 @@ function TheMenu(props: Props) {
 
   const logoutPage = () => {
     navigate('/login');
+  };
+
+  const openUI = () => {
+    setOpen(false);
+    SetDisplay(true);
   };
 
   const handleMenuItemClick = (label: string) => {
@@ -90,6 +96,7 @@ function TheMenu(props: Props) {
       case 'Tidigare KitsCons':
         break;
       case 'Exportera Markdownfil':
+        openUI();
         break;
       default:
         break;
@@ -98,6 +105,7 @@ function TheMenu(props: Props) {
 
   return (
     <>
+      {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
       <GlobalStyles />
       <Root>
         <Global

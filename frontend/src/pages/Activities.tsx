@@ -6,7 +6,6 @@ import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import MenuHeader from './MenuHeader';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from './KolliconFooter';
@@ -15,6 +14,7 @@ import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 import TheMenu from './TheMenu';
+import ExportFileUI from './ExportFileUI';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -39,6 +39,7 @@ export const Activities = () => {
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
+  const [display, SetDisplay] = useState(true);
 
   if (isLoading) {
     return <div>Loading...</div>;
