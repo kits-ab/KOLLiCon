@@ -6,7 +6,6 @@ import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import MenuHeader from './MenuHeader';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from '../components/Footer/KolliconFooter';
@@ -14,6 +13,7 @@ import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
+import TheMenu from './TheMenu';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -72,7 +72,8 @@ export const Activities = () => {
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
-        <MenuHeader></MenuHeader>
+        <TheMenu></TheMenu>
+
         <ActivitiesNew
           activitiesData={activitiesData}
           selectedActivityId={selectedActivityId}

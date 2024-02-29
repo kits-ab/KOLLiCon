@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -10,6 +10,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '../assets/BearWithMe.png';
 import Box from '@mui/material/Box';
+import ExportFileUI from './ExportFileUI';
 
 const drawerBleeding = 11;
 
@@ -43,21 +44,19 @@ const MenuDiv = styled('div')(() => ({
 }));
 
 const menuItems = [
-  { label: 'Schema'},
-  { label: 'Min profil'},
-  { label: 'Tidigare KitsCons'},
-  { label: 'Exportera Markdownfil'},
+  { label: 'Schema' },
+  { label: 'Min profil' },
+  { label: 'Tidigare KitsCons' },
+  { label: 'Exportera Markdownfil' },
 ];
-
 const MenuItem = styled('p')(() => ({
   textAlign: 'center',
   fontSize: '1.1rem',
   cursor: 'pointer',
   '&:hover': {
-    color: '#8cab78',
+    color: '#8CAB78',
   },
 }));
-
 const FixedMenuIcon = styled(MenuIcon)(() => ({
   position: 'fixed',
   color: 'gray',
@@ -68,35 +67,36 @@ const FixedMenuIcon = styled(MenuIcon)(() => ({
   width: 50,
 }));
 
-export default function SwipeableEdgeDrawer(props: Props) {
-  const navigate = useNavigate();
-
+function TheMenu(props: Props) {
   const { window } = props;
+  const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const [display, SetDisplay] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
   const logoutPage = () => {
     navigate('/login');
+  };
+
+  const openUI = () => {
+    setOpen(false);
+    SetDisplay(true);
   };
 
   const handleMenuItemClick = (label: string) => {
     switch (label) {
       case 'Schema':
-
         break;
       case 'Min profil':
-
         break;
       case 'Tidigare KitsCons':
-
         break;
       case 'Exportera Markdownfil':
-        
+        openUI();
         break;
       default:
         break;
@@ -105,6 +105,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
 
   return (
     <>
+      {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
       <GlobalStyles />
       <Root>
         <Global
@@ -116,11 +117,9 @@ export default function SwipeableEdgeDrawer(props: Props) {
             },
           }}
         />
-
         <Box>
           <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
         </Box>
-
         <SwipeableDrawer
           container={container}
           anchor='bottom'
@@ -178,7 +177,6 @@ export default function SwipeableEdgeDrawer(props: Props) {
               </Link>
             </Text>
           </MenuDiv>
-
           <LogoutChildPart>
             <ExitToAppIcon
               cursor='pointer'
@@ -203,3 +201,5 @@ export default function SwipeableEdgeDrawer(props: Props) {
     </>
   );
 }
+
+export default TheMenu;

@@ -2,10 +2,9 @@ package com.kollicon.controller;
 
 import com.kollicon.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -17,5 +16,14 @@ public class DatabaseController {
   @RequestMapping("/generateMdFile/{id}")
   public void generateMdFile(@PathVariable Long id) {
     databaseService.generateMdFile(id);
+  }
+
+  @GetMapping("/{id}/getyaml")
+  public ResponseEntity<String> getYamlData(@PathVariable Long id) {
+    databaseService.generateMdFile(id);
+
+    String yamlData = databaseService.getGeneratedYamlObject();
+
+    return new ResponseEntity<>(yamlData, HttpStatus.OK);
   }
 }

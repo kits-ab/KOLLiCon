@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,6 +37,11 @@ public class ScheduleController {
             return scheduleService.getScheduleById(id);
         }
 
+    }
+
+    @GetMapping("/allschedule")
+    public List<ScheduleModel> findAllSchedules() {
+        return  scheduleService.findAllSchedules();
     }
 
     @PutMapping("/schedule/update")
