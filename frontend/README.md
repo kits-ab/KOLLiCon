@@ -8,12 +8,28 @@ The frontend project follows a typical structure for a React application with Ty
 
 ```plaintext
 src/
-|-- components/
-|-- pages/
-|-- styles/
-|-- App.tsx
-|-- index.tsx
-|-- vite.config.ts
+├── components/
+│   └── Button/
+│       ├── Button.tsx
+│       └── ButtonTest.tsx
+├── pages/
+│   ├── LoginPage.tsx
+│   └── MainPage.tsx
+├── styles/
+│   └── Button/
+│       └── ButtonStyle.tsx
+├── utils/
+│   ├── common/
+│   │   └── useTranslate.tsx
+│   ├── Hooks/
+│   │   └── Button/
+│   │       └── useButton.tsx
+│   └── Button/
+│       └── ButtonUtil.tsx
+├── App.tsx
+├── index.tsx
+├── vite.config.ts
+...
 ```
 
 ## Kits React Components

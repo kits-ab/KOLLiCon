@@ -8,7 +8,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import KolliconFooter from './KolliconFooter';
+import KolliconFooter from '../components/Footer/KolliconFooter';
 import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';

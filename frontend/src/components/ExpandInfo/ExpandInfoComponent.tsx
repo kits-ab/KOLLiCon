@@ -3,8 +3,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
+import { TimeslotType } from '@kokitotsos/react-components/dist/types';
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { Person } from '@kokitotsos/react-components/dist/types/Person';
+import { ExternalPresenter } from '@kokitotsos/react-components/dist/types/ExternalPresenter';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -42,6 +45,14 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
     }
   };
 
+  const getPresenters = (activityType: TimeslotType) => {
+    if (activityType === 'presentation') {
+      return activity.data.presenter as Person[];
+    } else if (activityType === 'externalpresentation') {
+      return activity.data.externalPresenter as Person[];
+    }
+  };
+
   const matches = useMediaQuery('(min-width:600px)');
 
   return (
@@ -72,7 +83,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         <Timeslot
           heading={activity.data.title}
           type={activity.data.type}
-          presenters={activity.data.presenter}
+          presenters={getPresenters(activity.data.type) as Person[]}
           startTime={activity.start}
           endTime={activity.end}
           showEndTime={true}
@@ -81,13 +92,16 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
           <p>{activity.data.details}</p>
         </Text>
         {activity.location.length === 2 && (
-          <a href={getMapLink(activity.location)} target='_blank' rel='noopener noreferrer'>
+          <div
+            onClick={() => window.open(getMapLink(activity.location), '_blank')}
+            style={{ cursor: 'pointer' }}
+          >
             <Location
               coordinates={[activity.location[0], activity.location[1]]}
               title={activity.data.location.title ? activity.data.location.title : 'Aktivitet'}
               subtitle={activity.data.location.subtitle ? activity.data.location.subtitle : 'Subtitle'}
             />
-          </a>
+          </div>
         )}
       </Drawer>
     </div>
