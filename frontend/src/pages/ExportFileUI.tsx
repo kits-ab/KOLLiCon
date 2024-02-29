@@ -16,6 +16,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
+const backendUrl = import.meta.env.VITE_API_URL;
+
 function ExportFileUI({ onClose }) {
   const [open, setOpen] = React.useState(true);
   const [schedules, setSchedules] = React.useState([]);
@@ -30,7 +32,7 @@ function ExportFileUI({ onClose }) {
   };
 
   const fetchAllSchedules = async () => {
-    const responseOfSchedules = await axios.get('http://localhost:8080/api/allschedule');
+    const responseOfSchedules = await axios.get(`${backendUrl}/api/allschedule`);
     setSchedules(responseOfSchedules.data);
   };
 
@@ -40,8 +42,8 @@ function ExportFileUI({ onClose }) {
 
   // Man får göra yolo till en lista eller array för att få ett flertal objekt.
   const recieveTheScheduleObject = async (schedule) => {
-    await axios.post(`http://localhost:8080/api/generateMdFile/${schedule.id}`);
-    const yolo = await axios.get(`http://localhost:8080/api/${schedule.id}/getyaml`);
+    await axios.post(`${backendUrl}/api/generateMdFile/${schedule.id}`);
+    const yolo = await axios.get(`${backendUrl}/api/${schedule.id}/getyaml`);
     setMake(yolo.data);
   };
 

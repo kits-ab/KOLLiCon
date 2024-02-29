@@ -14,7 +14,6 @@ import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 import TheMenu from './TheMenu';
-import ExportFileUI from './ExportFileUI';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -39,7 +38,6 @@ export const Activities = () => {
   const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
-  const [display, SetDisplay] = useState(true);
 
   if (isLoading) {
     return <div>Loading...</div>;
