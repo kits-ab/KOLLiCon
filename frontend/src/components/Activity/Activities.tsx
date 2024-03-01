@@ -5,6 +5,7 @@ import DateText from '@/styles/DateText';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 import React, { useState } from 'react';
 import { Person } from '@kokitotsos/react-components/dist/types/Person';
+import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -16,6 +17,7 @@ interface ActivitiesProps {
 export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const presenters = useGetPresenter();
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -24,9 +26,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
-  const separateActivitiesByDate = (
-    activitiesSortedByDate: [],
-  ): { [key: string]: ActivityType[] } => {
+  const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
@@ -68,21 +68,13 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const separatedActivities = separateActivitiesByDate(activitiesData);
   const skipIndices = new Set<number>();
 
-  const getPresenters = (currentActivity: ActivityType) => {
-    if (currentActivity.type === 'presentation') {
-      return currentActivity.presenter as Person[];
-    } else if (currentActivity.type === 'externalpresentation') {
-      return currentActivity.externalPresenter as Person[];
-    }
-  };
-
   return (
     <>
       <React.Fragment key={'activities'}>
         {activitiesSortedByDate.map((activity: ActivityType, index: number) => {
           <Timeslot
             key={activity.id}
-            presenters={getPresenters(activity) as Person[]}
+            presenters={presenters(activity) as Person[]}
             endTime={activity.end}
             heading={activity.title}
             startTime={activity.start}
@@ -146,7 +138,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     >
                       <Timeslot
                         key={key}
-                        presenters={getPresenters(activity) as Person[]}
+                        presenters={presenters(activity) as Person[]}
                         endTime={activity.end}
                         heading={activity.title}
                         startTime={activity.start}
@@ -204,7 +196,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     >
                       <Timeslot
                         key={key}
-                        presenters={getPresenters(activity) as Person[]}
+                        presenters={presenters(activity) as Person[]}
                         endTime={activity.end}
                         heading={activity.title}
                         startTime={activity.start}
