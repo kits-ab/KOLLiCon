@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signinCallback } from '@/utils/Auth';
+import { signinCallback } from '@/utils/Authorization/Auth';
 import Spinner from '@/components/Spinner/Spinner';
 
 const HandleLogin = () => {
@@ -15,7 +15,7 @@ const HandleLogin = () => {
     signinCallback()
       .then(() => {
         // Temp path
-        navigate('/activities', { replace: true });
+        navigate('/home', { replace: true });
       })
       .catch(() => {
         // Temp path

@@ -4,13 +4,13 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Link, useNavigate } from 'react-router-dom';
-import { signOut } from '@/utils/Auth';
+import { signOut } from '@/utils/Authorization/Auth';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
-import Beer from '../assets/BearWithMe.png';
+import Beer from '@/assets/BearWithMe.png';
 import Box from '@mui/material/Box';
-import ExportFileUI from './ExportFileUI';
+import ExportFileUI from '../ExportSchedule/ExportFileUI';
 
 const drawerBleeding = 11;
 

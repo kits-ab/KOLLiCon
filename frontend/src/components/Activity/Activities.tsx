@@ -17,6 +17,10 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
 
+  const activitiesSortedByDate = activitiesData.sort(
+    (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
+  );
+
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
@@ -25,7 +29,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
 
-    activitiesData?.map((activity: ActivityType) => {
+    activitiesSortedByDate?.map((activity: ActivityType) => {
       let date = activity.start.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
       const today = new Date();
@@ -71,108 +75,145 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   };
 
   return (
-    <React.Fragment key={'activities'}>
-      {separatedActivities &&
-        Object.keys(separatedActivities).map((date) => {
-          return separatedActivities[date].map((activity: ActivityType, index: number) => {
-            const nextActivity = separatedActivities[date][index + 1];
-            const key: string = `${date}-${index}`;
-            if (skipIndices.has(index)) {
-              return null;
-            }
-            if (index === 0) {
-              return (
-                <React.Fragment key={key}>
-                  <DateText>{date}</DateText>
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      setSelectedActivityId(activity.id);
-                      expandInfo();
-                    }}
-                  >
-                    <Timeslot
-                      key={key}
-                      presenters={getPresenters(activity) as Person[]}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? { location: activity.location }
-                        : {})}
-                    >
-                      <p>{activity.details.slice(0, 200)}</p>
-                    </Timeslot>
-                    {selectedActivityId === activity.id && (
-                      <ExpandInfo
-                        activityProp={activity}
-                        open={expandInfoOpen}
-                        setOpen={setExpandInfoOpen}
-                      >
-                        {/* <button onClick={expandInfo}>Close Drawer</button> */}
-                      </ExpandInfo>
-                    )}
-                  </a>
-                </React.Fragment>
-              );
-            } else if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
-              skipIndices.add(index + 1);
-              return (
-                <SeparatedActivities
-                  date={date}
-                  activity={activity}
-                  nextActivity={nextActivity}
-                  skipIndices={skipIndices}
-                  index={index}
-                  uniqueKey={key}
-                  setSelectedActivityId={setSelectedActivityId}
-                  expandInfo={expandInfo}
-                  expandInfoOpen={expandInfoOpen}
-                  setExpandInfoOpen={setExpandInfoOpen}
-                  selectedActivityId={selectedActivityId}
-                />
-              );
-            } else {
-              return (
-                <React.Fragment key={key}>
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      setSelectedActivityId(activity.id);
-                      expandInfo();
-                    }}
-                  >
-                    <Timeslot
-                      key={key}
-                      presenters={getPresenters(activity) as Person[]}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? { location: activity.location }
-                        : {})}
-                    >
-                      <p>{activity.details.slice(0, 200)}</p>
-                    </Timeslot>
-                    {selectedActivityId === activity.id && (
-                      <ExpandInfo
-                        activityProp={activity}
-                        open={expandInfoOpen}
-                        setOpen={setExpandInfoOpen}
-                      >
-                        {/* <button onClick={expandInfo}>Close Drawer</button> */}
-                      </ExpandInfo>
-                    )}
-                  </a>
-                </React.Fragment>
-              );
-            }
-          });
+    <>
+      <React.Fragment key={'activities'}>
+        {activitiesSortedByDate.map((activity: ActivityType, index: number) => {
+          <Timeslot
+            key={activity.id}
+            presenters={getPresenters(activity) as Person[]}
+            endTime={activity.end}
+            heading={activity.title}
+            startTime={activity.start}
+            type={activity.type}
+            showEndTime={true}
+            {...(activity.location.coordinates[0] !== 0 ? { location: activity.location } : {})}
+          >
+            <p>{activity.details.slice(0, 200)}</p>
+          </Timeslot>;
         })}
-    </React.Fragment>
+      </React.Fragment>
+      <React.Fragment key={activitiesData.id}>
+        {separatedActivities &&
+          Object.keys(separatedActivities).map((date) => {
+            return separatedActivities[date].map((activity: ActivityType, index: number) => {
+              const nextActivity = separatedActivities[date][index + 1];
+              const key: string = `${date}-${index}`;
+              if (skipIndices.has(index)) {
+                return null;
+              }
+              if (index === 0) {
+                if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
+                  skipIndices.add(index + 1);
+                  return (
+                    <>
+                      <DateText>{date}</DateText>
+                      <SeparatedActivities
+                        key={key}
+                        date={date}
+                        activity={activity}
+                        nextActivity={nextActivity}
+                        skipIndices={skipIndices}
+                        index={index}
+                        uniqueKey={key}
+                        setSelectedActivityId={setSelectedActivityId}
+                        expandInfo={expandInfo}
+                        expandInfoOpen={expandInfoOpen}
+                        setExpandInfoOpen={setExpandInfoOpen}
+                        selectedActivityId={selectedActivityId}
+                      />
+                    </>
+                  );
+                }
+                return (
+                  <React.Fragment key={key}>
+                    <DateText>{date}</DateText>
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
+                    >
+                      <Timeslot
+                        key={key}
+                        presenters={getPresenters(activity) as Person[]}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        showEndTime={true}
+                        {...(activity.location.coordinates[0] !== 0
+                          ? { location: activity.location }
+                          : {})}
+                      >
+                        <p>{activity.details.slice(0, 200)}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityProp={activity}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        ></ExpandInfo>
+                      )}
+                    </a>
+                  </React.Fragment>
+                );
+              } else if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
+                skipIndices.add(index + 1);
+                return (
+                  <SeparatedActivities
+                    key={key}
+                    date={date}
+                    activity={activity}
+                    nextActivity={nextActivity}
+                    skipIndices={skipIndices}
+                    index={index}
+                    uniqueKey={key}
+                    setSelectedActivityId={setSelectedActivityId}
+                    expandInfo={expandInfo}
+                    expandInfoOpen={expandInfoOpen}
+                    setExpandInfoOpen={setExpandInfoOpen}
+                    selectedActivityId={selectedActivityId}
+                  />
+                );
+              } else {
+                return (
+                  <React.Fragment key={key}>
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setSelectedActivityId(activity.id);
+                        expandInfo();
+                      }}
+                    >
+                      <Timeslot
+                        key={key}
+                        presenters={getPresenters(activity) as Person[]}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        showEndTime={true}
+                        {...(activity.location.coordinates[0] !== 0
+                          ? { location: activity.location }
+                          : {})}
+                      >
+                        <p>{activity.details.slice(0, 200)}</p>
+                      </Timeslot>
+                      {selectedActivityId === activity.id && (
+                        <ExpandInfo
+                          activityProp={activity}
+                          open={expandInfoOpen}
+                          setOpen={setExpandInfoOpen}
+                        ></ExpandInfo>
+                      )}
+                    </a>
+                  </React.Fragment>
+                );
+              }
+            });
+          })}
+      </React.Fragment>
+    </>
   );
 };
