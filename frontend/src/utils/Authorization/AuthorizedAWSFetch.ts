@@ -1,5 +1,5 @@
-import { type AuthorizedAWSFetch, RequestOptions } from './Types';
-import { getUserAccessToken } from './Authorization/Auth';
+import { type AuthorizedAWSFetch, RequestOptions } from '../Types';
+import { getUserAccessToken } from './Auth';
 
 const authorizedAWSFetch: AuthorizedAWSFetch = async (path, method = 'get', data, options = {}) => {
   const accessToken = await getUserAccessToken();

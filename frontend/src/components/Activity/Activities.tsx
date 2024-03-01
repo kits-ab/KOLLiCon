@@ -86,7 +86,15 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
             startTime={activity.start}
             type={activity.type}
             showEndTime={true}
-            {...(activity.location.coordinates[0] !== 0 ? { location: activity.location } : {})}
+            {...(activity.location.coordinates[0] !== 0
+              ? {
+                  location: {
+                    coordinates: activity.location.coordinates,
+                    title: (activity.location.title as string) || 'Location',
+                    subtitle: activity.location.subtitle,
+                  },
+                }
+              : {})}
           >
             <p>{activity.details.slice(0, 200)}</p>
           </Timeslot>;
@@ -143,7 +151,13 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                         type={activity.type}
                         showEndTime={true}
                         {...(activity.location.coordinates[0] !== 0
-                          ? { location: activity.location }
+                          ? {
+                              location: {
+                                coordinates: activity.location.coordinates,
+                                title: (activity.location.title as string) || 'Location',
+                                subtitle: activity.location.subtitle,
+                              },
+                            }
                           : {})}
                       >
                         <p>{activity.details.slice(0, 200)}</p>
@@ -195,7 +209,14 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                         type={activity.type}
                         showEndTime={true}
                         {...(activity.location.coordinates[0] !== 0
-                          ? { location: activity.location }
+                          ? {
+                              location: {
+                                coordinates: activity.location.coordinates,
+
+                                title: (activity.location.title as string) || 'Location',
+                                subtitle: activity.location.subtitle,
+                              },
+                            }
                           : {})}
                       >
                         <p>{activity.details.slice(0, 200)}</p>
