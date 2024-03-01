@@ -4,7 +4,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
 import { Person, TimeslotType } from '@kokitotsos/react-components/dist/types';
 
-interface SeparatedActivitiesProps {
+interface ParallellActivitiesProps {
   date: string;
   activity: ActivityType;
   nextActivity: ActivityType;
@@ -18,7 +18,7 @@ interface SeparatedActivitiesProps {
   selectedActivityId: number | null;
 }
 
-export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) => {
+export const ParallellActivities: React.FC<ParallellActivitiesProps> = (props) => {
   const {
     date,
     activity,
@@ -48,18 +48,22 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
     <Box
       key={uniqueKey}
       sx={{
-        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        margin: '0px auto 0px auto',
       }}
     >
       <a
         key={aKey}
         style={{
-          width: '100%',
           cursor: 'pointer',
-          marginRight: '5px',
+          width: '50%',
+          marginRight: '10px',
+          paddingTop:
+            activity.type === 'presentation' || activity.type === 'externalpresentation'
+              ? undefined
+              : '10px',
         }}
         onClick={() => {
           setSelectedActivityId(activity.id);
@@ -97,9 +101,12 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       <a
         key={bKey}
         style={{
-          width: '100%',
           cursor: 'pointer',
-          marginLeft: '5px',
+          width: '50%',
+          paddingTop:
+            nextActivity.type === 'presentation' || nextActivity.type === 'externalpresentation'
+              ? undefined
+              : '10px',
         }}
         onClick={() => {
           setSelectedActivityId(nextActivity.id);

@@ -1,4 +1,4 @@
-import { SeparatedActivities } from '@/components/Activity/SeparatedActivities';
+import { ParallellActivities } from '@/components/Activity/ParallellActivities';
 import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
 import DateText from '@/styles/DateText';
@@ -117,7 +117,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                   return (
                     <>
                       <DateText>{date}</DateText>
-                      <SeparatedActivities
+                      <ParallellActivities
                         key={key}
                         date={date}
                         activity={activity}
@@ -177,7 +177,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
               } else if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
                 skipIndices.add(index + 1);
                 return (
-                  <SeparatedActivities
+                  <ParallellActivities
                     key={key}
                     date={date}
                     activity={activity}
