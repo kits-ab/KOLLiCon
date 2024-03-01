@@ -19,7 +19,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const backendUrl = import.meta.env.VITE_API_URL;
 
-function ExportFileUI({ onClose }) {
+function ExportFileUI({ onClose }: { onClose: any }) {
   const [open, setOpen] = React.useState(true);
   const [schedules, setSchedules] = React.useState([]);
   const [idOfPickedSchedule, setIdOfPickedSchedule] = React.useState<string[]>([]);
@@ -96,7 +96,7 @@ function ExportFileUI({ onClose }) {
           Exportera markdownfile
         </DialogTitle>
 
-        {schedules.map((value: { id: string }, index: number) => (
+        {schedules.map((value: { id: string; title: string }, index: number) => (
           <DialogContent key={index} dividers>
             {String(value.title)}
             <Checkbox

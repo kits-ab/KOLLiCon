@@ -9,7 +9,6 @@ import NotFound from '@/pages/NotFound';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Activity from './components/RegisterActivity/Activity';
 import ScheduleForm from '@/components/CreateSchedule/CreateScheduleComponent';
-import ExportFileUI from './components/ExportSchedule/ExportFileUI';
 import TheMenu from './components/HeaderMenu/TheMenu';
 
 // Create a client
@@ -28,7 +27,6 @@ function App() {
         <Route path='/home' element={<Home />} />
         <Route path='/activity' element={<Activity />} />
         <Route path='/postschedule' element={<ScheduleForm />} />
-        <Route path='/ui' element={<ExportFileUI />} />
         <Route path='/newmenu' element={<TheMenu />} />
       </Routes>
     </QueryClientProvider>
