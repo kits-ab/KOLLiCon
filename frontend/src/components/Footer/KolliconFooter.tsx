@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Footer, types } from '@kokitotsos/react-components';
-import { secondaryLink } from '@/components/Common/colors';
+import { colors } from '@kokitotsos/react-components';
 
 function KolliconFooter() {
   const BottomFooter = styled.div`
@@ -11,7 +11,7 @@ function KolliconFooter() {
     background-color: blue;
 
     div > address > p > span > a {
-      color: ${secondaryLink};
+      color: ${colors.text1};
     }
   `;
 
