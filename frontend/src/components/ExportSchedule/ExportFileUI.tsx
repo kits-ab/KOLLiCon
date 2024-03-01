@@ -22,8 +22,6 @@ const backendUrl = import.meta.env.VITE_API_URL;
 function ExportFileUI({ onClose }) {
   const [open, setOpen] = React.useState(true);
   const [schedules, setSchedules] = React.useState([]);
-  const [make, setMake] = React.useState({});
-  const [title, setTitle] = React.useState('');
   const [idOfPickedSchedule, setIdOfPickedSchedule] = React.useState<string[]>([]);
 
   const handleClickOpen = () => {
@@ -42,7 +40,7 @@ function ExportFileUI({ onClose }) {
     fetchAllSchedules();
   }, []);
 
-  // Track object id in state and save title of id object.
+  // Track id of selected schedules.
   const addSelectedObjectIdToState = (objectId: string) => {
     const isSelected = idOfPickedSchedule.includes(objectId);
 
@@ -53,6 +51,7 @@ function ExportFileUI({ onClose }) {
     }
   };
 
+  // Create yaml objects of selected schedules.
   const createYamlobjects = async () => {
     for (let i = 0; i < idOfPickedSchedule.length; i++) {
       await axios.post(`${backendUrl}/api/generateMdFile/${idOfPickedSchedule[i]}`);
@@ -64,7 +63,8 @@ function ExportFileUI({ onClose }) {
     }
   };
 
-  const selectedSchedule = (theSchedule, title) => {
+  // Create BLOB object of selected schedules.
+  const selectedSchedule = (theSchedule: string, title: string) => {
     const blob = new Blob([theSchedule], { type: 'application/md' });
 
     const link = document.createElement('a');

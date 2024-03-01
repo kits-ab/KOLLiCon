@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface DatabaseRepository extends JpaRepository<ScheduleModel, Long> {
 
 
-    Optional<ScheduleModel> findByTitle(String title);
 }
