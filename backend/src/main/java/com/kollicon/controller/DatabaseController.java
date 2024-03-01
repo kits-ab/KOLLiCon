@@ -1,5 +1,6 @@
 package com.kollicon.controller;
 
+import com.kollicon.model.ScheduleModel;
 import com.kollicon.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,5 +26,10 @@ public class DatabaseController {
     String yamlData = databaseService.getGeneratedYamlObject();
 
     return new ResponseEntity<>(yamlData, HttpStatus.OK);
+  }
+
+  @GetMapping("/scheduletitle/{id}")
+  public String getTitle(@PathVariable Long id) {
+    return databaseService.getTitle(id);
   }
 }

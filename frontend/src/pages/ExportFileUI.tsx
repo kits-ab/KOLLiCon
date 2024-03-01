@@ -5,6 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Checkbox from '@mui/material/Checkbox';
 import axios from 'axios';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -23,6 +24,7 @@ function ExportFileUI({ onClose }) {
   const [schedules, setSchedules] = React.useState([]);
   const [make, setMake] = React.useState({});
   const [title, setTitle] = React.useState('');
+  const [idOfPickedSchedule, setIdOfPickedSchedule] = React.useState<string[]>([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,17 +42,30 @@ function ExportFileUI({ onClose }) {
     fetchAllSchedules();
   }, []);
 
-  // Man får göra yolo till en lista eller array för att få ett flertal objekt.
-  const recieveTheScheduleObject = async (schedule) => {
-    await axios.post(`${backendUrl}/api/generateMdFile/${schedule.id}`);
-    const yolo = await axios.get(`${backendUrl}/api/${schedule.id}/getyaml`);
-    setMake(yolo.data);
+  // Track object id in state and save title of id object.
+  const addSelectedObjectIdToState = (objectId: string) => {
+    const isSelected = idOfPickedSchedule.includes(objectId);
+
+    if (isSelected) {
+      setIdOfPickedSchedule((alreadyExitingId) => alreadyExitingId.filter((id) => id !== objectId));
+    } else {
+      setIdOfPickedSchedule((alreadyExitingId) => [...alreadyExitingId, objectId]);
+    }
   };
 
-  const selectedSchedule = () => {
-    console.log(title);
+  const createYamlobjects = async () => {
+    for (let i = 0; i < idOfPickedSchedule.length; i++) {
+      await axios.post(`${backendUrl}/api/generateMdFile/${idOfPickedSchedule[i]}`);
+      const yolo = await axios.get(`${backendUrl}/api/${idOfPickedSchedule[i]}/getyaml`);
+      const titleOfSchedule = await axios.get(
+        `${backendUrl}/api/scheduletitle/${idOfPickedSchedule[i]}`,
+      );
+      selectedSchedule(yolo.data, titleOfSchedule.data);
+    }
+  };
 
-    const blob = new Blob([make], { type: 'application/md' });
+  const selectedSchedule = (theSchedule, title) => {
+    const blob = new Blob([theSchedule], { type: 'application/md' });
 
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -82,21 +97,13 @@ function ExportFileUI({ onClose }) {
         </DialogTitle>
 
         {schedules.map((value: { id: string }, index: number) => (
-          <DialogContent
-            key={index}
-            onClick={() => {
-              recieveTheScheduleObject(value);
-              setTitle(value.title);
-            }}
-            dividers
-            sx={{
-              '&:hover': {
-                backgroundColor: '#555555',
-                cursor: 'pointer',
-              },
-            }}
-          >
+          <DialogContent key={index} dividers>
             {String(value.title)}
+            <Checkbox
+              onClick={() => {
+                addSelectedObjectIdToState(value.id);
+              }}
+            />
           </DialogContent>
         ))}
 
@@ -107,7 +114,7 @@ function ExportFileUI({ onClose }) {
           <Button
             onClick={() => {
               onClose();
-              selectedSchedule();
+              createYamlobjects();
             }}
           >
             Save
