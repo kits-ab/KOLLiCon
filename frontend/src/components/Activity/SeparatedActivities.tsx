@@ -41,6 +41,9 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
     return [];
   };
 
+  const aKey: string = `${activity}-${index}`;
+  const bKey: string = `${nextActivity}-${index + 1}`;
+
   return (
     <Box
       key={uniqueKey}
@@ -52,6 +55,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       }}
     >
       <a
+        key={aKey}
         style={{
           width: '100%',
           cursor: 'pointer',
@@ -83,6 +87,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
         )}
       </a>
       <a
+        key={bKey}
         style={{
           width: '100%',
           cursor: 'pointer',
