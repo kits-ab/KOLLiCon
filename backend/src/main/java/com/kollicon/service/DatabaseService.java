@@ -129,5 +129,7 @@ public class DatabaseService {
         return generatedYamlObject;
     }
 
-
+    public String getTitle(Long id) {
+        return scheduleRepository.findById(id).get().getTitle();
+    }
 }

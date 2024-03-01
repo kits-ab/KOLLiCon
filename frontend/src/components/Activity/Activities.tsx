@@ -24,7 +24,9 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
-  const separateActivitiesByDate = (activitiesData: []): { [key: string]: ActivityType[] } => {
+  const separateActivitiesByDate = (
+    activitiesSortedByDate: [],
+  ): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
