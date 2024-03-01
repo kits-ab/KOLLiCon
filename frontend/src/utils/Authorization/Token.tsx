@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserAccessToken } from '@/utils/Auth';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 
 // Temp. Delete later.
 const Token = () => {

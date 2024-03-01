@@ -3,7 +3,7 @@ import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
 import { EventsWrapper, PStyled, StyledButton, StyledDiv, StyledLine } from './StyledActivity';
 import { sxStyles, slotPropsStyles } from '@/components/RegisterActivity/StyledDateTimePicker';
-import Button from '@/components/Button';
+import Button from '@/styles/Common/Button/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -155,7 +155,7 @@ function Activity({ onClose }: any) {
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-        setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
+    setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
     if (value) {
       const filteredTitles = files.filter((file: { title: string }) =>
         file.title.toLowerCase().startsWith(value.toLowerCase()),
@@ -205,13 +205,17 @@ function Activity({ onClose }: any) {
     const pictureExists = await profilePictureExists(profilePictureUrl);
 
     // Check if the title exists in the files state
-    const titleExists = files.some((file: { title: string }) => file.title.toLowerCase() === presenter.name.toLowerCase());
-    
+    const titleExists = files.some(
+      (file: { title: string }) => file.title.toLowerCase() === presenter.name.toLowerCase(),
+    );
+
     if (!pictureExists || !titleExists) {
       // Handle case where profile picture doesn't exist or title doesn't exist in files state
-      console.log(`Profile picture for ${presenter.name} does not exist or is not accessible, or the title does not exist.`);
+      console.log(
+        `Profile picture for ${presenter.name} does not exist or is not accessible, or the title does not exist.`,
+      );
       return;
-    }  
+    }
     // Add presenter to the activity state
     setActivity({
       ...activity,
@@ -222,7 +226,7 @@ function Activity({ onClose }: any) {
       avatarSrc: '',
     });
   };
-  
+
   //Add external presenter
   const addExternalPresenter = () => {
     setActivity({
