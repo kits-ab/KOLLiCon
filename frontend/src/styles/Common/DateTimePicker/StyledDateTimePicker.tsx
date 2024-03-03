@@ -13,8 +13,16 @@ export const sxStyles = {
       color: 'black',
     }
   };
+
+  type DateTimePickerSlotsComponentsProps<T> = {
+    actionBar?: T;
+    calendarHeader?: T;
+    mobilePaper?: T;
+    toolbar?: T;
+    textField?: T;
+  };
   
-  export const slotPropsStyles = {
+  export const slotPropsStyles: DateTimePickerSlotsComponentsProps<any> = {
     actionBar: { sx: { backgroundColor: '#b2b2b2' } },
     calendarHeader: { sx: { backgroundColor: '#b2b2b2' } },
     mobilePaper: { sx: { backgroundColor: '#b2b2b2' } },

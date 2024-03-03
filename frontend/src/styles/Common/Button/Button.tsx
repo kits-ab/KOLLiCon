@@ -13,8 +13,8 @@ const Button = styled(MuiButton)({
     backgroundColor: '#354a2b',
   },
   '&.Mui-disabled': {
-    backgroundColor: '#596b4d',
-    color: '#ffffff',
+    backgroundColor: '#4B5048',
+    color: 'gray',
   },
 });
 
