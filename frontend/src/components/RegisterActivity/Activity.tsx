@@ -105,6 +105,7 @@ function Activity({ onClose }: any) {
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log('yoo');
     e.preventDefault();
     try {
       const activityData = { ...activity, location: location };
