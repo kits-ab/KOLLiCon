@@ -54,6 +54,8 @@ function Activity({ onClose }: any) {
     coordinates: '',
   });
 
+  const [error, setError] = useState('');
+
   const [presenter, setPresenter] = useState({
     name: '',
     avatarSrc: '',
@@ -79,6 +81,7 @@ function Activity({ onClose }: any) {
   } as unknown as Activity);
 
   const [isFieldsFilled, setIsFieldsFilled] = useState(false);
+
   useEffect(() => {
     checkFieldsFilled();
   }, [activity.details, activity.title]);
@@ -137,7 +140,6 @@ function Activity({ onClose }: any) {
   //Function to handle the input change for title and details
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    console.log(activity);
     setActivity({ ...activity, [name]: value });
     checkFieldsFilled();
   };
@@ -207,8 +209,8 @@ function Activity({ onClose }: any) {
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setError('');
     setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
-    checkFieldsFilled();
     if (value) {
       const filteredTitles = files.filter((file: { title: string }) =>
         file.title.toLowerCase().startsWith(value.toLowerCase()),
@@ -241,7 +243,6 @@ function Activity({ onClose }: any) {
   ) => {
     const { name, value } = e.target;
     setExternalPresenter({ ...externalPresenter, [name]: value });
-    checkFieldsFilled();
   };
 
   const handleSuggestionClick = (selectedTitle: string) => {
@@ -267,10 +268,8 @@ function Activity({ onClose }: any) {
     );
 
     if (!pictureExists || !titleExists) {
-      // Handle case where profile picture doesn't exist or title doesn't exist in files state
-      console.log(
-        `Profile picture for ${presenter.name} does not exist or is not accessible, or the title does not exist.`,
-      );
+      // Handle case where title doesn't exist in files state or profile picture doesn't exist
+      setError(`"${presenter.name}" not found`)
       return;
     }
     // Add presenter to the activity state
@@ -287,6 +286,7 @@ function Activity({ onClose }: any) {
       name: '',
       avatarSrc: '',
     });
+    setIsFieldsFilled(true);
   };
 
   //Add external presenter
@@ -304,6 +304,7 @@ function Activity({ onClose }: any) {
       name: '',
       avatarSrc: '',
     });
+    setIsFieldsFilled(true);
   };
   //Checks if the profile picture exists in the response
   async function profilePictureExists(url: string) {
@@ -366,6 +367,7 @@ function Activity({ onClose }: any) {
             setFiles(filteredFiles);
           });
         } else {
+          
           console.error('Error fetching files:', response.statusText);
         }
       } catch (error: any) {
@@ -575,6 +577,7 @@ function Activity({ onClose }: any) {
                     >
                       Lägg till
                     </StyledButton>
+                    {error && <p style={{color:'#963939', fontWeight:'bold'}}>{error}</p>}
 
                     {/* List added presenters */}
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
