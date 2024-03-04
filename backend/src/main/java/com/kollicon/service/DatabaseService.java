@@ -102,7 +102,7 @@ public class DatabaseService {
             activities.add(activityMap);
         }
 
-        ScheduleData.put("scheme", activities);
+        ScheduleData.put("schema", activities);
 
         String scheduleDescription = scheduleModel.getDescription();
 
