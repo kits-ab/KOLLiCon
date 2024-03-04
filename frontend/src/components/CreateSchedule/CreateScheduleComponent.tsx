@@ -8,7 +8,7 @@ import {
   PStyled,
   StyledDiv,
   StyledTextArea,
-} from '@/components/RegisterActivity/StyledActivity';
+} from '../../styles/RegisterActivity/StyledActivity';
 
 interface Props {
   userId: string;
