@@ -252,7 +252,6 @@ function Activity({ onClose }: any) {
       name: selectedTitle,
       avatarSrc: getProfilePictureUrl(selectedTitle),
     });
-    checkFieldsFilled();
     // Clear suggestions
     setSuggestions([]);
   };
