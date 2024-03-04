@@ -8,6 +8,7 @@ import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Person } from '@kokitotsos/react-components/dist/types/Person';
 import { ExternalPresenter } from '@kokitotsos/react-components/dist/types/ExternalPresenter';
+import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -22,6 +23,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
     start: new Date(),
     end: new Date(),
   });
+  const presenters = useGetPresenter();
 
   useEffect(() => {
     const coordinates = Array.isArray(activityProp.location.coordinates)
@@ -42,14 +44,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
       return `maps://maps.apple.com/?q=${coordinates[0]},${coordinates[1]}`;
     } else {
       return `https://www.google.com/maps/search/?api=1&query=${coordinates[0]},${coordinates[1]}`;
-    }
-  };
-
-  const getPresenters = (activityType: TimeslotType) => {
-    if (activityType === 'presentation') {
-      return activity.data.presenter as Person[];
-    } else if (activityType === 'externalpresentation') {
-      return activity.data.externalPresenter as Person[];
     }
   };
 
@@ -83,7 +77,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         <Timeslot
           heading={activity.data.title}
           type={activity.data.type}
-          presenters={getPresenters(activity.data.type) as Person[]}
+          presenters={presenters(activity.data) as Person[]}
           startTime={activity.start}
           endTime={activity.end}
           showEndTime={true}
