@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@/styles/MapBox/MapBox.css';
-import { StyledButton, StyledLine } from '../RegisterActivity/StyledActivity';
+import { StyledButton, StyledLine } from '../../styles/RegisterActivity/StyledActivity';
 
 const MapBox = ({
   onCoordinatesChange,

@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
-import { EventsWrapper, PStyled, StyledButton, StyledDiv, StyledLine } from './StyledActivity';
-import { sxStyles, slotPropsStyles } from '@/components/RegisterActivity/StyledDateTimePicker';
+import {
+  EventsWrapper,
+  PStyled,
+  StyledButton,
+  StyledDiv,
+  StyledLine,
+} from '../../styles/RegisterActivity/StyledActivity';
+import { sxStyles, slotPropsStyles } from '@/styles/Common/DateTimePicker/StyledDateTimePicker';
 import Button from '@/styles/Common/Button/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,6 +18,7 @@ import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MapBox from '../MapBox/MapBox';
@@ -47,6 +54,8 @@ function Activity({ onClose }: any) {
     coordinates: '',
   });
 
+  const [error, setError] = useState('');
+
   const [presenter, setPresenter] = useState({
     name: '',
     avatarSrc: '',
@@ -71,6 +80,29 @@ function Activity({ onClose }: any) {
     end: '',
   } as unknown as Activity);
 
+  const [isFieldsFilled, setIsFieldsFilled] = useState(false);
+
+  useEffect(() => {
+    checkFieldsFilled();
+  }, [activity.details, activity.title]);
+
+  // Function to check if all required fields are filled
+  const checkFieldsFilled = () => {
+    const requiredFieldsFilled =
+      activity.title && activity.details && activity.start && activity.end;
+    const presenterFilled = showPresenter ? presenter.name.trim() !== '' : true;
+    const externalPresenterFilled = showExternalPresenter
+      ? externalPresenter.name.trim() !== ''
+      : true;
+    const locationFilled =
+      showLocation ||
+      (location.title.trim() === '' && location.subtitle.trim() === '' ? true : true);
+      
+    setIsFieldsFilled(
+      Boolean(requiredFieldsFilled && presenterFilled && externalPresenterFilled && locationFilled),
+    );
+  };
+
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,15 +118,34 @@ function Activity({ onClose }: any) {
   //Function to close the modal
   const handleCancelButtonClick = () => {
     onClose();
+    resetActivity();
   };
+  //function to reset the activity state
+  const resetActivity = () => {
+    setActivity({
+      presenter: [],
+      externalPresenter: [],
+      title: '',
+      details: '',
+      start: '',
+      end: '',
+    } as unknown as Activity);
+    setLocation({ title: '', subtitle: '', coordinates: '' });
+    setType('');
+    setShowExternalPresenter(false);
+    setShowPresenter(false);
+    setShowLocation(false);
+  };
+
   //Function to handle the input change for title and details
-  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setActivity({ ...activity, [name]: value });
+    checkFieldsFilled();
   };
 
   //Function to handle the activity input change
-  const handleActivityInputChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+  const handleActivityInputChange = (e: SelectChangeEvent<types.TimeslotType>) => {
     const { name, value } = e.target;
     if (name === 'type') {
       setType(value as types.TimeslotType);
@@ -128,11 +179,13 @@ function Activity({ onClose }: any) {
         setShowLocation(false);
       }
     }
+    checkFieldsFilled();
   };
 
-  //Function to handle the location change
+  // Function to handle the location change
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    checkFieldsFilled();
     setLocation({ ...location, [name]: value });
   };
 
@@ -150,11 +203,13 @@ function Activity({ onClose }: any) {
 
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
+    checkFieldsFilled();
   };
 
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setError('');
     setPresenter({ ...presenter, [name]: value, avatarSrc: getProfilePictureUrl(value) });
     if (value) {
       const filteredTitles = files.filter((file: { title: string }) =>
@@ -173,11 +228,13 @@ function Activity({ onClose }: any) {
     const updatedPresenters = [...activity.presenter];
     updatedPresenters.splice(index, 1);
     setActivity({ ...activity, presenter: updatedPresenters });
+    checkFieldsFilled();
   };
   const handleDeleteExternalPresenter = (index: number) => {
     const updatedExternalPresenters = [...activity.externalPresenter];
     updatedExternalPresenters.splice(index, 1);
     setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
+    checkFieldsFilled();
   };
 
   //Function to handle the external presenter change
@@ -210,33 +267,43 @@ function Activity({ onClose }: any) {
     );
 
     if (!pictureExists || !titleExists) {
-      // Handle case where profile picture doesn't exist or title doesn't exist in files state
-      console.log(
-        `Profile picture for ${presenter.name} does not exist or is not accessible, or the title does not exist.`,
-      );
+      // Handle case where title doesn't exist in files state or profile picture doesn't exist
+      setError(`"${presenter.name}" not found`)
       return;
     }
     // Add presenter to the activity state
+    const newPresenter = {
+      ...presenter,
+      id: '',
+    };
+
     setActivity({
       ...activity,
-      presenter: [...activity.presenter, presenter],
+      presenter: [...activity.presenter, newPresenter],
     });
     setPresenter({
       name: '',
       avatarSrc: '',
     });
+    setIsFieldsFilled(true);
   };
 
   //Add external presenter
   const addExternalPresenter = () => {
+    const newExternalPresenter = {
+      ...externalPresenter,
+      id: '',
+    };
+
     setActivity({
       ...activity,
-      externalPresenter: [...activity.externalPresenter, externalPresenter],
+      externalPresenter: [...activity.externalPresenter, newExternalPresenter],
     });
     setExternalPresenter({
       name: '',
       avatarSrc: '',
     });
+    setIsFieldsFilled(true);
   };
   //Checks if the profile picture exists in the response
   async function profilePictureExists(url: string) {
@@ -293,12 +360,13 @@ function Activity({ onClose }: any) {
 
           Promise.all(filesData).then((fileTitles) => {
             // Include files where alumni is false or where the alumni attribute doesn't exist
-            const filteredFiles = fileTitles.filter(
+            const filteredFiles: any = fileTitles.filter(
               (file) => !file.alumni || file.alumni === 'false',
             );
             setFiles(filteredFiles);
           });
         } else {
+          
           console.error('Error fetching files:', response.statusText);
         }
       } catch (error: any) {
@@ -432,7 +500,6 @@ function Activity({ onClose }: any) {
                     border: '1px solid gray',
                     borderRadius: '6px',
                   }}
-                  type='text'
                   name='details'
                   placeholder='Beskrivning'
                   value={activity.details}
@@ -509,6 +576,7 @@ function Activity({ onClose }: any) {
                     >
                       Lägg till
                     </StyledButton>
+                    {error && <p style={{color:'#963939', fontWeight:'bold'}}>{error}</p>}
 
                     {/* List added presenters */}
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -679,6 +747,7 @@ function Activity({ onClose }: any) {
                       height: '30px',
                     }}
                     type='submit'
+                    disabled={!isFieldsFilled}
                   >
                     Spara
                   </Button>
