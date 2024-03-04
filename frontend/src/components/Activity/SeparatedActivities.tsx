@@ -41,6 +41,9 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
     return [];
   };
 
+  const aKey: string = `${activity}-${index}`;
+  const bKey: string = `${nextActivity}-${index + 1}`;
+
   return (
     <Box
       key={uniqueKey}
@@ -52,6 +55,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       }}
     >
       <a
+        key={aKey}
         style={{
           width: '100%',
           cursor: 'pointer',
@@ -70,7 +74,15 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           startTime={activity.start}
           type={activity.type}
           showEndTime={true}
-          {...(activity.location.coordinates[0] !== 0 ? { location: activity.location } : {})}
+          {...(activity.location.coordinates[0] !== 0
+            ? {
+                location: {
+                  coordinates: activity.location.coordinates,
+                  title: (activity.location.title as string) || 'Location',
+                  subtitle: activity.location.subtitle,
+                },
+              }
+            : {})}
         >
           <p>{activity.details.slice(0, 200)}</p>
         </Timeslot>
@@ -83,6 +95,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
         )}
       </a>
       <a
+        key={bKey}
         style={{
           width: '100%',
           cursor: 'pointer',
@@ -102,7 +115,13 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           type={nextActivity.type}
           showEndTime={true}
           {...(nextActivity.location.coordinates[0] !== 0
-            ? { location: nextActivity.location }
+            ? {
+                location: {
+                  coordinates: nextActivity.location.coordinates,
+                  title: (nextActivity.location.title as string) || 'Location',
+                  subtitle: nextActivity.location.subtitle,
+                },
+              }
             : {})}
         >
           <p>{nextActivity.details.slice(0, 200)}</p>
