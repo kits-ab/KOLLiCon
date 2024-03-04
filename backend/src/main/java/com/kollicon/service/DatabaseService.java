@@ -63,7 +63,6 @@ public class DatabaseService {
 
         for (ActivityModel model : activityModel) {
 
-
             Map<String, Object> activityMap = new HashMap<>();
             DateTimeFormatter activityFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -77,8 +76,8 @@ public class DatabaseService {
             List<Double> storeCoordinatesInThisList = new ArrayList<>();
             Map<String, Object> addCoordinatesToThisMapFromList = new HashMap<>();
 
-            if (model.getLocation() != null) {
 
+            if(!model.getLocation().getCoordinates().isEmpty() && !model.getLocation().getTitle().isEmpty() && !model.getLocation().getSubtitle().isEmpty()) {
                 String[] coordinates = model.getLocation().getCoordinates().split(",");
                 double latitude = Double.parseDouble(coordinates[0]);
                 double longitude = Double.parseDouble(coordinates[1]);
@@ -90,7 +89,6 @@ public class DatabaseService {
 
                 activityMap.put("location", addCoordinatesToThisMapFromList);
             }
-
             // Kolla nu om presenters finns i aktiviteten
             List<PresenterModel> allPresenters = presenterRepository.findAll();
             List<Object> selectedPresenter = new ArrayList<>();
