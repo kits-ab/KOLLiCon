@@ -1,71 +1,27 @@
 import React from 'react';
 import { Global } from '@emotion/react';
-import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from '@/utils/Authorization/Auth';
-import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '@/assets/BearWithMe.png';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
-
-const drawerBleeding = 11;
+import {
+  LogoutChildPart,
+  Root,
+  MenuDiv,
+  menuItems,
+  MenuItem,
+  FixedMenuIcon,
+  drawerBleeding,
+} from '@/styles/MenuStyles/StylesForMenu';
 
 interface Props {
   window?: () => Window;
 }
-
-const Root = styled('div')(() => ({
-  marginLeft: '88%',
-  height: '80px',
-}));
-
-const LogoutChildPart = styled('div')(() => ({
-  backgroundColor: '#393939',
-  height: '60%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-  cursor: 'pointer',
-}));
-
-const MenuDiv = styled('div')(() => ({
-  height: '40%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-  flexDirection: 'column',
-  marginTop: '20px',
-}));
-
-const menuItems = [
-  { label: 'Schema' },
-  { label: 'Min profil' },
-  { label: 'Tidigare KitsCons' },
-  { label: 'Exportera Markdownfil' },
-];
-const MenuItem = styled('p')(() => ({
-  textAlign: 'center',
-  fontSize: '1.1rem',
-  cursor: 'pointer',
-  '&:hover': {
-    color: '#8CAB78',
-  },
-}));
-const FixedMenuIcon = styled(MenuIcon)(() => ({
-  position: 'fixed',
-  color: 'gray',
-  top: 0,
-  right: 0,
-  zIndex: 1000,
-  height: 50,
-  width: 50,
-}));
 
 function TheMenu(props: Props) {
   const { window } = props;
