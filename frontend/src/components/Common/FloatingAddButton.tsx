@@ -46,19 +46,19 @@ const FloatingButton = ({ activateDrawer }: { activateDrawer: () => void }) => {
           }}
         >
           <AddIcon
-              sx={{
-                fontSize: '55px',
-                color: 'white',
-                borderRadius: '50%',
-                padding: '10px',
-                backgroundColor: '#596b4d',
-                cursor: 'pointer',
-                '&:hover': {
-                  backgroundColor: '#405632',
-                },
-              }}
-              onClick={activateDrawer}
-            />
+            sx={{
+              fontSize: '55px',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '10px',
+              backgroundColor: '#596b4d',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: '#405632',
+              },
+            }}
+            onClick={activateDrawer}
+          />
         </Box>
       )}
     </>

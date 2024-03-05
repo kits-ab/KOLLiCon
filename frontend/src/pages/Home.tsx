@@ -9,8 +9,8 @@ import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
-import TheMenu from '../components/HeaderMenu/TheMenu';
 import useSchedule from '@/utils/Hooks/useSchedule';
+import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
@@ -41,7 +41,7 @@ export const Home = () => {
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
-        <TheMenu />
+        <MenuDrawer />
         <ActivitiesNew
           activitiesData={activitiesData}
           selectedActivityId={selectedActivityId}
