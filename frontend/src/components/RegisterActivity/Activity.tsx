@@ -3,18 +3,38 @@ import { types, GlobalStyles, Timeslot } from '@kokitotsos/react-components';
 import axios from 'axios';
 import {
   EventsWrapper,
-  PStyled,
-  StyledButton,
   StyledDiv,
   StyledLine,
+  StyledLine1,
+  TypeFormStyled,
+  TypeSelectStyled,
+  InputStyled,
+  TextAreaStyled,
+  DateTimePickerWrapper,
+  SuggestionBoxWrapper,
+  SuggestionBoxStyled,
+  ListStyled,
+  ErrorStyled,
+  PresenterBoxWrapper,
+  AddedPresenterList,
+  DeleteButton,
+  AddButton,
+  CancelButton,
+  SaveButton,
+  TitleStyled,
+  GlobalBox,
+  BoxWrapper,
+  BoxWrapper1,
+  HeaderStyled,
 } from '../../styles/RegisterActivity/StyledActivity';
-import { sxStyles, slotPropsStyles } from '@/styles/Common/DateTimePicker/StyledDateTimePicker';
-import Button from '@/styles/Common/Button/Button';
+import {
+  sxDateTimePickerStyles,
+  DateTimePropsStyles,
+} from '@/styles/Common/DateTimePicker/StyledDateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -22,8 +42,6 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MapBox from '../MapBox/MapBox';
-import Input from '@mui/joy/Input';
-import Textarea from '@mui/joy/Textarea';
 
 type Activity = {
   schedule: number;
@@ -97,7 +115,7 @@ function Activity({ onClose }: any) {
     const locationFilled =
       showLocation ||
       (location.title.trim() === '' && location.subtitle.trim() === '' ? true : true);
-      
+
     setIsFieldsFilled(
       Boolean(requiredFieldsFilled && presenterFilled && externalPresenterFilled && locationFilled),
     );
@@ -184,7 +202,7 @@ function Activity({ onClose }: any) {
   };
 
   // Function to handle the location change
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     checkFieldsFilled();
     setLocation({ ...location, [name]: value });
@@ -269,7 +287,7 @@ function Activity({ onClose }: any) {
 
     if (!pictureExists || !titleExists) {
       // Handle case where title doesn't exist in files state or profile picture doesn't exist
-      setError(`"${presenter.name}" not found`)
+      setError(`"${presenter.name}" not found`);
       return;
     }
     // Add presenter to the activity state
@@ -286,7 +304,8 @@ function Activity({ onClose }: any) {
       name: '',
       avatarSrc: '',
     });
-    setIsFieldsFilled(true);
+    // setIsFieldsFilled(true);
+    checkFieldsFilled();
   };
 
   //Add external presenter
@@ -304,7 +323,8 @@ function Activity({ onClose }: any) {
       name: '',
       avatarSrc: '',
     });
-    setIsFieldsFilled(true);
+    // setIsFieldsFilled(true);
+    checkFieldsFilled();
   };
   //Checks if the profile picture exists in the response
   async function profilePictureExists(url: string) {
@@ -367,7 +387,6 @@ function Activity({ onClose }: any) {
             setFiles(filteredFiles);
           });
         } else {
-          
           console.error('Error fetching files:', response.statusText);
         }
       } catch (error: any) {
@@ -377,54 +396,26 @@ function Activity({ onClose }: any) {
 
     fetchFiles();
   }, []);
+  
 
   return (
     <>
-      <Box sx={{ width: '100%', height: '100%' }}>
+      <GlobalBox >
         <img src='' alt='' />
         <GlobalStyles />
-        <EventsWrapper style={{ paddingBottom: '10%' }}>
-          <Timeslot
-            endTime={new Date()}
-            heading='Registrera Aktivitiet'
-            startTime={new Date()}
-            type={types.TimeslotType.Presentation}
-          >
+        <HeaderStyled>Ny aktivitiet</HeaderStyled>
+        <StyledLine />
+        <EventsWrapper>
             <form onSubmit={handleSubmit}>
               <StyledDiv>
-                <PStyled style={{ color: '#D4D4D4' }}>Aktivitiet info</PStyled>
-
-                <FormControl
-                  sx={{
-                    margin: '0 7% 1% 7%',
-                    height: '-20px',
-                    '& .MuiInputBase-root': {
-                      color: 'gray',
-                      border: '1px solid gray',
-                      backgroundColor: '#424241',
-                      borderRadius: '6px',
-                    },
-                    '& .MuiFormLabel-root': {
-                      color: '#cccccc',
-                      fontSize: '15px',
-                    },
-                    '& .MuiOutlinedInput-root': {
-                      height: '50px',
-                    },
-                  }}
-                >
+                
+                
+                <FormControl sx={{ ...TypeFormStyled }}>
                   <InputLabel id='type-label'>Type</InputLabel>
                   <Select
                     MenuProps={{
                       PaperProps: {
-                        sx: {
-                          backgroundColor: '#424241',
-                          color: '#cccccc',
-                          maxHeight: '200px',
-                          overflowY: 'auto',
-                          scrollbarWidth: 'thin',
-                          scrollbarColor: '#cccccc #424241',
-                        },
+                        sx: { ...TypeSelectStyled },
                       },
                     }}
                     labelId='type-label'
@@ -445,20 +436,12 @@ function Activity({ onClose }: any) {
                   </Select>
                 </FormControl>
 
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    marginBottom: '2%',
-                    marginTop: '2%',
-                  }}
-                >
+                <DateTimePickerWrapper>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker
                       ampm={false}
-                      sx={{ ...sxStyles }}
-                      slotProps={slotPropsStyles}
+                      sx={{ ...sxDateTimePickerStyles }}
+                      slotProps={DateTimePropsStyles}
                       label='Starttid'
                       name='start'
                       value={activity.start || null}
@@ -467,264 +450,121 @@ function Activity({ onClose }: any) {
 
                     <DateTimePicker
                       ampm={false}
-                      sx={{ ...sxStyles }}
-                      slotProps={slotPropsStyles}
+                      sx={{ ...sxDateTimePickerStyles }}
+                      slotProps={DateTimePropsStyles}
                       label='Sluttid'
                       name='end'
                       value={activity.end || null}
                       onChange={(date: any) => handleDateChange('end', date)}
                     />
                   </LocalizationProvider>
-                </Box>
-                <Input
-                  sx={{
-                    margin: '0 7% 0 7% ',
-                    padding: '2% 0 2% 3%',
-                    backgroundColor: '#424241',
-                    color: '#cccccc',
-                    border: '1px solid gray',
-                    borderRadius: '6px',
-                  }}
+                </DateTimePickerWrapper>
+                <InputStyled
                   type='text'
                   name='title'
                   placeholder='Titel'
                   value={activity.title}
                   onChange={handleOnInputChange}
                 />
-                <Textarea
-                  sx={{
-                    height: '100px',
-                    margin: '2% 7% 0 7% ',
-                    padding: '2% 0 0% 3%',
-                    backgroundColor: '#424241',
-                    color: '#cccccc',
-                    border: '1px solid gray',
-                    borderRadius: '6px',
-                  }}
+                <TextAreaStyled
                   name='details'
                   placeholder='Beskrivning'
                   value={activity.details}
                   onChange={handleOnInputChange}
                 />
-
-                <StyledLine />
+                {/* <StyledLine /> */}
                 {showPresenter && (
                   <StyledDiv>
-                    <PStyled style={{ color: '#D4D4D4' }}>Interna</PStyled>
-                    <Input
-                      sx={{
-                        margin: '0 7% 2% 7% ',
-                        padding: '2% 0 2% 3%',
-                        backgroundColor: '#424241',
-                        color: '#cccccc',
-                        border: '1px solid gray',
-                        borderRadius: '6px',
-                      }}
+                    <TitleStyled>Interna</TitleStyled>
+                    <InputStyled
                       type='text'
                       name='name'
                       placeholder='Presentatör'
                       value={presenter.name}
-                      onChange={handlePresenterChange}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handlePresenterChange(e)
+                      }
                     />
 
                     {/* Display suggestions */}
                     {suggestions.length > 0 && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'start',
-                          textAlign: 'start',
-                          marginTop: '8px',
-                        }}
-                      >
-                        <Box
-                          style={{
-                            marginLeft: '6%',
-                            width: '88%',
-                            padding: 0,
-                            listStyle: 'none',
-                            maxHeight: '110px',
-                            overflowY: 'auto',
-                            scrollbarWidth: 'thin',
-                            scrollbarColor: '#cccccc #424241',
-                          }}
-                        >
+                      <SuggestionBoxWrapper>
+                        <SuggestionBoxStyled>
                           {suggestions.map((item: { title: string }, index) => (
-                            <li
-                              style={{
-                                color: '#cccccc',
-                                backgroundColor: '#424241',
-                                border: '1px solid gray',
-                                borderRadius: '5px',
-                                margin: '4px',
-                                padding: '4px 8px',
-                                cursor: 'pointer',
-                              }}
+                            <ListStyled
                               key={index}
                               onClick={() => handleSuggestionClick(item.title)}
                             >
                               {item.title}
-                            </li>
+                            </ListStyled>
                           ))}
-                        </Box>
-                      </Box>
+                        </SuggestionBoxStyled>
+                      </SuggestionBoxWrapper>
                     )}
 
-                    <StyledButton
-                      style={{ marginBottom: '5%', cursor: 'pointer' }}
-                      type='button'
-                      onClick={addPresenter}
-                    >
+                    <AddButton type='button' onClick={addPresenter}>
                       Lägg till
-                    </StyledButton>
-                    {error && <p style={{color:'#963939', fontWeight:'bold'}}>{error}</p>}
+                    </AddButton>
+                    {error && <ErrorStyled>{error}</ErrorStyled>}
 
                     {/* List added presenters */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <BoxWrapper>
                       {activity.presenter.map((presenter, index) => (
-                        <Box
-                          key={index}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginTop: '2%',
-                            margin: '0 8% 0 7% ',
-                          }}
-                        >
-                          <Box
-                            style={{
-                              marginRight: '1px',
-                              color: '#709756',
-                              maxWidth: '100%',
-                              fontWeight: 'initial',
-                              fontSize: '15px',
-                            }}
-                          >
-                            {presenter.name}
-                          </Box>
-                          <StyledButton
-                            style={{
-                              fontSize: '10px',
-                              backgroundColor: '#963939',
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => handleDeletePresenter(index)}
-                          >
+                        <PresenterBoxWrapper key={index}>
+                          <AddedPresenterList>{presenter.name}</AddedPresenterList>
+                          <DeleteButton onClick={() => handleDeletePresenter(index)}>
                             Ta bort
-                          </StyledButton>
-                        </Box>
+                          </DeleteButton>
+                        </PresenterBoxWrapper>
                       ))}
-                    </Box>
-                    <StyledLine />
+                    </BoxWrapper>
+                    {/* <StyledLine /> */}
                   </StyledDiv>
                 )}
                 {showExternalPresenter && (
                   <StyledDiv>
-                    <PStyled style={{ color: '#D4D4D4' }}>Externa</PStyled>
-                    <Input
-                      sx={{
-                        margin: '0 7% 3% 7% ',
-                        padding: '2% 0 2% 3%',
-                        backgroundColor: '#424241',
-                        color: '#cccccc',
-                        border: '1px solid gray',
-                        borderRadius: '6px',
-                      }}
+                    <TitleStyled>Externa</TitleStyled>
+                    <InputStyled
                       type='text'
                       name='name'
                       placeholder='Presentatör'
                       value={externalPresenter.name}
-                      onChange={handleExternalPresenterChange}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleExternalPresenterChange(e)
+                      }
                     />
-                    <Input
-                      sx={{
-                        margin: '0 7% 3% 7% ',
-                        padding: '1% 0 1% 3%',
-                        backgroundColor: '#424241',
-                        color: '#cccccc',
-                        border: '1px solid gray',
-                        borderRadius: '6px',
-                      }}
-                      type='file'
-                      id='file'
-                    />
+                    <InputStyled type='file' id='file' />
 
-                    <StyledButton
-                      style={{ marginBottom: '5%', cursor: 'pointer' }}
-                      type='button'
-                      onClick={addExternalPresenter}
-                    >
+                    <AddButton type='button' onClick={addExternalPresenter}>
                       Lägg till
-                    </StyledButton>
+                    </AddButton>
 
                     {/* List added presenters */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <BoxWrapper>
                       {activity.externalPresenter.map((externalPresenter, index) => (
-                        <Box
-                          key={index}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginTop: '2%',
-                            margin: '0 8% 0 7% ',
-                          }}
-                        >
-                          <Box
-                            style={{
-                              marginRight: '1px',
-                              color: '#709756',
-                              maxWidth: '100%',
-                              fontWeight: 'initial',
-                              fontSize: '15px',
-                            }}
-                          >
-                            {externalPresenter.name}
-                          </Box>
-                          <StyledButton
-                            style={{
-                              fontSize: '10px',
-                              backgroundColor: '#963939',
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => handleDeleteExternalPresenter(index)}
-                          >
+                        <PresenterBoxWrapper key={index}>
+                          <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
+                          <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
                             Ta bort
-                          </StyledButton>
-                        </Box>
+                          </DeleteButton>
+                        </PresenterBoxWrapper>
                       ))}
-                    </Box>
+                    </BoxWrapper>
 
-                    <StyledLine />
+                    {/* <StyledLine /> */}
                   </StyledDiv>
                 )}
                 {showLocation && (
                   <StyledDiv>
-                    <Input
-                      sx={{
-                        margin: '0 7% 2% 7% ',
-                        padding: '2% 0 2% 3%',
-                        backgroundColor: '#424241',
-                        color: '#cccccc',
-                        border: '1px solid gray',
-                        borderRadius: '6px',
-                      }}
+                    <TitleStyled>Plats</TitleStyled>
+                    <InputStyled
                       type='text'
                       name='title'
                       placeholder='Titel'
                       value={location.title}
                       onChange={handleLocationChange}
                     />
-                    <Input
-                      sx={{
-                        margin: '0 7% 2% 7% ',
-                        padding: '2% 0 2% 3%',
-                        backgroundColor: '#424241',
-                        color: '#cccccc',
-                        border: '1px solid gray',
-                        borderRadius: '6px',
-                      }}
+                    <InputStyled
                       type='text'
                       name='subtitle'
                       placeholder='Subtitle'
@@ -737,40 +577,17 @@ function Activity({ onClose }: any) {
                     />
                   </StyledDiv>
                 )}
-
-                <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '10%' }}>
-                  <Button
-                    style={{
-                      width: '20%',
-                      position: 'relative',
-                      left: '80%',
-                      marginRight: '-15px',
-                      height: '30px',
-                    }}
-                    type='submit'
-                    disabled={!isFieldsFilled}
-                  >
+                <StyledLine1/>
+                <BoxWrapper1>
+                  <SaveButton type='submit' disabled={!isFieldsFilled}>
                     Spara
-                  </Button>
-                  <Button
-                    style={{
-                      width: '20%',
-                      position: 'relative',
-                      left: '40%',
-                      height: '30px',
-                      border: '1px solid gray',
-                      backgroundColor: 'transparent',
-                    }}
-                    onClick={handleCancelButtonClick}
-                  >
-                    Avbryt
-                  </Button>
-                </Box>
+                  </SaveButton>
+                  <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
+                </BoxWrapper1>
               </StyledDiv>
             </form>
-          </Timeslot>
         </EventsWrapper>
-      </Box>
+      </GlobalBox>
     </>
   );
 }
