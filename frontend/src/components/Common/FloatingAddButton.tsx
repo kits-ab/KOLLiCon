@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import { throttle } from 'lodash';
 import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from 'react';
+import { Colors } from '../../styles/Common/colors';
 
 const FloatingButton = ({ activateDrawer }: { activateDrawer: () => void }) => {
   const [showAddActivity, setShowAddActivity] = useState(false);
@@ -46,19 +47,19 @@ const FloatingButton = ({ activateDrawer }: { activateDrawer: () => void }) => {
           }}
         >
           <AddIcon
-            sx={{
-              fontSize: '55px',
-              color: 'white',
-              borderRadius: '50%',
-              padding: '10px',
-              backgroundColor: '#596b4d',
-              cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: '#405632',
-              },
-            }}
-            onClick={activateDrawer}
-          />
+              sx={{
+                fontSize: '55px',
+                color: 'white',
+                borderRadius: '50%',
+                padding: '10px',
+                backgroundColor: `${Colors.primaryAddButton}`,
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: '#405632',
+                },
+              }}
+              onClick={activateDrawer}
+            />
         </Box>
       )}
     </>

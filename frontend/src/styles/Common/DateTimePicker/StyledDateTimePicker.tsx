@@ -1,9 +1,10 @@
+import { Colors } from '../colors';
 export const sxDateTimePickerStyles = {
   width: '36%',
   '& .MuiInputBase-root': {
     color: 'gray',
-    border: '1px solid #3A3A39',
-    backgroundColor: '#262626',
+    border: `1px solid ${Colors.primaryBorder}`,
+    backgroundColor: `${Colors.primaryBackground}`,
     borderRadius: '4px',
   },
   '& .MuiFormLabel-root': {
