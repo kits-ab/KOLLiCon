@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
 import TextArea from '@mui/joy/Textarea';
 import Button from '../Common/Button/Button';
+import { Colors } from '../Common/colors';
 
 export const EventsWrapper = styled(Box)`
   margin-left: auto;
@@ -18,37 +19,37 @@ export const EventsWrapper = styled(Box)`
 `;
 
 export const GlobalBox = styled(Box)`
- width: 100%;
- height: 100%;
+  width: 100%;
+  height: 100%;
 `;
 
 export const TitleStyled = styled.div`
-font-weight: lighter;
-font-size: 15px;
-color: #D4D4D4;
-margin: 2% 7% 1% 7%;
+  font-weight: lighter;
+  font-size: 15px;
+  color: ${Colors.buttonText};
+  margin: 2% 7% 1% 7%;
 `;
 
 export const HeaderStyled = styled.div`
-font-weight: lighter;
-color: #D4D4D4;
-margin: 2% 0 2% 28%;
-text-align:initial;
-font-size:27px;
-fontFamily: segueUI;
-@media (max-width: 650px) {
-  margin: 2% 7% 1% 11%;
-}
+  font-weight: lighter;
+  color: ${Colors.buttonText};
+  margin: 2% 0 2% 28%;
+  text-align: initial;
+  font-size: 27px;
+  fontfamily: segueUI;
+  @media (max-width: 650px) {
+    margin: 2% 7% 1% 11%;
+  }
 `;
 
 export const BoxWrapper = styled(Box)`
- display: flex;
- flex-direction: column;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const BoxWrapper1 = styled(BoxWrapper)`
-flex-direction: row;
-margin-top: 2%;
+  flex-direction: row;
+  margin-top: 2%;
 `;
 
 export const StyledDiv = styled.div`
@@ -64,34 +65,33 @@ export const StyledSelect = styled.select`
   border-radius: 2px;
   border: none;
   margin: 2% 7%;
-  background-color: #262626;
-  border: 1px solid #3A3A39;
-  color: #cccccc;
+  background-color: ${Colors.primaryBackground};
+  border: 1px solid ${Colors.primaryBorder};
+  color: ${Colors.textColor};
 `;
 
 export const StyledLine = styled.hr`
   width: 100%;
   margin: 15px auto;
   border: none;
-  border-top: 1px solid #3A3A39;
+  border-top: 1px solid ${Colors.primaryBorder};
   height: 0.1px;
 `;
 
 export const StyledLine1 = styled(StyledLine)`
-width: 85%;
-margin: 40px auto;
-`
+  width: 85%;
+  margin: 40px auto;
+`;
 
-export const SubmitButton = styled(Button) ({
-  padding: '3px',
+export const SubmitButton = styled(Button)({
+  padding: '0 0 0 0 ',
   borderRadius: '6px',
   border: 'none',
-  marginTop: '2%',
+  marginTop: '5%',
   maxWidth: '30%',
-  backgroundColor: '#596b4d',
   marginLeft: '35%',
-  color: '#d4d4d4',
-  fontSize: '15px',
+  color: `${Colors.buttonText}`,
+  fontSize: '14px',
 });
 
 export const CancelButton = styled(Button)({
@@ -102,13 +102,12 @@ export const CancelButton = styled(Button)({
   border: '1px solid gray',
   backgroundColor: 'transparent',
   '&:hover': {
-    backgroundColor: '#454545',
+    backgroundColor: `${Colors.hoverCancelButton}`,
   },
-  
 });
 
 export const ErrorStyled = styled.div`
-  color: #963939;
+  color: ${Colors.primaryDeleteButton};
   font-weight: lighter;
   margin: 4% 0 4% 0;
 `;
@@ -128,22 +127,23 @@ export const AddButton = styled(Button)({
   marginTop: '4%',
   maxWidth: '20%',
   marginLeft: '41%',
-  color: '#d4d4d4',
+  marginBottom: '4%',
+  color: `${Colors.buttonText}`,
   fontSize: '11px',
 });
 
 export const DeleteButton = styled(Button)({
   fontSize: '11px',
-  backgroundColor: '#963939',
+  backgroundColor: `${Colors.primaryDeleteButton}`,
   cursor: 'pointer',
   padding: '0.5px',
   '&:hover': {
-    backgroundColor: '#6F2A2A',
+    backgroundColor: `${Colors.hoverDeleteButton}`,
   },
 });
 
 export const AddedPresenterList = styled(Box)`
-  margin: 0 1% 4% 0;
+  margin: 0 1% 2% 0;
   color: #709756;
   max-width: 100%;
   font-weight: initial;
@@ -159,9 +159,9 @@ export const PresenterBoxWrapper = styled(Box)`
 `;
 
 export const ListStyled = styled.li`
-  color: #cccccc;
-  background-color: #262626;
-  border: 1px solid #3A3A39;
+  color: ${Colors.textColor};
+  background-color: ${Colors.primaryBackground};
+  border: 1px solid ${Colors.primaryBorder};
   border-radius: 2px;
   margin: 4px;
   padding: 4px 8px;
@@ -174,8 +174,8 @@ export const TypeFormStyled = {
   height: '-20px',
   '& .MuiInputBase-root': {
     color: 'gray',
-    border: '1px solid #3A3A39',
-    backgroundColor: '#262626',
+    border: `1px solid ${Colors.primaryBorder}`,
+    backgroundColor: `${Colors.primaryBackground}`,
     borderRadius: '4px',
   },
   '& .MuiFormLabel-root': {
@@ -188,12 +188,12 @@ export const TypeFormStyled = {
 };
 
 export const TypeSelectStyled = {
-  backgroundColor: '#262626',
-  color: '#cccccc',
+  backgroundColor: `${Colors.primaryBackground}`,
+  color: `${Colors.textColor}`,
   maxHeight: '200px',
   overflowY: 'auto',
   scrollbarWidth: 'thin',
-  scrollbarColor: '#cccccc #424241',
+  scrollbarColor: `${Colors.textColor} ${Colors.scrollColor}`,
 };
 
 export const SuggestionBoxWrapper = styled(Box)`
@@ -211,7 +211,7 @@ export const SuggestionBoxStyled = styled(Box)`
   max-height: 110px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #cccccc #424241;
+  scrollbar-color: ${Colors.textColor} ${Colors.scrollColor};
 `;
 
 export const DateTimePickerWrapper = styled(Box)`
@@ -224,9 +224,9 @@ export const DateTimePickerWrapper = styled(Box)`
 export const InputStyled = styled(Input)`
   margin: 2% 7% 0 7%;
   padding: 0 0 0 12px;
-  background-color: #262626;
-  color: #DDDDDD;
-  border: 1px solid #3A3A39;
+  background-color: ${Colors.primaryBackground};
+  color: ${Colors.secondaryPlaceholder};
+  border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
   @media (max-width: 650px) {
     padding: 0 0 0% 2%;
@@ -237,9 +237,9 @@ export const TextAreaStyled = styled(TextArea)`
   height: 100px;
   margin: 2% 7% 0 7%;
   padding: 8px 0 0% 12px;
-  background-color: #262626;
-  color: #B6B6B6;
-  border: 1px solid #3A3A39;
+  background-color: ${Colors.primaryBackground};
+  color: ${Colors.primaryPlaceholder};
+  border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
   overflow: 100px;
   scrollbar-width: thin;

@@ -1,6 +1,7 @@
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Drawer from '@mui/material/Drawer';
 import styled from '@emotion/styled';
+import {Colors} from '../Common/colors';
 
 // Används inte längre
 
@@ -9,7 +10,7 @@ export const useStyledDrawer = () => {
 
   const StyledDrawer = styled(Drawer)`
     & > .MuiPaper-root {
-      background-color: #262626;
+      background-color: ${Colors.primaryBackground};
       height: 100%;
       padding: 20px;
       border-radius: 0px;

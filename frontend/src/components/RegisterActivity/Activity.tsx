@@ -312,7 +312,6 @@ function Activity({ onClose }: any) {
   const addExternalPresenter = () => {
     const newExternalPresenter = {
       ...externalPresenter,
-      id: '',
     };
 
     setActivity({
