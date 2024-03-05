@@ -78,8 +78,8 @@ def create_sql_file(data):
                 try :
                     f.write(f"""
                             inserted_location{id} AS (
-                            INSERT INTO location (coordinates, title)
-                            VALUES ('', '')
+                            INSERT INTO location (coordinates, title, subtitle)
+                            VALUES ('', '', '')
                             RETURNING id
                             ),
                     """)
