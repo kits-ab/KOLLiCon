@@ -33,7 +33,7 @@ except Exception as e:
     markdown_content = ""
 
 
-def create_sql_file(data, schedule_id):
+def create_sql_file(data):
     location_id = 1
     activity_id = 1
     presenter_id = 1
@@ -48,30 +48,65 @@ def create_sql_file(data, schedule_id):
         type = data[0].get('type')
         description = data[0].get('description')
         image = data[0].get('image')
+        id = 1
+        pres_id = 1
 
         f.write(f"""
-            INSERT INTO schedule (id, title, end_time, start_time, location, tag_line, type, active, description, image, user_id)
-            VALUES ({schedule_id}, '{title}', '{end_time}',
-                    '{start_time}', '{location}', '{tag_line}', '{type}', {active}, '{description}', '{image}' NULL);
+                WITH inserted_schedule AS (
+                INSERT INTO schedule (title, end_time, start_time, location, tag_line, type, active, description, image_url, user_id)
+                VALUES ('{title}', '{end_time}', '{start_time}', '{location}', '{tag_line}', '{type}', {active}, '{description}', '{image}', NULL)
+                RETURNING id
+                ),
             """)
 
-        for activity in data[1]:
+        for index, activity in enumerate(data[1]):
             # Insert location data if it exists
             if 'location' in activity:
-                coordinates = ",".join(
-                    map(str, activity['location']['coordinates']))
-                f.write(f"""
-                    INSERT INTO location (id, coordinates, title)
-                    VALUES ({location_id}, '{coordinates}', '{activity['location']['title']}');
-                """)
-                location_id += 1
+                try :
+                    coordinates = ",".join(
+                        map(str, activity['location']['coordinates']))
+                    f.write(f"""
+                            inserted_location{id} AS (
+                            INSERT INTO location (coordinates, title)
+                            VALUES ('{coordinates}', '{activity['location']['title']}')
+                            RETURNING id
+                            ),
+                    """)
+                except Exception as e:
+                    logging.error(f"Error parsing location data: {e}")
+            if 'location' not in activity:
+                try :
+                    f.write(f"""
+                            inserted_location{id} AS (
+                            INSERT INTO location (coordinates, title)
+                            VALUES ('', '')
+                            RETURNING id
+                            ),
+                    """)
+                except Exception as e:
+                    logging.error(f"Error parsing location data: {e}")
 
             # Insert activity data
+            
             try:
-                f.write(f"""
-                    INSERT INTO activity (winner, end_time, id, location_id, schedule_id, start_time, details, title, type, user_id)
-                    VALUES ({activity['winner']}, '{activity['end']}', {activity_id}, {location_id - 1}, {schedule_id}, '{activity['start']}', '{activity.get('details', '')}', '{activity['title']}', '{activity.get('type', '')}', NULL);
-                """)
+                if index == len(data[1]) - 1:
+                    f.write(f"""
+                            inserted_activity{id} AS (
+                            INSERT INTO activity (winner, end_time, location_id, schedule_id, start_time, details, title, type, user_id)
+                            SELECT {activity['winner']}, '{activity['end']}', l.id, s.id, '{activity['start']}', '{activity.get('details', '')}', '{activity['title']}', '{activity.get('type', '')}', NULL
+                            FROM inserted_schedule s, inserted_location{id} l
+                            RETURNING id
+                            );
+                    """)
+                if index != len(data[1]) - 1:
+                    f.write(f"""
+                            inserted_activity{id} AS (
+                            INSERT INTO activity (winner, end_time, location_id, schedule_id, start_time, details, title, type, user_id)
+                            SELECT {activity['winner']}, '{activity['end']}', l.id, s.id, '{activity['start']}', '{activity.get('details', '')}', '{activity['title']}', '{activity.get('type', '')}', NULL
+                            FROM inserted_schedule s, inserted_location{id} l
+                            RETURNING id
+                            ),
+                    """)
             except Exception as e:
                 logging.error(f"Error parsing activity data: {e}")
 
@@ -79,19 +114,20 @@ def create_sql_file(data, schedule_id):
             if 'presenters' in activity:
                 for presenter in activity['presenters']:
                     f.write(f"""
-                        INSERT INTO presenter (activity_id, id, name)
-                        VALUES ({activity_id}, {presenter_id}, '{presenter}');
+                        inserted_presenter{pres_id} AS (
+                            INSERT INTO presenter (activity_id, name)
+                            SELECT a.id, '{presenter}'
+                            FROM inserted_activity{id} a
+                        ),
                     """)
-                    presenter_id += 1
+                    pres_id += 1
+            id += 1
 
-            activity_id += 1
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description='Process some integers.')
+#     parser.add_argument('schedule_id', type=int,
+#                         help='an integer for the schedule_id')
 
+#     args = parser.parse_args()
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('schedule_id', type=int,
-                        help='an integer for the schedule_id')
-
-    args = parser.parse_args()
-
-    create_sql_file(parse_markdown(markdown_content), args.schedule_id)
+create_sql_file(parse_markdown(markdown_content))
