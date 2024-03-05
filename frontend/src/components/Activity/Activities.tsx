@@ -5,7 +5,7 @@ import DateText from '@/styles/DateText';
 import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 import React, { useState } from 'react';
 import { Person } from '@kokitotsos/react-components/dist/types/Person';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
+import { getPresenter } from '@/utils/Helpers/getPresenter';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -17,7 +17,6 @@ interface ActivitiesProps {
 export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
-  const presenters = useGetPresenter();
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -74,7 +73,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
         {activitiesSortedByDate.map((activity: ActivityType, index: number) => {
           <Timeslot
             key={activity.id}
-            presenters={presenters(activity) as Person[]}
+            presenters={getPresenter(activity) as Person[]}
             endTime={activity.end}
             heading={activity.title}
             startTime={activity.start}
@@ -138,7 +137,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     >
                       <Timeslot
                         key={key}
-                        presenters={presenters(activity) as Person[]}
+                        presenters={getPresenter(activity) as Person[]}
                         endTime={activity.end}
                         heading={activity.title}
                         startTime={activity.start}
@@ -196,7 +195,7 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                     >
                       <Timeslot
                         key={key}
-                        presenters={presenters(activity) as Person[]}
+                        presenters={getPresenter(activity) as Person[]}
                         endTime={activity.end}
                         heading={activity.title}
                         startTime={activity.start}
