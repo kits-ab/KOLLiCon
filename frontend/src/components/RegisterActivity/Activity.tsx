@@ -48,14 +48,25 @@ type Activity = {
   userId: string;
   winner: boolean;
   type: types.TimeslotType;
-  presenter: types.Person[];
-  externalPresenter: types.Person[];
+  presenter: Person[];
+  externalPresenter: Person[];
   location: { title: string; coordinates: string; subtitle: string };
   title: string;
   details: string;
   start: string;
   end: string;
 };
+
+type Person = {
+    name: string;
+    tagLine?: string;
+    imageSrc?: string;
+    imageSrcSet?: string;
+    avatarSrc?: string;
+    avatarSrcSet?: string;
+    href?: string;
+    tags?: string[];
+}
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -293,7 +304,6 @@ function Activity({ onClose }: any) {
     // Add presenter to the activity state
     const newPresenter = {
       ...presenter,
-      id: '',
     };
 
     setActivity({
@@ -312,7 +322,6 @@ function Activity({ onClose }: any) {
   const addExternalPresenter = () => {
     const newExternalPresenter = {
       ...externalPresenter,
-      id: '',
     };
 
     setActivity({

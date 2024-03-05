@@ -2,6 +2,7 @@ import { signinRedirect } from '@/utils/Authorization/Auth';
 import Box from '@mui/material/Box';
 import { Logotype } from '@kokitotsos/react-components';
 import Button from '@/styles/Common/Button/Button';
+import { Colors } from '@/styles/Common/colors';
 
 const Wrapper = ({ children }: any) => (
   <Box
@@ -37,7 +38,7 @@ const Header = () => {
           left: '1rem',
           top: '0.3rem',
           margin: '0.5rem',
-          backgroundColor: '#262626',
+          backgroundColor: `${Colors.primaryBackground}`,
           width: '6rem',
         }}
       >

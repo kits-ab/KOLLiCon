@@ -1,4 +1,6 @@
-.suggestions-wrapper .suggestions {
+:root {
+  --primaryBackgroundColor: #262626;
+  --primaryTextColor: #cecece;
 }
 
 .MuiPickersLayout-root {
@@ -16,21 +18,21 @@
 .suggestions-wrapper .suggestions li.active a {
   margin-left: 0px;
   background-color: #303030;
-  color: #cecece;
+  color: var(--primaryTextColor);
 }
 .suggestions-wrapper .suggestions li.active a:hover {
   margin-left: 0px;
-  background-color: #262626;
-  color: #cecece;
+  background-color: var(--primaryBackgroundColor);
+  color: var(--primaryTextColor);
 }
 
 .suggestions-wrapper .suggestions li a {
-  color: #cecece;
+  color: var(--primaryTextColor);
   font-size: 12px;
 }
 .suggestions-wrapper .suggestions li a:hover {
-  color: #cecece;
-  background-color: #262626;
+  color: var(--primaryTextColor);
+  background-color: var(--primaryBackgroundColor);
 }
 
 .mapboxgl-ctrl-geocoder {
@@ -38,13 +40,13 @@
   font-size: 15px;
   line-height: 20px;
   max-width: 100%;
-  background-color: #262626;
-  color: #cecece;
+  background-color: var(--primaryBackgroundColor);
+  color: var(--primaryTextColor);
 }
 
 .mapboxgl-ctrl-geocoder--input,
 .mapboxgl-ctrl-geocoder--input:focus {
-  color: #cecece;
+  color: var(--primaryTextColor);
   height: 40px;
 }
 
@@ -58,15 +60,15 @@
 }
 
 .mapboxgl-ctrl-geocoder--button {
-  background-color: #262626;
+  background-color: var(--primaryBackgroundColor);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-  background-color: #262626;
+  background-color: var(--primaryBackgroundColor);
   overflow-y: auto;
   max-height: 194px;
   scrollbar-width: thin;
-  scrollbar-color: #cccccc #424241;
+  scrollbar-color: var(--primaryTextColor) #424241;
 }
 
 a.mapboxgl-ctrl-logo {
@@ -74,7 +76,7 @@ a.mapboxgl-ctrl-logo {
 }
 
 .mapboxgl-ctrl button {
-  background-color: #262626;
+  background-color: var(--primaryBackgroundColor);
   display: none;
 }
 

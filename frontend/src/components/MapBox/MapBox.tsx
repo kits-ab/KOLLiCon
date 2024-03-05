@@ -3,7 +3,8 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@/styles/MapBox/MapBox.css';
-import { DeleteButton, StyledLine } from '../../styles/RegisterActivity/StyledActivity';
+import { DeleteButton } from '../../styles/RegisterActivity/StyledActivity';
+import { Colors } from '../../styles/Common/colors';
 
 const MapBox = ({
   onCoordinatesChange,
@@ -123,7 +124,7 @@ const MapBox = ({
         margin: '2% 7% 0 7%',
       }}
     >
-      <div style={{ border: '1px solid #3A3A39', borderRadius: '5px 5px 0 0' }}>
+      <div style={{ border: `1px solid ${Colors.primaryBorder}`, borderRadius: '4px 4px 4px 4px' }}>
         <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
         <div id='map' style={{ width: '100%', height: '160px' }}></div>
       </div>

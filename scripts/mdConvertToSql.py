@@ -67,8 +67,8 @@ def create_sql_file(data):
                         map(str, activity['location']['coordinates']))
                     f.write(f"""
                             inserted_location{id} AS (
-                            INSERT INTO location (coordinates, title)
-                            VALUES ('{coordinates}', '{activity['location']['title']}')
+                            INSERT INTO location (coordinates, title, subtitle)
+                            VALUES ('{coordinates}', '{activity['location']['title']}', '')
                             RETURNING id
                             ),
                     """)

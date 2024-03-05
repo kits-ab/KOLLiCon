@@ -11,6 +11,7 @@ import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
+import { Colors } from '@/styles/Common/colors';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
@@ -61,7 +62,7 @@ export const Home = () => {
             style: {
               height: '100%',
               overflow: 'scroll',
-              backgroundColor: '#262626',
+              backgroundColor: `${Colors.primaryBackground}`,
               borderRadius: '0',
             },
           }}
