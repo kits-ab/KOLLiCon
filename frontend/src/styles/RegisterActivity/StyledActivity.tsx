@@ -9,7 +9,7 @@ export const EventsWrapper = styled(Box)`
   margin-right: auto;
   max-width: 50%;
   padding-bottom: 10%;
-  @media (max-width: 500px) {
+  @media (max-width: 650px) {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
@@ -26,6 +26,19 @@ export const TitleStyled = styled.div`
 font-weight: lighter;
 font-size: 15px;
 color: #D4D4D4;
+margin: 2% 7% 1% 7%;
+`;
+
+export const HeaderStyled = styled.div`
+font-weight: lighter;
+color: #D4D4D4;
+margin: 2% 0 2% 28%;
+text-align:initial;
+font-size:27px;
+fontFamily: segueUI;
+@media (max-width: 650px) {
+  margin: 2% 7% 1% 11%;
+}
 `;
 
 export const BoxWrapper = styled(Box)`
@@ -35,7 +48,7 @@ export const BoxWrapper = styled(Box)`
 
 export const BoxWrapper1 = styled(BoxWrapper)`
 flex-direction: row;
-margin-top: 10%;
+margin-top: 2%;
 `;
 
 export const StyledDiv = styled.div`
@@ -48,11 +61,11 @@ export const StyledDiv = styled.div`
 
 export const StyledSelect = styled.select`
   padding: 8px;
-  border-radius: 6px;
+  border-radius: 2px;
   border: none;
   margin: 2% 7%;
-  background-color: #424241;
-  border: 1px solid gray;
+  background-color: #262626;
+  border: 1px solid #3A3A39;
   color: #cccccc;
 `;
 
@@ -60,9 +73,14 @@ export const StyledLine = styled.hr`
   width: 100%;
   margin: 15px auto;
   border: none;
-  border-top: 1px solid #272727;
+  border-top: 1px solid #3A3A39;
   height: 0.1px;
 `;
+
+export const StyledLine1 = styled(StyledLine)`
+width: 85%;
+margin: 40px auto;
+`
 
 export const SubmitButton = styled(Button) ({
   padding: '3px',
@@ -86,6 +104,7 @@ export const CancelButton = styled(Button)({
   '&:hover': {
     backgroundColor: '#454545',
   },
+  
 });
 
 export const ErrorStyled = styled.div`
@@ -97,8 +116,8 @@ export const ErrorStyled = styled.div`
 export const SaveButton = styled(Button)({
   width: '20%',
   position: 'relative',
-  left: '80%',
-  marginRight: '-15px',
+  left: '72.5%',
+  marginRight: '-10%',
   height: '30px',
 });
 
@@ -107,10 +126,10 @@ export const AddButton = styled(Button)({
   padding: '1px',
   borderRadius: '6px',
   marginTop: '4%',
-  maxWidth: '25%',
-  marginLeft: '38%',
+  maxWidth: '20%',
+  marginLeft: '41%',
   color: '#d4d4d4',
-  fontSize: '14px',
+  fontSize: '11px',
 });
 
 export const DeleteButton = styled(Button)({
@@ -141,9 +160,9 @@ export const PresenterBoxWrapper = styled(Box)`
 
 export const ListStyled = styled.li`
   color: #cccccc;
-  background-color: #424241;
-  border: 1px solid gray;
-  border-radius: 5px;
+  background-color: #262626;
+  border: 1px solid #3A3A39;
+  border-radius: 2px;
   margin: 4px;
   padding: 4px 8px;
   cursor: pointer;
@@ -151,16 +170,16 @@ export const ListStyled = styled.li`
 `;
 
 export const TypeFormStyled = {
-  margin: '2% 7% 0 7%',
+  margin: '5% 7% 0 7%',
   height: '-20px',
   '& .MuiInputBase-root': {
     color: 'gray',
-    border: '1px solid gray',
-    backgroundColor: '#424241',
-    borderRadius: '6px',
+    border: '1px solid #3A3A39',
+    backgroundColor: '#262626',
+    borderRadius: '4px',
   },
   '& .MuiFormLabel-root': {
-    color: '#cccccc',
+    color: 'gray',
     fontSize: '15px',
   },
   '& .MuiOutlinedInput-root': {
@@ -169,7 +188,7 @@ export const TypeFormStyled = {
 };
 
 export const TypeSelectStyled = {
-  backgroundColor: '#424241',
+  backgroundColor: '#262626',
   color: '#cccccc',
   maxHeight: '200px',
   overflowY: 'auto',
@@ -204,19 +223,27 @@ export const DateTimePickerWrapper = styled(Box)`
 
 export const InputStyled = styled(Input)`
   margin: 2% 7% 0 7%;
-  padding: 1% 0 1% 3%;
-  background-color: #424241;
-  color: #cccccc;
-  border: 1px solid gray;
-  border-radius: 6px;
+  padding: 0 0 0 12px;
+  background-color: #262626;
+  color: #DDDDDD;
+  border: 1px solid #3A3A39;
+  border-radius: 4px;
+  @media (max-width: 650px) {
+    padding: 0 0 0% 2%;
+  }
 `;
 
 export const TextAreaStyled = styled(TextArea)`
   height: 100px;
   margin: 2% 7% 0 7%;
-  padding: 2% 0 0% 3%;
-  background-color: #424241;
-  color: #cccccc;
-  border: 1px solid gray;
-  border-radius: 6px;
+  padding: 8px 0 0% 12px;
+  background-color: #262626;
+  color: #B6B6B6;
+  border: 1px solid #3A3A39;
+  border-radius: 4px;
+  overflow: 100px;
+  scrollbar-width: thin;
+  @media (max-width: 650px) {
+    padding: 2% 0 0% 2%;
+  }
 `;

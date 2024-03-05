@@ -123,7 +123,7 @@ const MapBox = ({
         margin: '2% 7% 0 7%',
       }}
     >
-      <div style={{ border: '1px solid gray', borderRadius: '5px 5px 0 0' }}>
+      <div style={{ border: '1px solid #3A3A39', borderRadius: '5px 5px 0 0' }}>
         <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
         <div id='map' style={{ width: '100%', height: '160px' }}></div>
       </div>
@@ -137,7 +137,7 @@ const MapBox = ({
       >
         Rensa
       </DeleteButton>
-      <StyledLine style={{ marginBottom: '-6%' }} />
+      {/* <StyledLine style={{ marginBottom: '-6%' }} /> */}
     </div>
   );
 };

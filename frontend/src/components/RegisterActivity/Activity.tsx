@@ -5,6 +5,7 @@ import {
   EventsWrapper,
   StyledDiv,
   StyledLine,
+  StyledLine1,
   TypeFormStyled,
   TypeSelectStyled,
   InputStyled,
@@ -23,7 +24,8 @@ import {
   TitleStyled,
   GlobalBox,
   BoxWrapper,
-  BoxWrapper1
+  BoxWrapper1,
+  HeaderStyled,
 } from '../../styles/RegisterActivity/StyledActivity';
 import {
   sxDateTimePickerStyles,
@@ -394,22 +396,20 @@ function Activity({ onClose }: any) {
 
     fetchFiles();
   }, []);
+  
 
   return (
     <>
       <GlobalBox >
         <img src='' alt='' />
         <GlobalStyles />
+        <HeaderStyled>Ny aktivitiet</HeaderStyled>
+        <StyledLine />
         <EventsWrapper>
-          <Timeslot
-            endTime={new Date()}
-            heading='Registrera Aktivitiet'
-            startTime={new Date()}
-            type={types.TimeslotType.Presentation}
-          >
             <form onSubmit={handleSubmit}>
               <StyledDiv>
-                <TitleStyled>Aktivitiet info</TitleStyled>
+                
+                
                 <FormControl sx={{ ...TypeFormStyled }}>
                   <InputLabel id='type-label'>Type</InputLabel>
                   <Select
@@ -472,8 +472,7 @@ function Activity({ onClose }: any) {
                   value={activity.details}
                   onChange={handleOnInputChange}
                 />
-
-                <StyledLine />
+                {/* <StyledLine /> */}
                 {showPresenter && (
                   <StyledDiv>
                     <TitleStyled>Interna</TitleStyled>
@@ -519,7 +518,7 @@ function Activity({ onClose }: any) {
                         </PresenterBoxWrapper>
                       ))}
                     </BoxWrapper>
-                    <StyledLine />
+                    {/* <StyledLine /> */}
                   </StyledDiv>
                 )}
                 {showExternalPresenter && (
@@ -552,11 +551,12 @@ function Activity({ onClose }: any) {
                       ))}
                     </BoxWrapper>
 
-                    <StyledLine />
+                    {/* <StyledLine /> */}
                   </StyledDiv>
                 )}
                 {showLocation && (
                   <StyledDiv>
+                    <TitleStyled>Plats</TitleStyled>
                     <InputStyled
                       type='text'
                       name='title'
@@ -577,8 +577,8 @@ function Activity({ onClose }: any) {
                     />
                   </StyledDiv>
                 )}
-
-                <BoxWrapper1 sx={{ display: 'flex', flexDirection: 'row', marginTop: '10%' }}>
+                <StyledLine1/>
+                <BoxWrapper1>
                   <SaveButton type='submit' disabled={!isFieldsFilled}>
                     Spara
                   </SaveButton>
@@ -586,7 +586,6 @@ function Activity({ onClose }: any) {
                 </BoxWrapper1>
               </StyledDiv>
             </form>
-          </Timeslot>
         </EventsWrapper>
       </GlobalBox>
     </>
