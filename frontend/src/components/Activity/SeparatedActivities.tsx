@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
 import { Person, TimeslotType } from '@kokitotsos/react-components/dist/types';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
+import { getPresenter } from '@/utils/Helpers/getPresenter';
 
 interface SeparatedActivitiesProps {
   date: string;
@@ -33,8 +33,6 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
     selectedActivityId,
   } = props;
 
-  const presenters = useGetPresenter();
-
   const aKey: string = `${activity}-${index}`;
   const bKey: string = `${nextActivity}-${index + 1}`;
 
@@ -62,7 +60,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       >
         <Timeslot
           key={uniqueKey}
-          presenters={presenters(activity)}
+          presenters={getPresenter(activity)}
           endTime={activity.end}
           heading={activity.title}
           startTime={activity.start}
@@ -102,7 +100,7 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
       >
         <Timeslot
           key={`${date}-${index + 1}`}
-          presenters={presenters(nextActivity)}
+          presenters={getPresenter(nextActivity)}
           endTime={nextActivity.end}
           heading={nextActivity.title}
           startTime={nextActivity.start}
