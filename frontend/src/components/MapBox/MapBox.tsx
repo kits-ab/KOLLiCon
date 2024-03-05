@@ -3,7 +3,8 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@/styles/MapBox/MapBox.css';
-import { StyledButton, StyledLine } from '../../styles/RegisterActivity/StyledActivity';
+import { DeleteButton } from '../../styles/RegisterActivity/StyledActivity';
+import { Colors } from '../../styles/Common/colors';
 
 const MapBox = ({
   onCoordinatesChange,
@@ -120,27 +121,24 @@ const MapBox = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        margin: '0 7% 0 7%',
+        margin: '2% 7% 0 7%',
       }}
     >
-      <div style={{ border: '1px solid gray', borderRadius: '5px 5px 0 0' }}>
+      <div style={{ border: `1px solid ${Colors.primaryBorder}`, borderRadius: '4px 4px 4px 4px' }}>
         <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
         <div id='map' style={{ width: '100%', height: '160px' }}></div>
       </div>
 
-      <StyledButton
+      <DeleteButton
         style={{
           margin: '4% 0 -1% 40%',
           maxWidth: '20%',
-          padding: '4px',
-          backgroundColor: '#963939',
-          fontSize: '11px',
         }}
         onClick={clearSearchBox}
       >
         Rensa
-      </StyledButton>
-      <StyledLine style={{ marginBottom: '-6%' }} />
+      </DeleteButton>
+      {/* <StyledLine style={{ marginBottom: '-6%' }} /> */}
     </div>
   );
 };

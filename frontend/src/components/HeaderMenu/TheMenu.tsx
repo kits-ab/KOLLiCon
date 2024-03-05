@@ -11,6 +11,7 @@ import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '@/assets/BearWithMe.png';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
+import {Colors} from '../../styles/Common/colors';
 
 const drawerBleeding = 11;
 
@@ -112,7 +113,7 @@ function TheMenu(props: Props) {
           styles={{
             '.MuiDrawer-root > .MuiPaper-root': {
               overflow: 'visible',
-              backgroundColor: '#262626',
+              backgroundColor: `${Colors.primaryBackground}`,
               borderRadius: '20px 20px 0px 0px',
             },
           }}
