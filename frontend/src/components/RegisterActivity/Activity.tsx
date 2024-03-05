@@ -97,7 +97,7 @@ function Activity({ onClose }: any) {
     const locationFilled =
       showLocation ||
       (location.title.trim() === '' && location.subtitle.trim() === '' ? true : true);
-      
+
     setIsFieldsFilled(
       Boolean(requiredFieldsFilled && presenterFilled && externalPresenterFilled && locationFilled),
     );
@@ -269,7 +269,7 @@ function Activity({ onClose }: any) {
 
     if (!pictureExists || !titleExists) {
       // Handle case where title doesn't exist in files state or profile picture doesn't exist
-      setError(`"${presenter.name}" not found`)
+      setError(`"${presenter.name}" not found`);
       return;
     }
     // Add presenter to the activity state
@@ -367,7 +367,6 @@ function Activity({ onClose }: any) {
             setFiles(filteredFiles);
           });
         } else {
-          
           console.error('Error fetching files:', response.statusText);
         }
       } catch (error: any) {
@@ -577,7 +576,7 @@ function Activity({ onClose }: any) {
                     >
                       Lägg till
                     </StyledButton>
-                    {error && <p style={{color:'#963939', fontWeight:'bold'}}>{error}</p>}
+                    {error && <p style={{ color: '#963939', fontWeight: 'bold' }}>{error}</p>}
 
                     {/* List added presenters */}
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
