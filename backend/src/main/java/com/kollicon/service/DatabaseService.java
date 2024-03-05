@@ -1,21 +1,18 @@
 package com.kollicon.service;
 
 import com.kollicon.model.ActivityModel;
-import com.kollicon.model.LocationModel;
 import com.kollicon.model.PresenterModel;
 import com.kollicon.model.ScheduleModel;
 import com.kollicon.repository.ActivityRepository;
-import com.kollicon.repository.LocationRepository;
 import com.kollicon.repository.PresenterRepository;
 import com.kollicon.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 
@@ -26,19 +23,18 @@ public class DatabaseService {
     private ScheduleRepository scheduleRepository;
     @Autowired
     ActivityRepository activityRepository;
-    @Autowired
-    LocationRepository locationRepository;
+
     @Autowired
     PresenterRepository presenterRepository;
 
     private String generatedYamlObject;
 
-    public void generateMdFile(@PathVariable Long id) {
 
-        String outputPath = "C:\\Users\\magnu\\OneDrive\\Skrivbord\\alireza.md";
-        Map<String, Object> ScheduleData = new LinkedHashMap ();
+    // Put schedule data inside LinkedHashMap.
+    public void handleSchedule(@PathVariable Long id) {
 
-        // Get schedule
+        Map<String, Object> ScheduleData = new LinkedHashMap();
+
         Optional<ScheduleModel> scheduleModelOptional = scheduleRepository.findById(id);
         ScheduleModel scheduleModel =
                 scheduleModelOptional.orElseThrow(() -> new NoSuchElementException("Schedule not found!"));
@@ -55,10 +51,13 @@ public class DatabaseService {
         ScheduleData.put("image", "img/picture");
         ScheduleData.put("active", scheduleModel.isActive());
 
+        handleActivity(scheduleModel, ScheduleData);
+    }
 
-        // Iterate through activities
+    // Handle activity data.
+    public void handleActivity(ScheduleModel scheduleModel, Map<String, Object> ScheduleData) {
+
         List<ActivityModel> activityModel = activityRepository.findByScheduleId(scheduleModel.getId());
-
         List<Map<String, Object>> activities = new ArrayList<>();
 
         for (ActivityModel model : activityModel) {
@@ -73,54 +72,63 @@ public class DatabaseService {
             activityMap.put("title", model.getTitle());
             activityMap.put("type", model.getType());
 
-            List<Double> storeCoordinatesInThisList = new ArrayList<>();
-            Map<String, Object> addCoordinatesToThisMapFromList = new HashMap<>();
+            // HandleLocation method call.
+            if(!model.getLocation().getCoordinates().isEmpty() && !model.getLocation().getTitle().isEmpty()
+                    && !model.getLocation().getSubtitle().isEmpty())
+                activityMap.put("location", handleLocation(model));
 
-
-            if(!model.getLocation().getCoordinates().isEmpty() && !model.getLocation().getTitle().isEmpty() && !model.getLocation().getSubtitle().isEmpty()) {
-                String[] coordinates = model.getLocation().getCoordinates().split(",");
-                double latitude = Double.parseDouble(coordinates[0]);
-                double longitude = Double.parseDouble(coordinates[1]);
-
-                storeCoordinatesInThisList.add(latitude);
-                storeCoordinatesInThisList.add(longitude);
-                addCoordinatesToThisMapFromList.put("coordinates", storeCoordinatesInThisList);
-                addCoordinatesToThisMapFromList.put("title", model.getLocation().getTitle());
-
-                activityMap.put("location", addCoordinatesToThisMapFromList);
-            }
-            // Kolla nu om presenters finns i aktiviteten
-            List<PresenterModel> allPresenters = presenterRepository.findAll();
-            List<Object> selectedPresenter = new ArrayList<>();
-
-            for (PresenterModel allPresenter : allPresenters) {
-                if (model.getId() == allPresenter.getActivity().getId()) {
-                    selectedPresenter.add(allPresenter.getName().toLowerCase().replaceAll(" ", ""));
-                    activityMap.put("presenters", selectedPresenter);
-                }
-            }
-            activities.add(activityMap);
+            // Handlepresenter method call
+            handlePresenters(activityMap, activities, model);
         }
 
         ScheduleData.put("schema", activities);
-
         String scheduleDescription = scheduleModel.getDescription();
+        generateMdFile(scheduleDescription, ScheduleData);
+    }
 
-        // YAML DOCUMENTATION
+    // Handle location data
+    public Map<String, Object> handleLocation(ActivityModel model) {
+        List<Double> storeCoordinatesInThisList = new ArrayList<>();
+        Map<String, Object> addCoordinatesToThisMapFromList = new HashMap<>();
+
+        String[] coordinates = model.getLocation().getCoordinates().split(",");
+        double latitude = Double.parseDouble(coordinates[0]);
+        double longitude = Double.parseDouble(coordinates[1]);
+
+        storeCoordinatesInThisList.add(latitude);
+        storeCoordinatesInThisList.add(longitude);
+        addCoordinatesToThisMapFromList.put("coordinates", storeCoordinatesInThisList);
+        addCoordinatesToThisMapFromList.put("title", model.getLocation().getTitle());
+
+        return addCoordinatesToThisMapFromList;
+    }
+
+    // Handle presenter data
+    public void handlePresenters(Map<String, Object> activityMap, List<Map<String, Object>> activities,
+                                 ActivityModel model) {
+
+        List<PresenterModel> allPresenters = presenterRepository.findAll();
+        List<Object> selectedPresenter = new ArrayList<>();
+
+        for (PresenterModel allPresenter : allPresenters) {
+            if (model.getId() == allPresenter.getActivity().getId()) {
+                selectedPresenter.add(allPresenter.getName().toLowerCase().replaceAll(" ", ""));
+                activityMap.put("presenters", selectedPresenter);
+            }
+        }
+        activities.add(activityMap);
+    }
+
+    // Generate yaml object.
+    public void generateMdFile(String scheduleDescription,  Map<String, Object> scheduleData) {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
         Yaml yaml = new Yaml(options);
-        String yamlDataFormat = yaml.dump(ScheduleData);
+        String yamlDataFormat = yaml.dump(scheduleData);
 
         yamlDataFormat = "---\n" + yamlDataFormat + "---\n\n" + scheduleDescription;
         generatedYamlObject = yamlDataFormat;
-
-        try(FileWriter fileWriter = new FileWriter(outputPath)) {
-            fileWriter.write(yamlDataFormat);
-        }catch(IOException e) {
-            e.getLocalizedMessage();
-        }
     }
 
     public String getGeneratedYamlObject() {
