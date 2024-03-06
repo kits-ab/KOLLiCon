@@ -6,6 +6,7 @@ import ExpandInfo from '@/components/ExpandInfo/ExpandInfoComponent';
 import React, { useState } from 'react';
 import { Person } from '@kokitotsos/react-components/dist/types/Person';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -71,26 +72,29 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
     <>
       <React.Fragment key={'activities'}>
         {activitiesSortedByDate.map((activity: ActivityType, index: number) => {
-          <Timeslot
-            key={activity.id}
-            presenters={getPresenter(activity) as Person[]}
-            endTime={activity.end}
-            heading={activity.title}
-            startTime={activity.start}
-            type={activity.type}
-            showEndTime={true}
-            {...(activity.location.coordinates[0] !== 0
-              ? {
-                  location: {
-                    coordinates: activity.location.coordinates,
-                    title: (activity.location.title as string) || 'Location',
-                    subtitle: activity.location.subtitle,
-                  },
-                }
-              : {})}
-          >
-            <p>{activity.details.slice(0, 200)}</p>
-          </Timeslot>;
+          <StyledTimeslot>
+            <Timeslot
+              key={activity.id}
+              presenters={getPresenter(activity) as Person[]}
+              endTime={activity.end}
+              heading={activity.title}
+              startTime={activity.start}
+              type={activity.type}
+              showEndTime={true}
+              {...(activity.location.coordinates[0] !== 0
+                ? {
+                    location: {
+                      coordinates: activity.location.coordinates,
+                      title: (activity.location.title as string) || 'Location',
+                      subtitle: activity.location.subtitle,
+                    },
+                  }
+                : {})}
+            >
+              <p>{activity.details.slice(0, 200)}</p>
+            </Timeslot>
+            ;
+          </StyledTimeslot>;
         })}
       </React.Fragment>
       <React.Fragment key={activitiesData.id}>
@@ -135,26 +139,28 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                         expandInfo();
                       }}
                     >
-                      <Timeslot
-                        key={key}
-                        presenters={getPresenter(activity) as Person[]}
-                        endTime={activity.end}
-                        heading={activity.title}
-                        startTime={activity.start}
-                        type={activity.type}
-                        showEndTime={true}
-                        {...(activity.location.coordinates[0] !== 0
-                          ? {
-                              location: {
-                                coordinates: activity.location.coordinates,
-                                title: (activity.location.title as string) || 'Location',
-                                subtitle: activity.location.subtitle,
-                              },
-                            }
-                          : {})}
-                      >
-                        <p>{activity.details.slice(0, 200)}</p>
-                      </Timeslot>
+                      <StyledTimeslot>
+                        <Timeslot
+                          key={key}
+                          presenters={getPresenter(activity) as Person[]}
+                          endTime={activity.end}
+                          heading={activity.title}
+                          startTime={activity.start}
+                          type={activity.type}
+                          showEndTime={true}
+                          {...(activity.location.coordinates[0] !== 0
+                            ? {
+                                location: {
+                                  coordinates: activity.location.coordinates,
+                                  title: (activity.location.title as string) || 'Location',
+                                  subtitle: activity.location.subtitle,
+                                },
+                              }
+                            : {})}
+                        >
+                          <p>{activity.details.slice(0, 200)}</p>
+                        </Timeslot>
+                      </StyledTimeslot>
                       {selectedActivityId === activity.id && (
                         <ExpandInfo
                           activityProp={activity}
