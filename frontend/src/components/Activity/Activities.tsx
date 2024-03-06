@@ -1,7 +1,7 @@
 import { ParallellActivities } from '@/components/Activity/ParallellActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
-import { SingleActivity } from './SingleActivity';
+import { SingleActivity } from '@/components/Activity/SingleActivity';
 
 interface ActivitiesProps {
   activitiesData: [] | any;

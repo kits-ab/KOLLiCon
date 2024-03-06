@@ -1,60 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
-import { TimeslotType } from '@kokitotsos/react-components/dist/types';
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { Person } from '@kokitotsos/react-components/dist/types/Person';
-import { ExternalPresenter } from '@kokitotsos/react-components/dist/types/ExternalPresenter';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
+import { Schedule } from '@/types/Schedule';
+import { useExpandInfo } from '../../utils/Hooks/useExpandInfo';
+import { getMapLink } from '../../utils/Helpers/getMapLink';
+import DialogContent from '@mui/material/DialogContent';
 
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activityProp: ActivityType;
+  activityProp?: ActivityType;
+  scheduleProp?: Schedule;
 }
 
-const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) => {
-  const [activity, setActivity] = useState({
-    data: {} as ActivityType,
-    location: [] as number[],
-    start: new Date(),
-    end: new Date(),
-  });
-  const presenters = useGetPresenter();
-
-  useEffect(() => {
-    const coordinates = Array.isArray(activityProp.location.coordinates)
-      ? activityProp.location.coordinates
-      : [];
-
-    setActivity({
-      data: activityProp,
-      location: coordinates,
-      start: new Date(activityProp.start),
-      end: new Date(activityProp.end),
-    });
-  }, [activityProp]);
-
-  const getMapLink = (coordinates: number[]) => {
-    const userAgent = navigator.userAgent;
-    if (/iPad|iPhone|iPod/.test(userAgent)) {
-      return `maps://maps.apple.com/?q=${coordinates[0]},${coordinates[1]}`;
-    } else {
-      return `https://www.google.com/maps/search/?api=1&query=${coordinates[0]},${coordinates[1]}`;
-    }
-  };
-
-  const matches = useMediaQuery('(min-width:600px)');
+const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, scheduleProp }) => {
+  const data = useExpandInfo({ activityProp, scheduleProp });
+  const isDesktop = useMediaQuery('(min-width:600px)');
 
   return (
     <div>
       <Drawer
         PaperProps={{
+          overflow: 'hidden',
           sx: {
-            width: matches ? '50%' : '100%',
+            width: isDesktop ? '50%' : '100%',
             padding: '20px',
           },
         }}
@@ -73,30 +46,31 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp }) 
         >
           <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
         </IconButton>
-
-        <Timeslot
-          heading={activity.data.title}
-          type={activity.data.type}
-          presenters={presenters(activity.data) as Person[]}
-          startTime={activity.start}
-          endTime={activity.end}
-          showEndTime={true}
-        ></Timeslot>
-        <Text style={{ margin: '20px 0px 20px 0px' }}>
-          <p>{activity.data.details}</p>
-        </Text>
-        {activity.location.length === 2 && (
-          <div
-            onClick={() => window.open(getMapLink(activity.location), '_blank')}
-            style={{ cursor: 'pointer' }}
-          >
-            <Location
-              coordinates={[activity.location[0], activity.location[1]]}
-              title={activity.data.location.title ? activity.data.location.title : 'Location'}
-              subtitle={activity.data.location.subtitle ? activity.data.location.subtitle : ''}
-            />
-          </div>
-        )}
+        <DialogContent>
+          <Timeslot
+            heading={data.generalInfo.title}
+            startTime={data.generalInfo.start}
+            endTime={data.generalInfo.end}
+            presenters={data.presenters}
+            type={data.type}
+            showEndTime={data.generalInfo.showEndTime}
+          ></Timeslot>
+          <Text style={{ margin: '20px 0px 20px 0px' }}>
+            <p>{data.generalInfo.details}</p>
+          </Text>
+          {data.location.coordinates.length === 2 && (
+            <div
+              onClick={() => window.open(getMapLink(data.location.coordinates), '_blank')}
+              style={{ cursor: 'pointer' }}
+            >
+              <Location
+                coordinates={[data.location.coordinates[0], data.location.coordinates[1]]}
+                title={data.location.title ? data.location.title : 'Location'}
+                subtitle={data.location.subtitle ? data.location.subtitle : ''}
+              />
+            </div>
+          )}
+        </DialogContent>
       </Drawer>
     </div>
   );

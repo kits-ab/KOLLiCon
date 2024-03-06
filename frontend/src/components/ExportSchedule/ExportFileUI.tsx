@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -7,13 +6,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Checkbox from '@mui/material/Checkbox';
 import axios from 'axios';
+import { Colors } from '../../styles/Common/colors';
+import { CancelButton, SaveButton } from '@/styles/RegisterActivity/StyledActivity';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
+const BootstrapDialog = styled(Dialog)(() => ({
+  '& .css-1t1j96h-MuiPaper-root-MuiDialog-paper': {
+    backgroundColor: `${Colors.primaryBackground}`,
   },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
+  '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root.Mui-checked': {
+    color: `${Colors.primaryAddButton}`,
   },
 }));
 
@@ -24,9 +25,6 @@ function ExportFileUI({ onClose }: { onClose: any }) {
   const [schedules, setSchedules] = React.useState([]);
   const [idOfPickedSchedule, setIdOfPickedSchedule] = React.useState<string[]>([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
     setOpen(true);
   };
@@ -54,8 +52,9 @@ function ExportFileUI({ onClose }: { onClose: any }) {
   // Create yaml objects of selected schedules.
   const createYamlobjects = async () => {
     for (let i = 0; i < idOfPickedSchedule.length; i++) {
-      await axios.post(`${backendUrl}/api/generateMdFile/${idOfPickedSchedule[i]}`);
-      const yolo = await axios.get(`${backendUrl}/api/${idOfPickedSchedule[i]}/getyaml`);
+      const yolo = await axios.get(
+        `http://localhost:8080/api/${idOfPickedSchedule[i]}/generatemdfile`,
+      );
       const titleOfSchedule = await axios.get(
         `${backendUrl}/api/scheduletitle/${idOfPickedSchedule[i]}`,
       );
@@ -84,41 +83,67 @@ function ExportFileUI({ onClose }: { onClose: any }) {
 
   return (
     <>
-      <Button variant='outlined' onClick={handleClickOpen}>
-        Open dialog
-      </Button>
-
-      <BootstrapDialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>
+      <BootstrapDialog
+        sx={{ marginLeft: 'auto', marginRight: 'auto', overflow: 'hidden' }}
+        onClose={handleClose}
+        aria-labelledby='customized-dialog-title'
+        open={open}
+      >
         <DialogTitle
-          sx={{ m: 3, p: 3, width: '150px', marginLeft: '100px' }}
+          sx={{
+            backgroundColor: `${Colors.primaryBackground}`,
+            color: '#cccccc',
+            width: '270px',
+            height: '70px',
+          }}
           id='customized-dialog-title'
         >
-          Exportera markdownfile
+          Exportera markdown fil
         </DialogTitle>
-
-        {schedules.map((value: { id: string; title: string }, index: number) => (
-          <DialogContent key={index} dividers>
-            {String(value.title)}
-            <Checkbox
-              onClick={() => {
-                addSelectedObjectIdToState(value.id);
+        <div
+          style={{
+            overflowY: 'auto',
+            maxHeight: '200px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: `${Colors.textColor} ${Colors.scrollColor}`,
+          }}
+        >
+          {schedules.map((value: { id: string; title: string }, index: number) => (
+            <DialogContent
+              sx={{
+                display: 'flex',
+                backgroundColor: `${Colors.primaryBackground}`,
+                color: '#cccccc',
+                width: '99%',
+                height: '45px',
+                overflow: 'hidden',
               }}
-            />
-          </DialogContent>
-        ))}
+              key={index}
+              dividers
+            >
+              {String(value.title)}
+              <Checkbox
+                sx={{ color: '#cccccc', marginLeft: 'auto' }}
+                onClick={() => {
+                  addSelectedObjectIdToState(value.id);
+                }}
+              />
+            </DialogContent>
+          ))}
+        </div>
 
-        <DialogActions>
-          <Button autoFocus onClick={onClose}>
+        <DialogActions style={{ marginRight: 'auto', marginTop: '20px' }}>
+          <CancelButton style={{ left: '70%' }} autoFocus onClick={onClose}>
             Close
-          </Button>
-          <Button
+          </CancelButton>
+          <SaveButton
             onClick={() => {
               onClose();
               createYamlobjects();
             }}
           >
             Save
-          </Button>
+          </SaveButton>
         </DialogActions>
       </BootstrapDialog>
     </>
