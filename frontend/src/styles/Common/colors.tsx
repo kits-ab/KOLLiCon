@@ -4,6 +4,7 @@ export enum Colors {
   linkColor = '#718863',
   textColor = '#cccccc',
   primaryBackground = '#262626',
+  secondaryBackground = '#333333',
   primaryBorder = '#3A3A39',
   primaryAddButton = '#596b4d',
   hoverAddButton = '#475a39',
