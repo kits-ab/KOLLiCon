@@ -8,7 +8,7 @@ import KolliconFooter from '../components/Footer/KolliconFooter';
 import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
-import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
+import { Activities } from '@/components/Activity/Activities.tsx';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
@@ -43,7 +43,7 @@ export const Home = () => {
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuDrawer />
-        <ActivitiesNew
+        <Activities
           activitiesData={activitiesData}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
