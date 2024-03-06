@@ -31,7 +31,7 @@ public class DatabaseService {
 
 
     // Put schedule data inside LinkedHashMap.
-    public void handleSchedule(@PathVariable Long id) {
+    public void handleSchedule(Long id) {
 
         Map<String, Object> ScheduleData = new LinkedHashMap();
 
