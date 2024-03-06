@@ -1,6 +1,7 @@
 export enum Colors {
   primary = '#f4f4f4',
   primaryText = '#e5e5e5',
+  linkColor = '#718863',
   textColor = '#cccccc',
   primaryBackground = '#262626',
   secondaryBackground = '#333333',
@@ -15,4 +16,5 @@ export enum Colors {
   primaryPlaceholder = '#B6B6B6',
   secondaryPlaceholder = '#DDDDDD',
   scrollColor = '#424241',
+  primaryBackground2 = '#777777',
 }

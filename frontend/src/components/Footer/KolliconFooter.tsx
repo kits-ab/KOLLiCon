@@ -1,24 +1,30 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Footer, types } from '@kokitotsos/react-components';
-import { colors } from '@kokitotsos/react-components';
+import { Colors } from '@/styles/Common/colors';
 
 function KolliconFooter() {
   const BottomFooter = styled.div`
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: blue;
+    div > address > p > span > a,
+    div > address > h4 {
+      color: ${Colors.primaryBackground} !important;
+    }
+    div > address > p > span {
+      color: white;
+    }
 
-    div > address > p > span > a {
-      color: ${colors.text1};
+    .footer-image {
+      fill: ${Colors.primaryBackground};
     }
   `;
 
   return (
     <BottomFooter>
       <Footer
-        style={{ backgroundColor: 'grey' }}
+        style={{ backgroundColor: `${Colors.primaryBackground2}` }}
         info={{
           city: 'Göteborg',
           email: new types.Email('info@kits.se'),

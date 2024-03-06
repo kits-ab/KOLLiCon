@@ -9,6 +9,7 @@ import { Schedule } from '@/types/Schedule';
 import { useExpandInfo } from '../../utils/Hooks/useExpandInfo';
 import { getMapLink } from '../../utils/Helpers/getMapLink';
 import DialogContent from '@mui/material/DialogContent';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -46,31 +47,33 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
         >
           <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
         </IconButton>
-        <DialogContent>
-          <Timeslot
-            heading={data.generalInfo.title}
-            startTime={data.generalInfo.start}
-            endTime={data.generalInfo.end}
-            presenters={data.presenters}
-            type={data.type}
-            showEndTime={data.generalInfo.showEndTime}
-          ></Timeslot>
-          <Text style={{ margin: '20px 0px 20px 0px' }}>
-            <p>{data.generalInfo.details}</p>
-          </Text>
-          {data.location.coordinates.length === 2 && (
-            <div
-              onClick={() => window.open(getMapLink(data.location.coordinates), '_blank')}
-              style={{ cursor: 'pointer' }}
-            >
-              <Location
-                coordinates={[data.location.coordinates[0], data.location.coordinates[1]]}
-                title={data.location.title ? data.location.title : 'Location'}
-                subtitle={data.location.subtitle ? data.location.subtitle : ''}
-              />
-            </div>
-          )}
-        </DialogContent>
+        <StyledTimeslot>
+          <DialogContent sx={{ padding: '0' }}>
+            <Timeslot
+              heading={data.generalInfo.title}
+              startTime={data.generalInfo.start}
+              endTime={data.generalInfo.end}
+              presenters={data.presenters}
+              type={data.type}
+              showEndTime={data.generalInfo.showEndTime}
+            ></Timeslot>
+            <Text style={{ margin: '20px 0px 20px 0px' }}>
+              <p>{data.generalInfo.details}</p>
+            </Text>
+            {data.location.coordinates.length === 2 && (
+              <div
+                onClick={() => window.open(getMapLink(data.location.coordinates), '_blank')}
+                style={{ cursor: 'pointer' }}
+              >
+                <Location
+                  coordinates={[data.location.coordinates[0], data.location.coordinates[1]]}
+                  title={data.location.title ? data.location.title : 'Location'}
+                  subtitle={data.location.subtitle ? data.location.subtitle : ''}
+                />
+              </div>
+            )}
+          </DialogContent>
+        </StyledTimeslot>
       </Drawer>
     </div>
   );

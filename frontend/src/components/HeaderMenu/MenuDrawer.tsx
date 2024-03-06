@@ -18,6 +18,7 @@ import {
   FixedMenuIcon,
   drawerBleeding,
 } from '@/styles/MenuStyles/StylesForMenu';
+import { Colors } from '@/styles/Common/colors';
 
 interface Props {
   window?: () => Window;
@@ -67,7 +68,7 @@ function MenuDrawer(props: Props) {
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
             overflow: 'visible',
-            backgroundColor: '#262626',
+            backgroundColor: `${Colors.primaryBackground}`,
             borderRadius: '20px 20px 0px 0px',
           },
         }}
@@ -76,6 +77,13 @@ function MenuDrawer(props: Props) {
         <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
       </Box>
       <SwipeableDrawer
+        PaperProps={{
+          sx: {
+            overflow: 'visible',
+            backgroundColor: `${Colors.primaryBackground}`,
+            borderRadius: '20px 20px 0px 0px',
+          },
+        }}
         container={container}
         anchor='bottom'
         open={open}
@@ -101,6 +109,7 @@ function MenuDrawer(props: Props) {
                   fontSize: '1.1rem',
                   margin: '13px 0 13px 0',
                   cursor: 'pointer',
+                  color: `${Colors.primaryText}`,
                 }}
               >
                 {menuItem.label}
@@ -127,7 +136,9 @@ function MenuDrawer(props: Props) {
                     marginTop: '10px',
                   }}
                 />
-                <MenuItem style={{ fontSize: '1.1rem' }}>BeerWithMe</MenuItem>
+                <MenuItem style={{ fontSize: '1.1rem', color: `${Colors.primaryText}` }}>
+                  BeerWithMe
+                </MenuItem>
               </div>
             </Link>
           </Text>
