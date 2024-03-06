@@ -16,12 +16,19 @@ const BootstrapDialog = styled(Dialog)(() => ({
   '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root.Mui-checked': {
     color: `${Colors.primaryAddButton}`,
   },
-  '& .css-i4bv87-MuiSvgIcon-root': {
-    width: '20px',
-    height: '18px',
+  '& .css-1m9pwf3': {
+    width: '50%',
+    position: 'absolute',
+    left: '25%',
   },
+  '& .css-i4bv87-MuiSvgIcon-root': {
+    width: '25px',
+    height: '25px',
+  },
+  '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root': {},
 }));
 
+//MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium css-m64m4g-MuiButtonBase-root-MuiCheckbox-root
 const backendUrl = import.meta.env.VITE_API_URL;
 
 function ExportFileUI({ onClose }: { onClose: any }) {
@@ -127,6 +134,7 @@ function ExportFileUI({ onClose }: { onClose: any }) {
             >
               {String(value.title)}
               <Checkbox
+                disableTouchRipple
                 sx={{ color: '#cccccc', marginLeft: 'auto' }}
                 onClick={() => {
                   addSelectedObjectIdToState(value.id);
