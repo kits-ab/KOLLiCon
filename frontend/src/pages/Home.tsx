@@ -5,30 +5,18 @@ import ActivitiesWrapper from '@/styles/ActivitiesWrapper';
 import AddIcon from '@mui/icons-material/Add';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from '../components/Footer/KolliconFooter';
-import { styled } from '@mui/material/styles';
 import Activity from '../components/RegisterActivity/Activity';
 import FloatingButton from '../components/Common/FloatingAddButton';
 import { ActivitiesNew } from '@/components/Activity/Activities.tsx';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
+import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
-
-  const AddAcitivityStyling = styled('div')(() => ({
-    color: 'white',
-    borderRadius: '10px',
-    padding: '20px',
-    marginTop: '20px',
-    marginBottom: '30px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#333333',
-  }));
 
   const activateDrawer = () => {
     setOpen(true);
