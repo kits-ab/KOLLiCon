@@ -25,7 +25,9 @@ const BootstrapDialog = styled(Dialog)(() => ({
     width: '25px',
     height: '25px',
   },
-  '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root': {},
+  '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root': {
+    padding: '3px',
+  },
 }));
 
 //MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium css-m64m4g-MuiButtonBase-root-MuiCheckbox-root
