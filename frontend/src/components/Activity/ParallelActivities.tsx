@@ -2,10 +2,10 @@ import { Timeslot } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
+import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
 
-interface ParallellActivitiesProps {
+interface ParallelActivitiesProps {
   date: string;
   activity: ActivityType;
   nextActivity: ActivityType;
@@ -18,7 +18,7 @@ interface ParallellActivitiesProps {
   selectedActivityId: number | null;
 }
 
-export const ParallellActivities: React.FC<ParallellActivitiesProps> = (props) => {
+export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => {
   const {
     date,
     activity,
@@ -30,8 +30,6 @@ export const ParallellActivities: React.FC<ParallellActivitiesProps> = (props) =
     setExpandInfoOpen,
     selectedActivityId,
   } = props;
-
-  const presenters = useGetPresenter();
 
   return (
     <>
@@ -59,7 +57,7 @@ export const ParallellActivities: React.FC<ParallellActivitiesProps> = (props) =
         >
           <Timeslot
             key={`${activity.id}-timeslot`}
-            presenters={presenters(activity)}
+            presenters={getPresenter(activity)}
             endTime={activity.end}
             heading={activity.title}
             startTime={activity.start}
@@ -99,7 +97,7 @@ export const ParallellActivities: React.FC<ParallellActivitiesProps> = (props) =
         >
           <Timeslot
             key={`${activity.id}-nextactivity-timeslot`}
-            presenters={presenters(nextActivity)}
+            presenters={getPresenter(nextActivity)}
             endTime={nextActivity.end}
             heading={nextActivity.title}
             startTime={nextActivity.start}

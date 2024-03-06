@@ -1,4 +1,4 @@
-import { ParallellActivities } from '@/components/Activity/ParallellActivities';
+import { ParallelActivities } from '@/components/Activity/ParallelActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { SingleActivity } from '@/components/Activity/SingleActivity';
@@ -70,9 +70,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
       {separatedActivities &&
         Object.keys(separatedActivities).map((date) => {
           return separatedActivities[date].map((activity: ActivityType, index: number) => {
-            {
-              console.log('Index: ', index);
-            }
             const nextActivity = separatedActivities[date][index + 1];
             if (skipIndices.has(index)) {
               return null;
@@ -80,7 +77,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
               skipIndices.add(index + 1);
               return (
-                <ParallellActivities
+                <ParallelActivities
                   date={date}
                   activity={activity}
                   nextActivity={nextActivity}

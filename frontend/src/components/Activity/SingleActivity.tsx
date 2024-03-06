@@ -2,7 +2,7 @@ import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import DateText from '@/styles/DateText';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
+import { getPresenter } from '@/utils/Helpers/getPresenter';
 
 interface SingleActivityProps {
   activity: ActivityType;
@@ -27,8 +27,6 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     date,
   } = props;
 
-  const presenters = useGetPresenter();
-
   return (
     <a
       key={activity.id}
@@ -41,7 +39,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
       {index === 0 ? <DateText>{date}</DateText> : null}
       <Timeslot
         key={`${activity.id}-timeslot`}
-        presenters={presenters(activity)}
+        presenters={getPresenter(activity)}
         connectToPrevious={index !== 0}
         endTime={activity.end}
         heading={activity.title}
