@@ -129,7 +129,7 @@ function Activity({ onClose }: any) {
             (showExternalPresenter && isExternalPresenterFilled)) &&
           (activity.presenter.length > 0 || activity.externalPresenter.length > 0)),
     );
-
+        
     // Enable or disable "Spara" button based on the condition
     const saveButton = document.getElementById('spara-button') as HTMLButtonElement;
     if (saveButton) {
@@ -146,7 +146,7 @@ function Activity({ onClose }: any) {
     isPresenterFilled,
     isExternalPresenterFilled,
     activity,
-  ]);
+  ])
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

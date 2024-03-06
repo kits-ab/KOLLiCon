@@ -243,6 +243,7 @@ export const TextAreaStyled = styled(TextArea)`
   border-radius: 4px;
   overflow: 100px;
   scrollbar-width: thin;
+  font-family: sans-serif;
   @media (max-width: 650px) {
     padding: 2% 0 0% 2%;
   }
