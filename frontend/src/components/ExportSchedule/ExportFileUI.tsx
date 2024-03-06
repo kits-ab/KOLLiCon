@@ -16,6 +16,10 @@ const BootstrapDialog = styled(Dialog)(() => ({
   '& .css-m64m4g-MuiButtonBase-root-MuiCheckbox-root.Mui-checked': {
     color: `${Colors.primaryAddButton}`,
   },
+  '& .css-i4bv87-MuiSvgIcon-root': {
+    width: '20px',
+    height: '18px',
+  },
 }));
 
 const backendUrl = import.meta.env.VITE_API_URL;
