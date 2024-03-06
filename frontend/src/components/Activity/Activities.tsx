@@ -1,7 +1,6 @@
 import { ParallellActivities } from '@/components/Activity/ParallellActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
-import { useGetPresenter } from '@/utils/Hooks/useGetPresenter';
 import { SingleActivity } from './SingleActivity';
 
 interface ActivitiesProps {
@@ -75,7 +74,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
               console.log('Index: ', index);
             }
             const nextActivity = separatedActivities[date][index + 1];
-            // const keySlot: string = `${date}-${index}`;
             if (skipIndices.has(index)) {
               return null;
             }
