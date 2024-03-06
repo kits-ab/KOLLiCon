@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class DatabaseController {
@@ -15,13 +17,14 @@ public class DatabaseController {
   DatabaseService databaseService;
 
   @RequestMapping("/generateMdFile/{id}")
-  public void generateMdFile(@PathVariable Long id) {
-    databaseService.generateMdFile(id);
+  public void handleSchedule(@PathVariable Long id) {
+    databaseService.handleSchedule(id);
   }
 
-  @GetMapping("/{id}/getyaml")
-  public ResponseEntity<String> getYamlData(@PathVariable Long id) {
-    databaseService.generateMdFile(id);
+  // Generate yaml object in backend. Turn yaml object into .md file in frontend.
+    @GetMapping("/{id}/generatemdfile")
+    public ResponseEntity<String> getYamlData(@PathVariable Long id) {
+    databaseService.handleSchedule(id);
 
     String yamlData = databaseService.getGeneratedYamlObject();
 

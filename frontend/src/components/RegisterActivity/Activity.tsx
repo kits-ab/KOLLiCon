@@ -58,15 +58,15 @@ type Activity = {
 };
 
 type Person = {
-    name: string;
-    tagLine?: string;
-    imageSrc?: string;
-    imageSrcSet?: string;
-    avatarSrc?: string;
-    avatarSrcSet?: string;
-    href?: string;
-    tags?: string[];
-}
+  name: string;
+  tagLine?: string;
+  imageSrc?: string;
+  imageSrcSet?: string;
+  avatarSrc?: string;
+  avatarSrcSet?: string;
+  href?: string;
+  tags?: string[];
+};
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -120,20 +120,33 @@ function Activity({ onClose }: any) {
   useEffect(() => {
     // Check if all required fields are filled and at least one presenter is added
     setIsAllFieldsFilled(
-      isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && showLocation ||
-      isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && 
-      ((showPresenter && isPresenterFilled) || (showExternalPresenter && isExternalPresenterFilled)) &&
-      (activity.presenter.length > 0 || activity.externalPresenter.length > 0)
+      (isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && showLocation) ||
+        (isStartFilled &&
+          isEndFilled &&
+          isTitleFilled &&
+          isDetailsFilled &&
+          ((showPresenter && isPresenterFilled) ||
+            (showExternalPresenter && isExternalPresenterFilled)) &&
+          (activity.presenter.length > 0 || activity.externalPresenter.length > 0)),
     );
-  
+        
     // Enable or disable "Spara" button based on the condition
     const saveButton = document.getElementById('spara-button') as HTMLButtonElement;
     if (saveButton) {
       saveButton.disabled = !isAllFieldsFilled;
     }
-  }, [showPresenter, showExternalPresenter, showLocation,
-      isStartFilled, isEndFilled, isTitleFilled, isDetailsFilled, 
-      isPresenterFilled, isExternalPresenterFilled, activity]);
+  }, [
+    showPresenter,
+    showExternalPresenter,
+    showLocation,
+    isStartFilled,
+    isEndFilled,
+    isTitleFilled,
+    isDetailsFilled,
+    isPresenterFilled,
+    isExternalPresenterFilled,
+    activity,
+  ])
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -176,10 +189,10 @@ function Activity({ onClose }: any) {
     setActivity({ ...activity, [name]: value });
 
     if (name === 'title') {
-    setIsTitleFilled(!!value);
-  } else if (name === 'details') {
-    setIsDetailsFilled(!!value);
-  }
+      setIsTitleFilled(!!value);
+    } else if (name === 'details') {
+      setIsDetailsFilled(!!value);
+    }
   };
 
   //Function to handle the activity input change
@@ -244,7 +257,8 @@ function Activity({ onClose }: any) {
       setIsStartFilled(!!date);
     } else if (name === 'end') {
       setIsEndFilled(!!date);
-    }};
+    }
+  };
 
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -320,7 +334,7 @@ function Activity({ onClose }: any) {
       ...activity,
       presenter: [...activity.presenter, newPresenter],
     });
-    setIsPresenterFilled(presenter.name !== '')
+    setIsPresenterFilled(presenter.name !== '');
     setPresenter({
       name: '',
       avatarSrc: '',
@@ -337,7 +351,7 @@ function Activity({ onClose }: any) {
       ...activity,
       externalPresenter: [...activity.externalPresenter, newExternalPresenter],
     });
-    setIsExternalPresenterFilled(externalPresenter.name !== '')
+    setIsExternalPresenterFilled(externalPresenter.name !== '');
     setExternalPresenter({
       name: '',
       avatarSrc: '',
@@ -413,195 +427,188 @@ function Activity({ onClose }: any) {
 
     fetchFiles();
   }, []);
-  
+
   return (
     <>
-      <GlobalBox >
+      <GlobalBox>
         <img src='' alt='' />
         <GlobalStyles />
         <HeaderStyled>Ny aktivitiet</HeaderStyled>
         <StyledLine />
         <EventsWrapper>
-            <form onSubmit={handleSubmit}>
-              <StyledDiv>
-                
-                
-                <FormControl sx={{ ...TypeFormStyled }}>
-                  <InputLabel id='type-label'>Type</InputLabel>
-                  <Select
-                    MenuProps={{
-                      PaperProps: {
-                        sx: { ...TypeSelectStyled },
-                      },
-                    }}
-                    labelId='type-label'
-                    id='activity-type'
-                    name='type'
-                    value={type} // Use the state variable
-                    onChange={handleActivityInputChange}
-                    input={<OutlinedInput label='Type' />}
-                  >
-                    {Object.keys(types.TimeslotType).map((key) => (
-                      <MenuItem
-                        key={key}
-                        value={types.TimeslotType[key as keyof typeof types.TimeslotType]}
-                      >
-                        {key}
-                      </MenuItem>
+          <form onSubmit={handleSubmit}>
+            <StyledDiv>
+              <FormControl sx={{ ...TypeFormStyled }}>
+                <InputLabel id='type-label'>Type</InputLabel>
+                <Select
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { ...TypeSelectStyled },
+                    },
+                  }}
+                  labelId='type-label'
+                  id='activity-type'
+                  name='type'
+                  value={type} // Use the state variable
+                  onChange={handleActivityInputChange}
+                  input={<OutlinedInput label='Type' />}
+                >
+                  {Object.keys(types.TimeslotType).map((key) => (
+                    <MenuItem
+                      key={key}
+                      value={types.TimeslotType[key as keyof typeof types.TimeslotType]}
+                    >
+                      {key}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <DateTimePickerWrapper>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    ampm={false}
+                    sx={{ ...sxDateTimePickerStyles }}
+                    slotProps={DateTimePropsStyles}
+                    label='Starttid'
+                    name='start'
+                    value={activity.start || null}
+                    onChange={(date: any) => handleDateChange('start', date)}
+                  />
+
+                  <DateTimePicker
+                    ampm={false}
+                    sx={{ ...sxDateTimePickerStyles }}
+                    slotProps={DateTimePropsStyles}
+                    label='Sluttid'
+                    name='end'
+                    value={activity.end || null}
+                    onChange={(date: any) => handleDateChange('end', date)}
+                  />
+                </LocalizationProvider>
+              </DateTimePickerWrapper>
+              <InputStyled
+                type='text'
+                name='title'
+                placeholder='Titel'
+                value={activity.title}
+                onChange={handleOnInputChange}
+              />
+              <TextAreaStyled
+                name='details'
+                placeholder='Beskrivning'
+                value={activity.details}
+                onChange={handleOnInputChange}
+              />
+              {/* <StyledLine /> */}
+              {showPresenter && (
+                <StyledDiv>
+                  <TitleStyled>Interna</TitleStyled>
+                  <InputStyled
+                    type='text'
+                    name='name'
+                    placeholder='Presentatör'
+                    value={presenter.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePresenterChange(e)}
+                  />
+
+                  {/* Display suggestions */}
+                  {suggestions.length > 0 && (
+                    <SuggestionBoxWrapper>
+                      <SuggestionBoxStyled>
+                        {suggestions.map((item: { title: string }, index) => (
+                          <ListStyled key={index} onClick={() => handleSuggestionClick(item.title)}>
+                            {item.title}
+                          </ListStyled>
+                        ))}
+                      </SuggestionBoxStyled>
+                    </SuggestionBoxWrapper>
+                  )}
+
+                  <AddButton type='button' onClick={addPresenter}>
+                    Lägg till
+                  </AddButton>
+                  {error && <ErrorStyled>{error}</ErrorStyled>}
+
+                  {/* List added presenters */}
+                  <BoxWrapper>
+                    {activity.presenter.map((presenter, index) => (
+                      <PresenterBoxWrapper key={index}>
+                        <AddedPresenterList>{presenter.name}</AddedPresenterList>
+                        <DeleteButton onClick={() => handleDeletePresenter(index)}>
+                          Ta bort
+                        </DeleteButton>
+                      </PresenterBoxWrapper>
                     ))}
-                  </Select>
-                </FormControl>
+                  </BoxWrapper>
+                  {/* <StyledLine /> */}
+                </StyledDiv>
+              )}
+              {showExternalPresenter && (
+                <StyledDiv>
+                  <TitleStyled>Externa</TitleStyled>
+                  <InputStyled
+                    type='text'
+                    name='name'
+                    placeholder='Presentatör'
+                    value={externalPresenter.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleExternalPresenterChange(e)
+                    }
+                  />
+                  <InputStyled type='file' id='file' />
 
-                <DateTimePickerWrapper>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      ampm={false}
-                      sx={{ ...sxDateTimePickerStyles }}
-                      slotProps={DateTimePropsStyles}
-                      label='Starttid'
-                      name='start'
-                      value={activity.start || null}
-                      onChange={(date: any) => handleDateChange('start', date)}
-                    />
+                  <AddButton type='button' onClick={addExternalPresenter}>
+                    Lägg till
+                  </AddButton>
 
-                    <DateTimePicker
-                      ampm={false}
-                      sx={{ ...sxDateTimePickerStyles }}
-                      slotProps={DateTimePropsStyles}
-                      label='Sluttid'
-                      name='end'
-                      value={activity.end || null}
-                      onChange={(date: any) => handleDateChange('end', date)}
-                    />
-                  </LocalizationProvider>
-                </DateTimePickerWrapper>
-                <InputStyled
-                  type='text'
-                  name='title'
-                  placeholder='Titel'
-                  value={activity.title}
-                  onChange={handleOnInputChange}
-                />
-                <TextAreaStyled
-                  name='details'
-                  placeholder='Beskrivning'
-                  value={activity.details}
-                  onChange={handleOnInputChange}
-                />
-                {/* <StyledLine /> */}
-                {showPresenter && (
-                  <StyledDiv>
-                    <TitleStyled>Interna</TitleStyled>
-                    <InputStyled
-                      type='text'
-                      name='name'
-                      placeholder='Presentatör'
-                      value={presenter.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handlePresenterChange(e)
-                      }
-                    />
+                  {/* List added presenters */}
+                  <BoxWrapper>
+                    {activity.externalPresenter.map((externalPresenter, index) => (
+                      <PresenterBoxWrapper key={index}>
+                        <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
+                        <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
+                          Ta bort
+                        </DeleteButton>
+                      </PresenterBoxWrapper>
+                    ))}
+                  </BoxWrapper>
 
-                    {/* Display suggestions */}
-                    {suggestions.length > 0 && (
-                      <SuggestionBoxWrapper>
-                        <SuggestionBoxStyled>
-                          {suggestions.map((item: { title: string }, index) => (
-                            <ListStyled
-                              key={index}
-                              onClick={() => handleSuggestionClick(item.title)}
-                            >
-                              {item.title}
-                            </ListStyled>
-                          ))}
-                        </SuggestionBoxStyled>
-                      </SuggestionBoxWrapper>
-                    )}
-
-                    <AddButton type='button' onClick={addPresenter}>
-                      Lägg till
-                    </AddButton>
-                    {error && <ErrorStyled>{error}</ErrorStyled>}
-
-                    {/* List added presenters */}
-                    <BoxWrapper>
-                      {activity.presenter.map((presenter, index) => (
-                        <PresenterBoxWrapper key={index}>
-                          <AddedPresenterList>{presenter.name}</AddedPresenterList>
-                          <DeleteButton onClick={() => handleDeletePresenter(index)}>
-                            Ta bort
-                          </DeleteButton>
-                        </PresenterBoxWrapper>
-                      ))}
-                    </BoxWrapper>
-                    {/* <StyledLine /> */}
-                  </StyledDiv>
-                )}
-                {showExternalPresenter && (
-                  <StyledDiv>
-                    <TitleStyled>Externa</TitleStyled>
-                    <InputStyled
-                      type='text'
-                      name='name'
-                      placeholder='Presentatör'
-                      value={externalPresenter.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleExternalPresenterChange(e)
-                      }
-                    />
-                    <InputStyled type='file' id='file' />
-
-                    <AddButton type='button' onClick={addExternalPresenter}>
-                      Lägg till
-                    </AddButton>
-
-                    {/* List added presenters */}
-                    <BoxWrapper>
-                      {activity.externalPresenter.map((externalPresenter, index) => (
-                        <PresenterBoxWrapper key={index}>
-                          <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
-                          <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
-                            Ta bort
-                          </DeleteButton>
-                        </PresenterBoxWrapper>
-                      ))}
-                    </BoxWrapper>
-
-                    {/* <StyledLine /> */}
-                  </StyledDiv>
-                )}
-                {showLocation && (
-                  <StyledDiv>
-                    <TitleStyled>Plats</TitleStyled>
-                    <InputStyled
-                      type='text'
-                      name='title'
-                      placeholder='Titel'
-                      value={location.title}
-                      onChange={handleLocationChange}
-                    />
-                    <InputStyled
-                      type='text'
-                      name='subtitle'
-                      placeholder='Subtitle'
-                      value={location.subtitle}
-                      onChange={handleLocationChange}
-                    />
-                    <MapBox
-                      onCoordinatesChange={handleCoordinates}
-                      resetLocation={handleResetLocation}
-                    />
-                  </StyledDiv>
-                )}
-                <StyledLine1/>
-                <BoxWrapper1>
-                <SaveButton type='submit' id="spara-button" disabled={!isAllFieldsFilled}>
-                    Spara
-                  </SaveButton>
-                  <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
-                </BoxWrapper1>
-              </StyledDiv>
-            </form>
+                  {/* <StyledLine /> */}
+                </StyledDiv>
+              )}
+              {showLocation && (
+                <StyledDiv>
+                  <TitleStyled>Plats</TitleStyled>
+                  <InputStyled
+                    type='text'
+                    name='title'
+                    placeholder='Titel'
+                    value={location.title}
+                    onChange={handleLocationChange}
+                  />
+                  <InputStyled
+                    type='text'
+                    name='subtitle'
+                    placeholder='Subtitle'
+                    value={location.subtitle}
+                    onChange={handleLocationChange}
+                  />
+                  <MapBox
+                    onCoordinatesChange={handleCoordinates}
+                    resetLocation={handleResetLocation}
+                  />
+                </StyledDiv>
+              )}
+              <StyledLine1 />
+              <BoxWrapper1>
+                <SaveButton type='submit' id='spara-button' disabled={!isAllFieldsFilled}>
+                  Spara
+                </SaveButton>
+                <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
+              </BoxWrapper1>
+            </StyledDiv>
+          </form>
         </EventsWrapper>
       </GlobalBox>
     </>

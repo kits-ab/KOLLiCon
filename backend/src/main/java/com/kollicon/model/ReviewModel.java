@@ -20,7 +20,7 @@ public class ReviewModel {
     @Column(name = "user_id")
     private String userId;
     @NotBlank(message = "review can not be empty")
-    @Column(name = "review")
+    @Column(name = "review", length = 3000)
     private String review;
     @Min(value = 1, message = "Rating must not be less than 0")
     @Max(value = 5, message = "Rating must not be more than 5")
