@@ -3,12 +3,12 @@ import axios from 'axios';
 import { GlobalStyles } from '@kokitotsos/react-components';
 import {
   EventsWrapper,
-  StyledButton,
-  StyledInput,
-  PStyled,
+  SubmitButton,
+  InputStyled,
+  TitleStyled,
   StyledDiv,
-  StyledTextArea,
-} from '@/components/RegisterActivity/StyledActivity';
+  TextAreaStyled,
+} from '../../styles/RegisterActivity/StyledActivity';
 
 interface Props {
   userId: string;
@@ -64,34 +64,34 @@ const ScheduleForm = () => {
       <EventsWrapper>
         <form style={{ display: 'flex', flexDirection: 'column' }}>
           <StyledDiv>
-            <PStyled style={{ color: '#D4D4D4', marginTop: '10%' }}>Schedule Info</PStyled>
-            <StyledInput
+            <TitleStyled style={{marginTop: '10%'}}>Schedule Info</TitleStyled>
+            <InputStyled
               placeholder='Title'
               {...register('title', { required: 'Title is required' })}
             />
             {errors.title && <p>{errors.title.message}</p>}
-            <StyledInput
+            <InputStyled
               placeholder='Start date'
               type='date'
               {...register('start', { required: 'Start date is required' })}
             />
             {errors.start && <p>{errors.start.message}</p>}
-            <StyledInput
+            <InputStyled
               type='date'
               placeholder='End date'
               {...register('end', { required: 'End date is required' })}
             />
             {errors.end && <p>{errors.end.message}</p>}
-            <StyledInput placeholder='Type' {...register('type')} />
-            <StyledInput placeholder='Tag Line' {...register('tagLine')} />
-            <StyledTextArea
+            <InputStyled placeholder='Type' {...register('type')} />
+            <InputStyled placeholder='Tag Line' {...register('tagLine')} />
+            <TextAreaStyled
               style={{ height: '100px' }}
               placeholder='Description'
               {...register('description')}
             />
-            <StyledInput placeholder='Image' {...register('imageURL')} />
-            <StyledInput placeholder='Location' {...register('location')} />
-            <StyledButton onClick={handleSubmit(onSubmit)}>Submit</StyledButton>
+            <InputStyled placeholder='Image' {...register('imageURL')} />
+            <InputStyled placeholder='Location' {...register('location')} />
+            <SubmitButton onClick={handleSubmit(onSubmit)}>Submit</SubmitButton>
           </StyledDiv>
         </form>
       </EventsWrapper>

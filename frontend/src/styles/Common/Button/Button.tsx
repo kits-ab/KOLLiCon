@@ -1,20 +1,21 @@
 import MuiButton from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import { Colors } from '../colors';
 
 const Button = styled(MuiButton)({
-  backgroundColor: '#596b4d',
+  backgroundColor: `${Colors.primaryAddButton}`,
   color: '#ffffff',
   fontWeight: 'normal',
   textTransform: 'none',
   '&:hover': {
-    backgroundColor: '#475a39',
+    backgroundColor: `${Colors.hoverAddButton}`,
   },
   '&:active': {
     backgroundColor: '#354a2b',
   },
   '&.Mui-disabled': {
-    backgroundColor: '#596b4d',
-    color: '#ffffff',
+    backgroundColor: `${Colors.disableButton}`,
+    color: 'gray',
   },
 });
 
