@@ -64,6 +64,14 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
     return separatedActivities;
   };
 
+  // const StyledTimeslot = styled('div')`
+  //   &,
+  //   * {
+  //     background-color: #3a3a39;
+  //     color: #cecece !important;
+  //     border-color: #262626;
+  //   }
+  // `;
   if (!activitiesData) return null;
   const separatedActivities = separateActivitiesByDate(activitiesData);
   const skipIndices = new Set<number>();
@@ -199,27 +207,29 @@ export const ActivitiesNew: React.FC<ActivitiesProps> = (props) => {
                         expandInfo();
                       }}
                     >
-                      <Timeslot
-                        key={key}
-                        presenters={getPresenter(activity) as Person[]}
-                        endTime={activity.end}
-                        heading={activity.title}
-                        startTime={activity.start}
-                        type={activity.type}
-                        showEndTime={true}
-                        {...(activity.location.coordinates[0] !== 0
-                          ? {
-                              location: {
-                                coordinates: activity.location.coordinates,
+                      <StyledTimeslot>
+                        <Timeslot
+                          key={key}
+                          presenters={getPresenter(activity) as Person[]}
+                          endTime={activity.end}
+                          heading={activity.title}
+                          startTime={activity.start}
+                          type={activity.type}
+                          showEndTime={true}
+                          {...(activity.location.coordinates[0] !== 0
+                            ? {
+                                location: {
+                                  coordinates: activity.location.coordinates,
 
-                                title: (activity.location.title as string) || 'Location',
-                                subtitle: activity.location.subtitle,
-                              },
-                            }
-                          : {})}
-                      >
-                        <p>{activity.details.slice(0, 200)}</p>
-                      </Timeslot>
+                                  title: (activity.location.title as string) || 'Location',
+                                  subtitle: activity.location.subtitle,
+                                },
+                              }
+                            : {})}
+                        >
+                          <p>{activity.details.slice(0, 200)}</p>
+                        </Timeslot>
+                      </StyledTimeslot>
                       {selectedActivityId === activity.id && (
                         <ExpandInfo
                           activityProp={activity}

@@ -4,6 +4,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
 import { Person, TimeslotType } from '@kokitotsos/react-components/dist/types';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface SeparatedActivitiesProps {
   date: string;
@@ -58,26 +59,28 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           expandInfo();
         }}
       >
-        <Timeslot
-          key={uniqueKey}
-          presenters={getPresenter(activity)}
-          endTime={activity.end}
-          heading={activity.title}
-          startTime={activity.start}
-          type={activity.type}
-          showEndTime={true}
-          {...(activity.location.coordinates[0] !== 0
-            ? {
-                location: {
-                  coordinates: activity.location.coordinates,
-                  title: (activity.location.title as string) || 'Location',
-                  subtitle: activity.location.subtitle,
-                },
-              }
-            : {})}
-        >
-          <p>{activity.details.slice(0, 200)}</p>
-        </Timeslot>
+        <StyledTimeslot>
+          <Timeslot
+            key={uniqueKey}
+            presenters={getPresenter(activity)}
+            endTime={activity.end}
+            heading={activity.title}
+            startTime={activity.start}
+            type={activity.type}
+            showEndTime={true}
+            {...(activity.location.coordinates[0] !== 0
+              ? {
+                  location: {
+                    coordinates: activity.location.coordinates,
+                    title: (activity.location.title as string) || 'Location',
+                    subtitle: activity.location.subtitle,
+                  },
+                }
+              : {})}
+          >
+            <p>{activity.details.slice(0, 200)}</p>
+          </Timeslot>
+        </StyledTimeslot>
         {selectedActivityId === activity.id && (
           <ExpandInfo
             activityProp={activity}
@@ -98,26 +101,28 @@ export const SeparatedActivities: React.FC<SeparatedActivitiesProps> = (props) =
           expandInfo();
         }}
       >
-        <Timeslot
-          key={`${date}-${index + 1}`}
-          presenters={getPresenter(nextActivity)}
-          endTime={nextActivity.end}
-          heading={nextActivity.title}
-          startTime={nextActivity.start}
-          type={nextActivity.type}
-          showEndTime={true}
-          {...(nextActivity.location.coordinates[0] !== 0
-            ? {
-                location: {
-                  coordinates: nextActivity.location.coordinates,
-                  title: (nextActivity.location.title as string) || 'Location',
-                  subtitle: nextActivity.location.subtitle,
-                },
-              }
-            : {})}
-        >
-          <p>{nextActivity.details.slice(0, 200)}</p>
-        </Timeslot>
+        <StyledTimeslot>
+          <Timeslot
+            key={`${date}-${index + 1}`}
+            presenters={getPresenter(nextActivity)}
+            endTime={nextActivity.end}
+            heading={nextActivity.title}
+            startTime={nextActivity.start}
+            type={nextActivity.type}
+            showEndTime={true}
+            {...(nextActivity.location.coordinates[0] !== 0
+              ? {
+                  location: {
+                    coordinates: nextActivity.location.coordinates,
+                    title: (nextActivity.location.title as string) || 'Location',
+                    subtitle: nextActivity.location.subtitle,
+                  },
+                }
+              : {})}
+          >
+            <p>{nextActivity.details.slice(0, 200)}</p>
+          </Timeslot>
+        </StyledTimeslot>
         {selectedActivityId === nextActivity.id && (
           <ExpandInfo
             activityProp={nextActivity}
