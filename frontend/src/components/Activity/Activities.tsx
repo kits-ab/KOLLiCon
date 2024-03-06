@@ -2,6 +2,7 @@ import { ParallelActivities } from '@/components/Activity/ParallelActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { SingleActivity } from '@/components/Activity/SingleActivity';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface ActivitiesProps {
   activitiesData: [] | any;

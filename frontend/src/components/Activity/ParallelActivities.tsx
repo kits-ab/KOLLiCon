@@ -4,6 +4,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { ActivityType } from '@/types/Activities';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface ParallelActivitiesProps {
   date: string;
@@ -55,26 +56,28 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             expandInfo();
           }}
         >
-          <Timeslot
-            key={`${activity.id}-timeslot`}
-            presenters={getPresenter(activity)}
-            endTime={activity.end}
-            heading={activity.title}
-            startTime={activity.start}
-            type={activity.type}
-            showEndTime={true}
-            {...(activity.location.coordinates[0] !== 0
-              ? {
-                  location: {
-                    coordinates: activity.location.coordinates,
-                    title: (activity.location.title as string) || 'Location',
-                    subtitle: activity.location.subtitle,
-                  },
-                }
-              : {})}
-          >
-            <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
-          </Timeslot>
+          <StyledTimeslot>
+            <Timeslot
+              key={`${activity.id}-timeslot`}
+              presenters={getPresenter(activity)}
+              endTime={activity.end}
+              heading={activity.title}
+              startTime={activity.start}
+              type={activity.type}
+              showEndTime={true}
+              {...(activity.location.coordinates[0] !== 0
+                ? {
+                    location: {
+                      coordinates: activity.location.coordinates,
+                      title: (activity.location.title as string) || 'Location',
+                      subtitle: activity.location.subtitle,
+                    },
+                  }
+                : {})}
+            >
+              <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
+            </Timeslot>
+          </StyledTimeslot>
           {selectedActivityId === activity.id && (
             <ExpandInfo
               activityProp={activity}
@@ -95,26 +98,30 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             expandInfo();
           }}
         >
-          <Timeslot
-            key={`${activity.id}-nextactivity-timeslot`}
-            presenters={getPresenter(nextActivity)}
-            endTime={nextActivity.end}
-            heading={nextActivity.title}
-            startTime={nextActivity.start}
-            type={nextActivity.type}
-            showEndTime={true}
-            {...(nextActivity.location.coordinates[0] !== 0
-              ? {
-                  location: {
-                    coordinates: nextActivity.location.coordinates,
-                    title: (nextActivity.location.title as string) || 'Location',
-                    subtitle: nextActivity.location.subtitle,
-                  },
-                }
-              : {})}
-          >
-            <p key={`${activity.id}-nextactivity-details`}>{nextActivity.details.slice(0, 200)}</p>
-          </Timeslot>
+          <StyledTimeslot>
+            <Timeslot
+              key={`${activity.id}-nextactivity-timeslot`}
+              presenters={getPresenter(nextActivity)}
+              endTime={nextActivity.end}
+              heading={nextActivity.title}
+              startTime={nextActivity.start}
+              type={nextActivity.type}
+              showEndTime={true}
+              {...(nextActivity.location.coordinates[0] !== 0
+                ? {
+                    location: {
+                      coordinates: nextActivity.location.coordinates,
+                      title: (nextActivity.location.title as string) || 'Location',
+                      subtitle: nextActivity.location.subtitle,
+                    },
+                  }
+                : {})}
+            >
+              <p key={`${activity.id}-nextactivity-details`}>
+                {nextActivity.details.slice(0, 200)}
+              </p>
+            </Timeslot>
+          </StyledTimeslot>
           {selectedActivityId === nextActivity.id && (
             <ExpandInfo
               activityProp={nextActivity}
