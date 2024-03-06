@@ -109,28 +109,31 @@ function Activity({ onClose }: any) {
     end: '',
   } as unknown as Activity);
 
-  const [isFieldsFilled, setIsFieldsFilled] = useState(false);
+  const [isStartFilled, setIsStartFilled] = useState(false);
+  const [isEndFilled, setIsEndFilled] = useState(false);
+  const [isTitleFilled, setIsTitleFilled] = useState(false);
+  const [isDetailsFilled, setIsDetailsFilled] = useState(false);
+  const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
+  const [isPresenterFilled, setIsPresenterFilled] = useState(false);
+  const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useState(false);
 
   useEffect(() => {
-    checkFieldsFilled();
-  }, [activity.details, activity.title]);
-
-  // Function to check if all required fields are filled
-  const checkFieldsFilled = () => {
-    const requiredFieldsFilled =
-      activity.title && activity.details && activity.start && activity.end;
-    const presenterFilled = showPresenter ? presenter.name.trim() !== '' : true;
-    const externalPresenterFilled = showExternalPresenter
-      ? externalPresenter.name.trim() !== ''
-      : true;
-    const locationFilled =
-      showLocation ||
-      (location.title.trim() === '' && location.subtitle.trim() === '' ? true : true);
-
-    setIsFieldsFilled(
-      Boolean(requiredFieldsFilled && presenterFilled && externalPresenterFilled && locationFilled),
+    // Check if all required fields are filled and at least one presenter is added
+    setIsAllFieldsFilled(
+      isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && showLocation ||
+      isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && 
+      ((showPresenter && isPresenterFilled) || (showExternalPresenter && isExternalPresenterFilled)) &&
+      (activity.presenter.length > 0 || activity.externalPresenter.length > 0)
     );
-  };
+  
+    // Enable or disable "Spara" button based on the condition
+    const saveButton = document.getElementById('spara-button') as HTMLButtonElement;
+    if (saveButton) {
+      saveButton.disabled = !isAllFieldsFilled;
+    }
+  }, [showPresenter, showExternalPresenter, showLocation,
+      isStartFilled, isEndFilled, isTitleFilled, isDetailsFilled, 
+      isPresenterFilled, isExternalPresenterFilled, activity]);
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -171,7 +174,12 @@ function Activity({ onClose }: any) {
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setActivity({ ...activity, [name]: value });
-    checkFieldsFilled();
+
+    if (name === 'title') {
+    setIsTitleFilled(!!value);
+  } else if (name === 'details') {
+    setIsDetailsFilled(!!value);
+  }
   };
 
   //Function to handle the activity input change
@@ -209,13 +217,11 @@ function Activity({ onClose }: any) {
         setShowLocation(false);
       }
     }
-    checkFieldsFilled();
   };
 
   // Function to handle the location change
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    checkFieldsFilled();
     setLocation({ ...location, [name]: value });
   };
 
@@ -233,8 +239,12 @@ function Activity({ onClose }: any) {
 
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
-    checkFieldsFilled();
-  };
+
+    if (name === 'start') {
+      setIsStartFilled(!!date);
+    } else if (name === 'end') {
+      setIsEndFilled(!!date);
+    }};
 
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -258,13 +268,13 @@ function Activity({ onClose }: any) {
     const updatedPresenters = [...activity.presenter];
     updatedPresenters.splice(index, 1);
     setActivity({ ...activity, presenter: updatedPresenters });
-    checkFieldsFilled();
+    setIsPresenterFilled(updatedPresenters.length > 0);
   };
   const handleDeleteExternalPresenter = (index: number) => {
     const updatedExternalPresenters = [...activity.externalPresenter];
     updatedExternalPresenters.splice(index, 1);
     setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
-    checkFieldsFilled();
+    setIsExternalPresenterFilled(updatedExternalPresenters.length > 0);
   };
 
   //Function to handle the external presenter change
@@ -310,12 +320,11 @@ function Activity({ onClose }: any) {
       ...activity,
       presenter: [...activity.presenter, newPresenter],
     });
+    setIsPresenterFilled(presenter.name !== '')
     setPresenter({
       name: '',
       avatarSrc: '',
     });
-    // setIsFieldsFilled(true);
-    checkFieldsFilled();
   };
 
   //Add external presenter
@@ -328,12 +337,11 @@ function Activity({ onClose }: any) {
       ...activity,
       externalPresenter: [...activity.externalPresenter, newExternalPresenter],
     });
+    setIsExternalPresenterFilled(externalPresenter.name !== '')
     setExternalPresenter({
       name: '',
       avatarSrc: '',
     });
-    // setIsFieldsFilled(true);
-    checkFieldsFilled();
   };
   //Checks if the profile picture exists in the response
   async function profilePictureExists(url: string) {
@@ -406,7 +414,6 @@ function Activity({ onClose }: any) {
     fetchFiles();
   }, []);
   
-
   return (
     <>
       <GlobalBox >
@@ -588,7 +595,7 @@ function Activity({ onClose }: any) {
                 )}
                 <StyledLine1/>
                 <BoxWrapper1>
-                  <SaveButton type='submit' disabled={!isFieldsFilled}>
+                <SaveButton type='submit' id="spara-button" disabled={!isAllFieldsFilled}>
                     Spara
                   </SaveButton>
                   <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
