@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyledDiv } from '@/styles/RegisterActivity/StyledActivity';
 import { TitleStyled } from '@/styles/RegisterActivity/StyledActivity';
 import { InputStyled } from '@/styles/RegisterActivity/StyledActivity';
@@ -23,6 +23,24 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
   handleDeleteExternalPresenter,
   activity,
 }) => {
+  const [inputValue, setInputValue] = useState('');
+  const isInputEmpty = externalPresenter.name.trim() === '';
+
+  useEffect(() => {
+    // Disable the AddButton when the external presenter input is empty
+    setInputValue(externalPresenter.name);
+  }, [externalPresenter.name]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    handleExternalPresenterChange(e);
+  };
+
+  const handleAddButtonClick = () => {
+    handleAddExternalPresenter();
+    setInputValue('');
+  };
   return (
     <StyledDiv>
       <TitleStyled>Externa</TitleStyled>
@@ -30,12 +48,12 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
         type='text'
         name='name'
         placeholder='Presentatör'
-        value={externalPresenter.name}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleExternalPresenterChange(e)}
+        value={inputValue}
+        onChange={handleInputChange}
       />
       <InputStyled type='file' id='file' />
 
-      <AddButton  type='button' onClick={handleAddExternalPresenter}>
+      <AddButton onClick={handleAddButtonClick} disabled={isInputEmpty}>
         Lägg till
       </AddButton>
 
