@@ -7,14 +7,12 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
-import { ErrorStyled } from '@/styles/RegisterActivity/StyledActivity';
 
 type ExtraPresenterProps = {
   externalPresenter: any;
   handleExternalPresenterChange: any;
   handleAddExternalPresenter: any;
   handleDeleteExternalPresenter: any;
-  error: any;
   activity: any;
 };
 
@@ -23,7 +21,6 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
   handleExternalPresenterChange,
   handleAddExternalPresenter,
   handleDeleteExternalPresenter,
-  error,
   activity,
 }) => {
   return (
@@ -38,23 +35,27 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
       />
       <InputStyled type='file' id='file' />
 
-      <AddButton type='button' onClick={handleAddExternalPresenter}>
+      <AddButton  type='button' onClick={handleAddExternalPresenter}>
         Lägg till
       </AddButton>
-      {error && <ErrorStyled>{error}</ErrorStyled>}
 
       {/* List added presenters */}
       <BoxWrapper>
         {activity.externalPresenter
           .filter((externalPresenter: null) => externalPresenter !== null)
-          .map((externalPresenter: { name: React.ReactElement< string> | Iterable<React.ReactNode>; }, index: React.Key) => (
-            <PresenterBoxWrapper key={index}>
-              <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
-              <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
-                Ta bort
-              </DeleteButton>
-            </PresenterBoxWrapper>
-          ))}
+          .map(
+            (
+              externalPresenter: { name: React.ReactElement<string> | Iterable<React.ReactNode> },
+              index: React.Key,
+            ) => (
+              <PresenterBoxWrapper key={index}>
+                <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
+                <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
+                  Ta bort
+                </DeleteButton>
+              </PresenterBoxWrapper>
+            ),
+          )}
       </BoxWrapper>
     </StyledDiv>
   );

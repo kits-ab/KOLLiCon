@@ -8,7 +8,7 @@ export const usePresenter = () => {
     name: '',
     avatarSrc: '',
   });
-  const [error, setError] = useState('');
+  const [presenterError, setError] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
   const getProfilePictureUrl = useProfilePictureUrl();
@@ -70,7 +70,7 @@ export const usePresenter = () => {
 
   return {
     presenter,
-    error,
+    presenterError,
     suggestions,
     handlePresenterChange,
     handleSuggestionClick,
@@ -81,7 +81,6 @@ export const usePresenter = () => {
 
 //create a hook to handle the external presenter
 export const useExternalPresenter = () => {
-  const [ExtraPresenterError, setError] = useState('');
   const [externalPresenter, setExternalPresenter] = useState({
     name: '',
     avatarSrc: '',
@@ -93,15 +92,10 @@ export const useExternalPresenter = () => {
   ) => {
     const { name, value } = e.target;
     setExternalPresenter({ ...externalPresenter, [name]: value });
-    setError('');
   };
 
   //Add external presenter
   const addExternalPresenter = () => {
-    if (!externalPresenter.name.trim()) {
-      setError('Fyll i presentatör');
-      return null;
-    }
     const newExternalPresenter = {
       ...externalPresenter,
     };
@@ -111,7 +105,6 @@ export const useExternalPresenter = () => {
 
   return {
     externalPresenter,
-    ExtraPresenterError,
     handleExternalPresenterChange,
     addExternalPresenter,
     setExternalPresenter,

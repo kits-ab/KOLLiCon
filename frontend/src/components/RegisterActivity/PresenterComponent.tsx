@@ -15,7 +15,7 @@ import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 type PresenterProps = {
   presenter: any;
   suggestions: any;
-  error: any;
+  presenterError: any;
   handlePresenterChange: any;
   handleSuggestionClick: any;
   handleAddPresenter: any;
@@ -26,7 +26,7 @@ type PresenterProps = {
 const PresenterComponent: React.FC<PresenterProps> = ({
   presenter,
   suggestions,
-  error,
+  presenterError,
   handlePresenterChange,
   handleSuggestionClick,
   handleAddPresenter,
@@ -61,7 +61,7 @@ const PresenterComponent: React.FC<PresenterProps> = ({
         <AddButton type='button' onClick={handleAddPresenter}>
           Lägg till
         </AddButton>
-        {error && <ErrorStyled>{error}</ErrorStyled>}
+        {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
 
         {/* List added presenters */}
         <BoxWrapper>

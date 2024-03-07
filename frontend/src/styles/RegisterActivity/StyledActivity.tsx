@@ -241,8 +241,8 @@ export const TextAreaStyled = styled(TextArea)`
   color: ${Colors.primaryPlaceholder};
   border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
-  overflow: 100px;
   scrollbar-width: thin;
+  scrollbar-color: ${Colors.textColor} ${Colors.scrollColor};
   font-family: sans-serif;
   @media (max-width: 650px) {
     padding: 2% 0 0% 2%;
