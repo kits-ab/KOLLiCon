@@ -47,8 +47,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
         >
           <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
         </IconButton>
-        <StyledTimeslot>
-          <DialogContent sx={{ padding: '0' }}>
+        <DialogContent sx={{ padding: '0' }}>
+          <StyledTimeslot>
             <Timeslot
               heading={data.generalInfo.title}
               startTime={data.generalInfo.start}
@@ -72,8 +72,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
                 />
               </div>
             )}
-          </DialogContent>
-        </StyledTimeslot>
+          </StyledTimeslot>
+        </DialogContent>
       </Drawer>
     </div>
   );
