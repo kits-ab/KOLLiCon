@@ -7,7 +7,7 @@ import Error from '@/pages/Error';
 import { Home } from './pages/Home';
 import NotFound from '@/pages/NotFound';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Activity from './components/RegisterActivity/Activity';
+import Activity from './components/RegisterActivity/RegisterActivityComponent';
 import ScheduleForm from '@/components/CreateSchedule/CreateScheduleComponent';
 
 // Create a client

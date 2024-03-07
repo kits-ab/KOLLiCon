@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useProfilePictureExists } from '@/utils/Helpers/RegisterActivity/CheckProfilePicture';
 import { useProfilePictureUrl } from '@/utils/Helpers/RegisterActivity/GetProfilePicture';
-import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchFiles';
+import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 
 export const usePresenter = () => {
   const [presenter, setPresenter] = useState({

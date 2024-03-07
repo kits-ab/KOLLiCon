@@ -1,10 +1,10 @@
 import { types, GlobalStyles } from '@kokitotsos/react-components';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import LocationComponent from './Location';
-import PresenterComponent from './Presenter';
-import ExternalPresenterComponent from './ExtraPresenter';
-import TypeComponent from './TypeComponent';
+import LocationComponent from './LocationComponent';
+import PresenterComponent from './PresenterComponent';
+import ExternalPresenterComponent from './ExtraPresenterComponent';
+import TypeComponent from './KitsConTypeComponent';
 import DateTimePickerComponent from './DatetimePickerComponent';
 import InputComponent from './InputComponent';
 import { useActivityInput } from '../../utils/Hooks/RegisterActivity/useActivityInput';
