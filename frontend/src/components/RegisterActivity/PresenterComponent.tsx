@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyledDiv } from '@/styles/RegisterActivity/StyledActivity';
 import { TitleStyled } from '@/styles/RegisterActivity/StyledActivity';
 import { InputStyled } from '@/styles/RegisterActivity/StyledActivity';
@@ -15,7 +15,7 @@ import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 type PresenterProps = {
   presenter: any;
   suggestions: any;
-  error: any;
+  presenterError: any;
   handlePresenterChange: any;
   handleSuggestionClick: any;
   handleAddPresenter: any;
@@ -26,13 +26,33 @@ type PresenterProps = {
 const PresenterComponent: React.FC<PresenterProps> = ({
   presenter,
   suggestions,
-  error,
+  presenterError,
   handlePresenterChange,
   handleSuggestionClick,
   handleAddPresenter,
   handleDeletePresenter,
   activity,
 }) => {
+
+  const [inputValue, setInputValue] = useState('');
+  const isInputEmpty = presenter.name.trim() === '';
+
+  useEffect(() => {
+    // Disable the AddButton when the presenter input is empty
+    setInputValue(presenter.name);
+  }, [presenter.name]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    handlePresenterChange(e);
+  };
+
+  const handleAddButtonClick = () => {
+    handleAddPresenter();
+    setInputValue('');
+  };
+
   return (
     <>
       <StyledDiv>
@@ -41,8 +61,8 @@ const PresenterComponent: React.FC<PresenterProps> = ({
           type='text'
           name='name'
           placeholder='Presentatör'
-          value={presenter.name}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePresenterChange(e)}
+          value={inputValue}
+          onChange={handleInputChange}
         />
 
         {/* Display suggestions */}
@@ -58,10 +78,10 @@ const PresenterComponent: React.FC<PresenterProps> = ({
           </SuggestionBoxWrapper>
         )}
 
-        <AddButton type='button' onClick={handleAddPresenter}>
+        <AddButton type='button' onClick={handleAddButtonClick} disabled={isInputEmpty}>
           Lägg till
         </AddButton>
-        {error && <ErrorStyled>{error}</ErrorStyled>}
+        {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
 
         {/* List added presenters */}
         <BoxWrapper>

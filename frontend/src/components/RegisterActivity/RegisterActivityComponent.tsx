@@ -44,10 +44,11 @@ function Activity({ onClose }: any) {
   const [isDetailsFilled, setIsDetailsFilled] = useFormField(false);
   const [isPresenterFilled, setIsPresenterFilled] = useFormField(false);
   const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(false);
+  const [textError, setTextError] = useFormField(false);
 
   const {
     presenter,
-    error,
+    presenterError,
     suggestions,
     handlePresenterChange,
     handleSuggestionClick,
@@ -60,7 +61,6 @@ function Activity({ onClose }: any) {
     handleExternalPresenterChange,
     addExternalPresenter,
     setExternalPresenter,
-    ExtraPresenterError,
   } = useExternalPresenter();
 
   const {
@@ -114,11 +114,15 @@ function Activity({ onClose }: any) {
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setActivity({ ...activity, [name]: value });
-
+    if (name === 'details' && value.length > 2999) {
+      setTextError(true);
+      setIsDetailsFilled(!value);
+    } else if (name === 'details' && value.length <= 2999) {
+      setTextError(false);
+      setIsDetailsFilled(!!value);
+    }
     if (name === 'title') {
       setIsTitleFilled(!!value);
-    } else if (name === 'details') {
-      setIsDetailsFilled(!!value);
     }
   };
 
@@ -189,7 +193,7 @@ function Activity({ onClose }: any) {
       externalPresenter: [...activity.externalPresenter, newExternalPresenter],
     });
     // Check if the external presenter is filled
-    setIsExternalPresenterFilled(externalPresenter.name !== '');
+    setIsExternalPresenterFilled(externalPresenter.name !== '' || activity.externalPresenter.length > 0);
     setExternalPresenter({
       name: '',
       avatarSrc: '',
@@ -218,13 +222,17 @@ function Activity({ onClose }: any) {
                 activity={activity}
                 handleDateChange={handleDateChange}
               />
-              <InputComponent activity={activity} handleOnInputChange={handleOnInputChange} />
+              <InputComponent
+                activity={activity}
+                handleOnInputChange={handleOnInputChange}
+                error={textError}
+              />
 
               {showPresenter && (
                 <PresenterComponent
                   presenter={presenter}
                   suggestions={suggestions}
-                  error={error}
+                  presenterError={presenterError}
                   handlePresenterChange={handlePresenterChange}
                   handleSuggestionClick={handleSuggestionClick}
                   handleAddPresenter={handleAddPresenter}
@@ -239,7 +247,6 @@ function Activity({ onClose }: any) {
                   handleAddExternalPresenter={handleAddExternalPresenter}
                   handleDeleteExternalPresenter={handleDeleteExternalPresenter}
                   activity={activity}
-                  error={ExtraPresenterError}
                 />
               )}
               {showLocation && (
