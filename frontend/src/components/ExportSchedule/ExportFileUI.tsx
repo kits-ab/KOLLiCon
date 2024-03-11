@@ -65,9 +65,7 @@ function ExportFileUI({ onClose }: { onClose: any }) {
   // Create yaml objects of selected schedules.
   const createYamlobjects = async () => {
     for (let i = 0; i < idOfPickedSchedule.length; i++) {
-      const yolo = await axios.get(
-        `http://localhost:8080/api/${idOfPickedSchedule[i]}/generatemdfile`,
-      );
+      const yolo = await axios.get(`${backendUrl}/api/${idOfPickedSchedule[i]}/generatemdfile`);
       const titleOfSchedule = await axios.get(
         `${backendUrl}/api/scheduletitle/${idOfPickedSchedule[i]}`,
       );

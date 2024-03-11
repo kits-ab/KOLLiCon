@@ -7,9 +7,7 @@ import com.kollicon.repository.ActivityRepository;
 import com.kollicon.repository.PresenterRepository;
 import com.kollicon.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
