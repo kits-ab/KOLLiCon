@@ -9,6 +9,7 @@ import NotFound from '@/pages/NotFound';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Activity from './components/RegisterActivity/RegisterActivityComponent';
 import ScheduleForm from '@/components/CreateSchedule/CreateScheduleComponent';
+import { FlexTest } from './components/Activity/FlexTest';
 import { GridTest } from './components/Activity/GridTest';
 
 // Create a client
@@ -27,6 +28,7 @@ function App() {
         <Route path='/home' element={<Home />} />
         <Route path='/activity' element={<Activity />} />
         <Route path='/postschedule' element={<ScheduleForm />} />
+        <Route path='/flextest' element={<FlexTest />} />
         <Route path='/gridtest' element={<GridTest />} />
       </Routes>
     </QueryClientProvider>
