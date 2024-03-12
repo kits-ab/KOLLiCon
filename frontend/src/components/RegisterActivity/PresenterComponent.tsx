@@ -18,9 +18,11 @@ type PresenterProps = {
   presenterError: any;
   handlePresenterChange: any;
   handleSuggestionClick: any;
-  handleAddPresenter: any;
-  handleDeletePresenter: any;
   activity: any;
+  setActivity: any;
+  addPresenter: any;
+  setIsPresenterFilled: any;
+  setPresenter: any;
 };
 
 const PresenterComponent: React.FC<PresenterProps> = ({
@@ -29,9 +31,11 @@ const PresenterComponent: React.FC<PresenterProps> = ({
   presenterError,
   handlePresenterChange,
   handleSuggestionClick,
-  handleAddPresenter,
-  handleDeletePresenter,
   activity,
+  setActivity,
+  addPresenter,
+  setIsPresenterFilled,
+  setPresenter
 }) => {
 
   const [inputValue, setInputValue] = useState('');
@@ -48,9 +52,28 @@ const PresenterComponent: React.FC<PresenterProps> = ({
     handlePresenterChange(e);
   };
 
-  const handleAddButtonClick = () => {
-    handleAddPresenter();
-    setInputValue('');
+  const handleAddPresenter = async () => {
+    // Add presenter to the activity state
+    const newPresenter = await addPresenter();
+    if (newPresenter) {
+      setActivity({
+        ...activity,
+        presenter: [...activity.presenter, newPresenter],
+      });
+      // Check if the presenter is filled
+      setIsPresenterFilled(newPresenter.name !== '');
+      setPresenter({
+        name: '',
+        avatarSrc: '',
+      });
+    }
+  };
+
+  const handleDeletePresenter = (index: number) => {
+    const updatedPresenters = [...activity.presenter];
+    updatedPresenters.splice(index, 1);
+    setActivity({ ...activity, presenter: updatedPresenters });
+    setIsPresenterFilled(updatedPresenters.length > 0);
   };
 
   return (
@@ -78,7 +101,7 @@ const PresenterComponent: React.FC<PresenterProps> = ({
           </SuggestionBoxWrapper>
         )}
 
-        <AddButton type='button' onClick={handleAddButtonClick} disabled={isInputEmpty}>
+        <AddButton type='button' onClick={handleAddPresenter} disabled={isInputEmpty}>
           Lägg till
         </AddButton>
         {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
@@ -88,7 +111,7 @@ const PresenterComponent: React.FC<PresenterProps> = ({
           {activity.presenter.map((presenter: { name: React.ReactElement< string> | Iterable<React.ReactNode>; }, index: React.Key) => (
             <PresenterBoxWrapper key={index}>
               <AddedPresenterList>{presenter.name}</AddedPresenterList>
-              <DeleteButton onClick={() => handleDeletePresenter(index)}>Ta bort</DeleteButton>
+              <DeleteButton onClick={() => handleDeletePresenter(index as number)}>Ta bort</DeleteButton>
             </PresenterBoxWrapper>
           ))}
         </BoxWrapper>
