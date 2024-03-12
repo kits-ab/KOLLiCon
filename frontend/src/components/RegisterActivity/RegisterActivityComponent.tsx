@@ -92,7 +92,6 @@ function Activity({ onClose }: any) {
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('yoo');
     e.preventDefault();
     try {
       const activityData = { ...activity, location: location };
@@ -145,9 +144,31 @@ function Activity({ onClose }: any) {
 
     if (name === 'start') {
       setIsStartFilled(!!date);
-    } else if (name === 'end') {
-      setIsEndFilled(!!date);
+      // Calculate end time when start time changes
+      calculateEndTime(dayjs(date).format('YYYY-MM-DDTHH:mm'));
     }
+  };
+
+  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    if (!value) {
+      // If duration becomes empty, set the end time to an empty string
+      setActivity({ ...activity, end: '' });
+      setIsEndFilled(false);
+      return;
+    }
+
+    // Calculate end time when duration changes
+    calculateEndTime(activity.start, value);
+  };
+  // calculate end time based on start time and duration
+  const calculateEndTime = (start: string, duration?: string) => {
+    if (!start || !duration) return;
+    
+    const end = dayjs(start).add(parseInt(duration), 'hours').format('YYYY-MM-DDTHH:mm');
+    setActivity({ ...activity, end });
+    setIsEndFilled(!!duration);
   };
 
   //Function to delete the presenter
@@ -221,6 +242,7 @@ function Activity({ onClose }: any) {
                 DateTimePropsStyles={DateTimePropsStyles}
                 activity={activity}
                 handleDateChange={handleDateChange}
+                handleDurationChange={handleDurationChange}
               />
               <InputComponent
                 activity={activity}

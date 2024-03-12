@@ -1,13 +1,14 @@
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import   {DateTimePickerWrapper} from '@/styles/RegisterActivity/StyledActivity';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import { DateTimePickerWrapper, LengthStyled } from '@/styles/RegisterActivity/StyledActivity';
 
 type DateTimePickerProps = {
   sxDateTimePickerStyles: any;
   DateTimePropsStyles: any;
   activity: any;
   handleDateChange: any;
+  handleDurationChange: any;
 };
 
 const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
@@ -15,28 +16,29 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   DateTimePropsStyles,
   activity,
   handleDateChange,
+  handleDurationChange
 }) => {
   return (
     <DateTimePickerWrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
+        <MobileDateTimePicker
           ampm={false}
           sx={{ ...sxDateTimePickerStyles }}
           slotProps={DateTimePropsStyles}
+          format='YYYY-MM-DD-HH:mm'
           label='Starttid'
           name='start'
           value={activity.start || null}
           onChange={(date: any) => handleDateChange('start', date)}
+          
         />
-
-        <DateTimePicker
-          ampm={false}
+        <LengthStyled
           sx={{ ...sxDateTimePickerStyles }}
-          slotProps={DateTimePropsStyles}
-          label='Sluttid'
-          name='end'
-          value={activity.end || null}
-          onChange={(date: any) => handleDateChange('end', date)}
+          name='duration'
+          type="number"
+          value={activity.duration}
+          placeholder='Längd (Timmar)'
+          onChange={handleDurationChange}
         />
       </LocalizationProvider>
     </DateTimePickerWrapper>
