@@ -64,7 +64,7 @@ const ScheduleForm = () => {
       <EventsWrapper>
         <form style={{ display: 'flex', flexDirection: 'column' }}>
           <StyledDiv>
-            <TitleStyled style={{marginTop: '10%'}}>Schedule Info</TitleStyled>
+            <TitleStyled style={{ marginTop: '10%' }}>Schedule Info</TitleStyled>
             <InputStyled
               placeholder='Title'
               {...register('title', { required: 'Title is required' })}

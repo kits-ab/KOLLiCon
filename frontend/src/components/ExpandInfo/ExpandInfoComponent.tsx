@@ -23,7 +23,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
   const isDesktop = useMediaQuery('(min-width:600px)');
 
   return (
-    <div>
+    <div style={{ width: '50%' }}>
       <Drawer
         PaperProps={{
           overflow: 'hidden',

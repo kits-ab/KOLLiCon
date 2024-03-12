@@ -13,6 +13,7 @@ interface ActivitiesProps {
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
+  console.log(activitiesData);
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
 
   const activitiesSortedByDate = activitiesData.sort(
@@ -78,11 +79,27 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
               skipIndices.add(index + 1);
               return (
-                <ParallelActivities
+                <>
+                  <ParallelActivities
+                    date={date}
+                    activity={activity}
+                    nextActivity={nextActivity}
+                    skipIndices={skipIndices}
+                    index={index}
+                    setSelectedActivityId={setSelectedActivityId}
+                    expandInfo={expandInfo}
+                    expandInfoOpen={expandInfoOpen}
+                    setExpandInfoOpen={setExpandInfoOpen}
+                    selectedActivityId={selectedActivityId}
+                  />
+                </>
+              );
+            }
+            return (
+              <>
+                <SingleActivity
                   date={date}
                   activity={activity}
-                  nextActivity={nextActivity}
-                  skipIndices={skipIndices}
                   index={index}
                   setSelectedActivityId={setSelectedActivityId}
                   expandInfo={expandInfo}
@@ -90,19 +107,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   setExpandInfoOpen={setExpandInfoOpen}
                   selectedActivityId={selectedActivityId}
                 />
-              );
-            }
-            return (
-              <SingleActivity
-                date={date}
-                activity={activity}
-                index={index}
-                setSelectedActivityId={setSelectedActivityId}
-                expandInfo={expandInfo}
-                expandInfoOpen={expandInfoOpen}
-                setExpandInfoOpen={setExpandInfoOpen}
-                selectedActivityId={selectedActivityId}
-              />
+              </>
             );
           });
         })}

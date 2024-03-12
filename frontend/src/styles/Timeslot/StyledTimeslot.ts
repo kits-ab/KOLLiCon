@@ -8,7 +8,7 @@ export const StyledTimeslot = styled('div')`
     }
     & > section > div {
         border-color: ${Colors.primaryBackground};
-    }  
+    }
     .Timeslot-heading, 
     .Timeslot-start, 
     * >  p {
@@ -17,5 +17,4 @@ export const StyledTimeslot = styled('div')`
   section > header > div > div > div > span {
       color: ${Colors.linkColor}
   }
-
 `;

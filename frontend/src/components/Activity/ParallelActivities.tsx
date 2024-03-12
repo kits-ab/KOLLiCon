@@ -5,6 +5,7 @@ import { ActivityType } from '@/types/Activities';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
+import axios from 'axios';
 
 interface ParallelActivitiesProps {
   date: string;
@@ -19,6 +20,8 @@ interface ParallelActivitiesProps {
   selectedActivityId: number | null;
 }
 
+const backendUrl = import.meta.env.VITE_API_URL;
+
 export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => {
   const {
     date,
@@ -31,6 +34,10 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     setExpandInfoOpen,
     selectedActivityId,
   } = props;
+
+  const handleDeleteOfActivity = async (value: any) => {
+    await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
+  };
 
   return (
     <>
@@ -86,6 +93,12 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
+        <button
+          onClick={() => handleDeleteOfActivity(activity.id)}
+          style={{ zIndex: 1, height: '20px' }}
+        >
+          Delete
+        </button>
         <a
           key={`${activity.id}-nextactivity`}
           style={{
@@ -130,6 +143,12 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
+        <button
+          onClick={() => handleDeleteOfActivity(nextActivity.id)}
+          style={{ zIndex: 1, height: '20px' }}
+        >
+          Delete
+        </button>
       </Box>
     </>
   );
