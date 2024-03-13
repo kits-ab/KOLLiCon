@@ -6,7 +6,10 @@ import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import axios from 'axios';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import React, { useState } from 'react';
 
+// Pararell presenter styling for media queries
 interface ParallelActivitiesProps {
   date: string;
   activity: ActivityType;
@@ -35,12 +38,16 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     selectedActivityId,
   } = props;
 
+  // Denna komponent måste laddas om via use effect
   const handleDeleteOfActivity = async (value: any) => {
+    console.log('fetched');
+    window.location.reload();
+
     await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
   };
 
   return (
-    <>
+    <div>
       {index === 0 ? <DateText>{date}</DateText> : null}
       <Box
         key={activity.id}
@@ -49,6 +56,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          position: 'relative',
         }}
       >
         <a
@@ -93,12 +101,18 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        <button
-          onClick={() => handleDeleteOfActivity(activity.id)}
-          style={{ zIndex: 1, height: '20px' }}
-        >
-          Delete
-        </button>
+        <RemoveCircleIcon
+          onClick={() => {
+            handleDeleteOfActivity(activity.id);
+          }}
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            right: '0',
+            height: '25px',
+            width: '25px',
+          }}
+        ></RemoveCircleIcon>
         <a
           key={`${activity.id}-nextactivity`}
           style={{
@@ -143,13 +157,20 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        <button
-          onClick={() => handleDeleteOfActivity(nextActivity.id)}
-          style={{ zIndex: 1, height: '20px' }}
-        >
-          Delete
-        </button>
+        <RemoveCircleIcon
+          onClick={() => {
+            handleDeleteOfActivity(activity.id);
+          }}
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            right: '50.8%',
+            zIndex: 1,
+            height: '25px',
+            width: '25px',
+          }}
+        ></RemoveCircleIcon>
       </Box>
-    </>
+    </div>
   );
 };

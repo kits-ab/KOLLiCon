@@ -6,7 +6,6 @@ import { getPresenter } from '@/utils/Helpers/getPresenter';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import axios from 'axios';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { Colors } from '@/styles/Common/colors';
 
 interface SingleActivityProps {
   activity: ActivityType;
@@ -19,7 +18,6 @@ interface SingleActivityProps {
   date: string;
 }
 
-// .css-1gan52j
 const backendUrl = import.meta.env.VITE_API_URL;
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
@@ -39,17 +37,17 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       <a
         key={activity.id}
-        style={{ cursor: 'pointer', zIndex: 1, position: 'relative' }}
+        style={{ cursor: 'pointer' }}
         onClick={() => {
           setSelectedActivityId(activity.id);
           expandInfo();
         }}
       >
         {index === 0 ? <DateText>{date}</DateText> : null}
-        <StyledTimeslot style={{ position: 'relative', zIndex: 2 }}>
+        <StyledTimeslot>
           <Timeslot
             key={`${activity.id}-timeslot`}
             presenters={getPresenter(activity)}
@@ -86,17 +84,13 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
           handleDeleteOfActivity(activity.id);
         }}
         style={{
-          color: `${Colors.primaryDeleteButton}`,
+          position: 'absolute',
+          right: '0',
+          bottom: '0',
           height: '25px',
           width: '25px',
-          left: '93%',
-          bottom: '128px',
-          position: 'relative',
-          zIndex: 3,
         }}
-      >
-        Delete
-      </RemoveCircleIcon>
+      ></RemoveCircleIcon>
     </div>
   );
 };
