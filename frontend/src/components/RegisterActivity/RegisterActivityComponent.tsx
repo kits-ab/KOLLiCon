@@ -107,22 +107,6 @@ function Activity({ onClose }: any) {
     resetActivity();
   };
 
-  //Function to handle the input change for title and details
-  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setActivity({ ...activity, [name]: value });
-    if (name === 'details' && value.length > 2999) {
-      setTextError(true);
-      setIsDetailsFilled(!value);
-    } else if (name === 'details' && value.length <= 2999) {
-      setTextError(false);
-      setIsDetailsFilled(!!value);
-    }
-    if (name === 'title') {
-      setIsTitleFilled(!!value);
-    }
-  };
-
   return (
     <>
       <GlobalBox>
@@ -149,8 +133,11 @@ function Activity({ onClose }: any) {
               />
               <InputComponent
                 activity={activity}
-                handleOnInputChange={handleOnInputChange}
                 error={textError}
+                setIsDetailsFilled={setIsDetailsFilled}
+                setIsTitleFilled={setIsTitleFilled}
+                setActivity={setActivity}
+                setTextError={setTextError}
               />
 
               {showPresenter && (
