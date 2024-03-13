@@ -49,7 +49,7 @@ export const GridTest: any = () => {
         }
       }
     });
-
+    setActivitiesAfterLong(activitiesAfterLongest); // Set activitiesAfterLongest
     setLongActivity(longestActivity);
     setShortActivities(otherActivities);
   }
@@ -68,6 +68,23 @@ export const GridTest: any = () => {
 
   let currentRowEnd = 1;
 
+  const calculateStartHour = (activity: ActivityType) => {
+    return new Date(activity.start).getHours() - 6; // Subtract 6 to start from 06:00
+  };
+
+  const calculateEndHour = (activity: ActivityType) => {
+    return new Date(activity.end).getHours() - 6; // Subtract 6 to start from 06:00
+  };
+
+  const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
+    return activities.some(
+      (otherActivity) =>
+        otherActivity !== activity &&
+        otherActivity.start.getTime() < activity.end.getTime() &&
+        otherActivity.end.getTime() > activity.start.getTime(),
+    );
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div
@@ -75,27 +92,26 @@ export const GridTest: any = () => {
           width: '800px',
           display: 'grid',
           justifyContent: 'center',
-          gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: '1fr',
+          gridTemplateColumns: 'repeat(6,1fr)',
+          gridTemplateRows: 'repeat(1, 1fr)',
         }}
       >
         {shortActivities.map((activity: ActivityType) => {
           const durationInHours = calculateDurationInHours(activity);
-          const gridRowStart = currentRowEnd;
-          const gridRowEnd = currentRowEnd + durationInHours;
+          const gridRowStart = calculateStartHour(activity) + 1;
+          const gridRowEnd = calculateEndHour(activity) + 1;
 
           currentRowEnd = gridRowEnd; // Update currentRowEnd
           return (
             <>
               <Timeslot
                 style={{
-                  width: '200px',
                   color: 'white',
                   backgroundColor: 'red',
                   gridRowStart,
                   gridRowEnd,
-                  gridColumnStart: 2,
-                  gridColumnEnd: 3,
+                  gridColumnStart: 4,
+                  gridColumnEnd: 6,
                 }}
                 type={activity.type}
                 heading={activity.title}
@@ -111,12 +127,11 @@ export const GridTest: any = () => {
         {longActivity && (
           <Timeslot
             style={{
-              width: '200px',
               backgroundColor: 'blue',
               gridColumnStart: 1,
-              gridColumnEnd: 2,
-              gridRowStart: 1,
-              gridRowEnd: calculateDurationInHours(longActivity),
+              gridColumnEnd: 3,
+              gridRowStart: calculateStartHour(longActivity) + 1,
+              gridRowEnd: calculateEndHour(longActivity) + 1,
             }}
             heading='Title'
             type={longActivity.type} // Fix: Add null check using optional chaining operator
@@ -134,6 +149,29 @@ export const GridTest: any = () => {
             cursus in hac habitasse platea dictumst quisque sagittis purus sit
           </Timeslot>
         )}
+        {activitiesAfterLong.map((activity: ActivityType) => {
+          const gridColumnEnd = hasOverlappingActivity(activity, shortActivities) ? 1 : 6; // If there are no overlapping activities, span two columns
+
+          return (
+            <Timeslot
+              style={{
+                color: 'white',
+                backgroundColor: 'green',
+                gridColumnStart: 1,
+                gridColumnEnd: 6,
+                gridRowStart: currentRowEnd + 1,
+                gridRowEnd: currentRowEnd + 2,
+              }}
+              type={activity.type}
+              heading={activity.title}
+              startTime={activity.start}
+              endTime={activity.end}
+              showEndTime={true}
+            >
+              {activity.details}
+            </Timeslot>
+          );
+        })}
       </div>
     </div>
   );
