@@ -13,6 +13,7 @@ export const GridTest: any = () => {
   const [activitiesData, scheduleTime] = useSchedule();
   const [longActivity, setLongActivity] = useState<ActivityType | null>(null); // Fix: Add type annotation to longActivity
   const [shortActivities, setShortActivities] = useState<ActivityType[]>([]); // Fix: Add type annotation to shortActivities
+  const [activitiesAfterLong, setActivitiesAfterLong] = useState<ActivityType[]>([]); // New state
 
   const activities: ActivityType[] = activitiesData;
 
@@ -24,18 +25,38 @@ export const GridTest: any = () => {
 
   const testActivities: ActivityType[] = []; // Fix: Declare shortActivities as an array of ActivityType
 
-  useEffect(() => {
-    sortedActivitesByDate.map((activity: ActivityType) => {
-      if (activity.end > currentEndTime) {
-        currentStartTime = activity.start;
-        currentEndTime = activity.end;
-        setLongActivity(activity);
+  function findLongActivity(activities: ActivityType[]) {
+    let longestActivity: ActivityType | null = null;
+    let otherActivities: ActivityType[] = [];
+    let activitiesAfterLongest: ActivityType[] = [];
+
+    activities.forEach((activity) => {
+      const duration = activity.end.getTime() - activity.start.getTime();
+
+      if (
+        !longestActivity ||
+        duration > longestActivity.end.getTime() - longestActivity.start.getTime()
+      ) {
+        if (longestActivity) {
+          otherActivities.push(longestActivity);
+        }
+        longestActivity = activity;
       } else {
-        testActivities.push(activity);
-        setShortActivities(testActivities);
+        if (longestActivity && activity.start.getTime() > longestActivity.end.getTime()) {
+          activitiesAfterLongest.push(activity);
+        } else {
+          otherActivities.push(activity);
+        }
       }
     });
-  }, [activitiesData]);
+
+    setLongActivity(longestActivity);
+    setShortActivities(otherActivities);
+  }
+
+  useEffect(() => {
+    findLongActivity(activities);
+  }, [activities]);
 
   const calculateDurationInHours = (activity: ActivityType) => {
     const durationInMilliseconds =
