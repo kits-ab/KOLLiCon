@@ -69,11 +69,14 @@ export const GridTest: any = () => {
   let currentRowEnd = 1;
 
   const calculateStartHour = (activity: ActivityType) => {
-    return new Date(activity.start).getHours() - 6; // Subtract 6 to start from 06:00
+    const startHour = new Date(activity.start).getHours() - 6; // Subtract 6 to start from 06:00
+
+    return Math.ceil(startHour);
   };
 
   const calculateEndHour = (activity: ActivityType) => {
-    return new Date(activity.end).getHours() - 6; // Subtract 6 to start from 06:00
+    const endHour = new Date(activity.end).getHours() - 6; // Subtract 6 to start from 06:00
+    return Math.ceil(endHour);
   };
 
   const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
@@ -89,17 +92,25 @@ export const GridTest: any = () => {
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div
         style={{
-          width: '800px',
           display: 'grid',
           justifyContent: 'center',
-          gridTemplateColumns: 'repeat(6,1fr)',
-          gridTemplateRows: 'repeat(1, 1fr)',
+          gridTemplateColumns: 'repeat(2,1fr)',
+          // gridTemplateRows: 'repeat(12, 1fr)',
+          gridAutoFlow: 'row',
+          columnGap: '150px',
         }}
       >
-        {shortActivities.map((activity: ActivityType) => {
+        {sortedActivitesByDate.map((activity: ActivityType, index) => {
+          const prevActivity = sortedActivitesByDate[index - 1];
+          const nextActivity = sortedActivitesByDate[index + 1];
           const durationInHours = calculateDurationInHours(activity);
           const gridRowStart = calculateStartHour(activity) + 1;
           const gridRowEnd = calculateEndHour(activity) + 1;
+          console.log('gridRowStart: ', gridRowStart, 'gridRowEnd: ', gridRowEnd);
+          const gridColumnStart =
+            prevActivity && prevActivity.end > activity.start ? 'auto' : 'span 1';
+          const gridColumnEnd =
+            nextActivity && nextActivity.start < activity.end ? 'auto' : 'span 1';
 
           currentRowEnd = gridRowEnd; // Update currentRowEnd
           return (
@@ -107,11 +118,12 @@ export const GridTest: any = () => {
               <Timeslot
                 style={{
                   color: 'white',
-                  backgroundColor: 'red',
+                  backgroundColor: 'darkgray',
+                  border: '1px solid blue',
                   gridRowStart,
                   gridRowEnd,
-                  gridColumnStart: 4,
-                  gridColumnEnd: 6,
+                  gridColumnStart,
+                  gridColumnEnd,
                 }}
                 type={activity.type}
                 heading={activity.title}
@@ -124,7 +136,7 @@ export const GridTest: any = () => {
             </>
           );
         })}
-        {longActivity && (
+        {/* {longActivity && (
           <Timeslot
             style={{
               backgroundColor: 'blue',
@@ -171,7 +183,7 @@ export const GridTest: any = () => {
               {activity.details}
             </Timeslot>
           );
-        })}
+        })} */}
       </div>
     </div>
   );
