@@ -1,37 +1,63 @@
 import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 import { Timeslot } from '@kokitotsos/react-components';
-import { TimeslotType } from '@kokitotsos/react-components/dist/types';
+import { Person, TimeslotType } from '@kokitotsos/react-components/dist/types';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import { useEffect, useState } from 'react';
+import Activity from '../RegisterActivity/RegisterActivityComponent';
 
 export const FlexTest: any = () => {
   const [longActivity, setLongActivity] = useState<ActivityType | null>(null); // Fix: Add type annotation to longActivity
   const [shortActivities, setShortActivities] = useState<ActivityType[]>([]); // Fix: Add type annotation to shortActivities
   const [activitiesData, scheduleTime] = useSchedule();
+  const [activitiesAfterLong, setActivitiesAfterLong] = useState<ActivityType[]>([]); // New state
 
   const activities: ActivityType[] = activitiesData; // Add type annotation to activities array
 
   const sortedActivitesByDate = activities.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
-  let currentEndTime = new Date();
+  let currentEndTime = new Date(); // det här kan inte vara new Date(), det måste vara en tidpunkt som är mindre än alla starttider
   let currentStartTime = new Date();
 
   const testActivities: ActivityType[] = []; // Fix: Declare shortActivities as an array of ActivityType
 
-  useEffect(() => {
-    sortedActivitesByDate.map((activity: ActivityType) => {
-      if (activity.end > currentEndTime) {
-        currentStartTime = activity.start;
-        currentEndTime = activity.end;
-        setLongActivity(activity);
+  function findLongActivity(activities: ActivityType[]) {
+    let longestActivity: ActivityType | null = null;
+    let otherActivities: ActivityType[] = [];
+    let activitiesAfterLongest: ActivityType[] = [];
+
+    activities.forEach((activity) => {
+      const duration = activity.end.getTime() - activity.start.getTime();
+
+      if (
+        !longestActivity ||
+        duration > longestActivity.end.getTime() - longestActivity.start.getTime()
+      ) {
+        if (longestActivity) {
+          otherActivities.push(longestActivity);
+        }
+        longestActivity = activity;
       } else {
-        testActivities.push(activity);
-        setShortActivities(testActivities);
+        if (longestActivity && activity.start.getTime() > longestActivity.end.getTime()) {
+          activitiesAfterLongest.push(activity);
+        } else {
+          otherActivities.push(activity);
+        }
       }
     });
-  }, [activitiesData]);
+
+    setLongActivity(longestActivity);
+    setShortActivities(otherActivities);
+  }
+
+  useEffect(() => {
+    findLongActivity(activities);
+  }, [activities]);
+
+  useEffect(() => {
+    const getActivities = findLongActivity(sortedActivitesByDate);
+  }, [activities]);
 
   const calculateDurationInHours = (activity: ActivityType) => {
     const durationInMilliseconds =
@@ -68,6 +94,7 @@ export const FlexTest: any = () => {
           startTime={longActivity.start}
           heading={longActivity.title}
           showEndTime={true}
+          presenters={longActivity.externalPresenter as Person[]}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
@@ -84,17 +111,35 @@ export const FlexTest: any = () => {
         }}
       >
         {shortActivities.map((activity: ActivityType, index: number) => {
-          const durationInHours = calculateDurationInHours(activity);
-          const gridRowStart = currentRowEnd;
-          // const gridRowEnd = currentRowEnd + durationInHours;
-
           currentRowEnd += 1;
           console.log('currentRowEnd: ', currentRowEnd);
           return (
             <Timeslot
+              key={index}
               style={{
                 color: 'white',
                 backgroundColor: 'red',
+                width: '200px',
+              }}
+              type={activity.type}
+              heading={activity.title}
+              startTime={activity.start}
+              endTime={activity.end}
+              showEndTime={true}
+            >
+              {activity.details}
+            </Timeslot>
+          );
+        })}
+      </div>
+      <div>
+        {activitiesAfterLong.map((activity: ActivityType, index: number) => {
+          return (
+            <Timeslot
+              key={index}
+              style={{
+                color: 'white',
+                backgroundColor: 'green',
                 width: '200px',
               }}
               type={activity.type}
