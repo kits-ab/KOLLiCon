@@ -2,8 +2,13 @@ import React from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
-import { DateTimePickerWrapper, LengthStyled } from '@/styles/RegisterActivity/StyledActivity';
+import {
+  DateTimePickerWrapper,
+  ErrorStyled,
+  LengthStyled,
+} from '@/styles/RegisterActivity/StyledActivity';
 import dayjs from 'dayjs';
+import { Colors } from '../../styles/Common/colors';
 
 type DateTimePickerProps = {
   sxDateTimePickerStyles: any;
@@ -22,6 +27,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   setIsStartFilled,
   setIsEndFilled,
 }) => {
+  const [error, setError] = React.useState<string>('');
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
@@ -46,7 +52,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   // Function to handle the duration change
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-
+    setError('');
     if (!value) {
       // If duration becomes empty, set the end time to an empty string
       setActivity({ ...activity, end: '' });
@@ -56,12 +62,23 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
 
     // Check if the input contains a colon (:) to determine if it's in HH:mm format
     if (value.includes(':')) {
+      if (!value.split(':')[1]) {
+        // Display an error message or handle it as needed
+        setError('Fyll i minuter');
+        setIsEndFilled(false);
+        return;}
       const [hours, minutes] = value.split(':').map((val: string) => parseInt(val));
       // Validate hours and minutes
       if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && minutes >= 0 && minutes < 60) {
         // If input is in HH:mm format, calculate end time
         const duration = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
         calculateEndTime(activity.start, duration);
+        return;
+        // Check if minutes are equal to or greater than 60
+      } else if (minutes >= 60) {
+        // Display an error message or handle it as needed
+        setError('Minuter (0-59)');
+        setIsEndFilled(false);
         return;
       }
     } else {
@@ -96,31 +113,44 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   };
 
   return (
-    <DateTimePickerWrapper>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <MobileDateTimePicker
-          ampm={false}
-          sx={{ ...sxDateTimePickerStyles }}
-          slotProps={DateTimePropsStyles}
-          format='YYYY-MM-DD-HH:mm'
-          label='Starttid'
-          name='start'
-          value={activity.start || null}
-          onChange={(date: any) => handleDateChange('start', date)}
-        />
-        <LengthStyled
-          sx={{ ...sxDateTimePickerStyles }}
-          name='duration'
-          value={activity.duration}
-          placeholder='Längd (HH:mm)'
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          inputProps={{
-            maxLength: 5,
-          }}
-        />
-      </LocalizationProvider>
-    </DateTimePickerWrapper>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <DateTimePickerWrapper>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <MobileDateTimePicker
+            ampm={false}
+            sx={{ ...sxDateTimePickerStyles }}
+            slotProps={DateTimePropsStyles}
+            format='YYYY-MM-DD-HH:mm'
+            label='Starttid'
+            name='start'
+            value={activity.start || null}
+            onChange={(date: any) => handleDateChange('start', date)}
+          />
+          <LengthStyled
+            sx={{ ...sxDateTimePickerStyles }}
+            name='duration'
+            value={activity.duration}
+            placeholder='Längd (HH:mm)'
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            inputProps={{
+              maxLength: 5,
+            }}
+          />
+        </LocalizationProvider>
+      </DateTimePickerWrapper>
+      {error === 'Fyll i minuter' && (
+        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px', color: `${Colors.attentionColor}` }}>
+          {error}
+        </ErrorStyled>
+      )}
+      {error === 'Minuter (0-59)' && (
+        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px' }}>
+          {error}
+        </ErrorStyled>
+      
+      )}
+    </div>
   );
 };
 

@@ -223,7 +223,7 @@ export const SuggestionBoxStyled = styled(Box)`
 `;
 
 export const DateTimePickerWrapper = styled(Box)`
-  margin-left: 6%;
+  margin-left: 6.2%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -231,7 +231,7 @@ export const DateTimePickerWrapper = styled(Box)`
 `;
 
 export const InputStyled = styled(Input)`
-  margin: 2% 7% 0 7%;
+  margin: 10px 7% 0 7%;
   padding: 0 0 0 12px;
   background-color: ${Colors.primaryBackground};
   color: ${Colors.secondaryPlaceholder};
@@ -246,7 +246,7 @@ export const InputStyled = styled(Input)`
 `;
 
 export const LengthStyled = styled(InputStyled)`
-  margin: 0% 6% 0 7%;
+  margin: 0% 6.5% 0 7%;
   padding: 0 0 0 12px;
 
   input[type='number']::-webkit-inner-spin-button,
