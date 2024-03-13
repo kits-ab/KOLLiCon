@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
+import EditIcon from '@mui/icons-material/Edit';
 
 const drawerBleeding = 11;
 
@@ -52,6 +53,16 @@ const FixedMenuIcon = styled(MenuIcon)(() => ({
   width: 50,
 }));
 
+const EditPenIcon = styled(EditIcon)(() => ({
+  position: 'fixed',
+  color: 'gray',
+  top: 6,
+  right: 50,
+  zIndex: 1000,
+  height: 35,
+  width: 35,
+}));
+
 const stylesForGlobal = styled('div')(() => ({
   '.MuiDrawer-root > .MuiPaper-root': {
     overflow: 'visible',
@@ -61,6 +72,7 @@ const stylesForGlobal = styled('div')(() => ({
 }));
 
 export {
+  EditPenIcon,
   LogoutChildPart,
   Root,
   MenuDiv,

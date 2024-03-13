@@ -11,6 +11,7 @@ import ExportFileUI from '../ExportSchedule/ExportFileUI';
 import { Global } from '@emotion/react';
 
 import {
+  EditPenIcon,
   LogoutChildPart,
   MenuDiv,
   menuItems,
@@ -31,6 +32,7 @@ function MenuDrawer(props: Props) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
+  const [showEditModeButtons, setShowEditModeButtons] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -43,6 +45,10 @@ function MenuDrawer(props: Props) {
   const openUI = () => {
     setOpen(false);
     SetDisplay(true);
+  };
+
+  const handleShowEditModeButtons = () => {
+    setShowEditModeButtons(true);
   };
 
   const handleMenuItemClick = (label: string) => {
@@ -74,7 +80,18 @@ function MenuDrawer(props: Props) {
         }}
       />
       <Box>
-        <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
+        {showEditModeButtons && (
+          <>
+            <button>Avbryt</button>
+            <button>Spara</button>
+          </>
+        )}
+        {!showEditModeButtons && (
+          <>
+            <EditPenIcon onClick={() => handleShowEditModeButtons()} />
+            <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
+          </>
+        )}
       </Box>
       <SwipeableDrawer
         PaperProps={{

@@ -38,7 +38,6 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     selectedActivityId,
   } = props;
 
-  // Denna komponent måste laddas om via use effect
   const handleDeleteOfActivity = async (value: any) => {
     console.log('fetched');
     window.location.reload();
