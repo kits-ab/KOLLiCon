@@ -88,16 +88,46 @@ export const GridTest: any = () => {
     );
   };
 
+  let threeOrmore: ActivityType[] = [];
+
+  const hasThreeOngoingActivities = (activity: ActivityType, activities: ActivityType[]) => {
+    const activityStart = activity.start.getTime();
+    const activityEnd = activity.end.getTime();
+
+    // Iterate over each minute in the duration of the activity
+    for (let time = activityStart; time <= activityEnd; time += 60000) {
+      let overlappingActivities = 0;
+
+      // Check if there are three or more activities that overlap with the current time
+      for (let otherActivity of activities) {
+        if (otherActivity !== activity) {
+          const otherStart = otherActivity.start.getTime();
+          const otherEnd = otherActivity.end.getTime();
+
+          if (otherStart <= time && otherEnd > time) {
+            overlappingActivities++;
+          }
+
+          if (overlappingActivities >= 2) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div
         style={{
           display: 'grid',
           justifyContent: 'center',
-          gridTemplateColumns: 'repeat(2,1fr)',
+          gridTemplateColumns: 'repeat(6, 1fr)',
           gridTemplateRows: 'repeat(12, 1fr)',
-          // gridAutoFlow: 'row',
-          columnGap: '150px',
+          width: '800px',
+          columnGap: '110px',
         }}
       >
         {sortedActivitesByDate.map((activity: ActivityType, index) => {
@@ -106,13 +136,18 @@ export const GridTest: any = () => {
           const durationInHours = calculateDurationInHours(activity);
           const gridRowStart = calculateStartHour(activity) + 1;
           const gridRowEnd = calculateEndHour(activity) + 1;
-          console.log('gridRowStart: ', gridRowStart, 'gridRowEnd: ', gridRowEnd);
-          const gridColumnStart = hasOverlappingActivity(activity, sortedActivitesByDate)
-            ? 'span 1'
-            : 'span 2';
-          const gridColumnEnd = hasOverlappingActivity(activity, sortedActivitesByDate)
-            ? 'span 1'
-            : 'span 2'; // If there are no overlapping activities, span two columns
+          let columnSpan = 0;
+          let columns = 0;
+          if (hasThreeOngoingActivities(activity, sortedActivitesByDate)) {
+            columnSpan = 2;
+            columns = 3;
+          } else if (hasOverlappingActivity(activity, sortedActivitesByDate)) {
+            columnSpan = 3;
+            columns = 2;
+          } else {
+            columnSpan = 6;
+            columns = 1;
+          }
 
           currentRowEnd = gridRowEnd; // Update currentRowEnd
           return (
@@ -124,8 +159,8 @@ export const GridTest: any = () => {
                   border: '1px solid blue',
                   gridRowStart,
                   gridRowEnd,
-                  gridColumnStart,
-                  gridColumnEnd,
+                  gridColumnStart: `auto`,
+                  gridColumnEnd: `span ${columnSpan}`,
                 }}
                 type={activity.type}
                 heading={activity.title}
