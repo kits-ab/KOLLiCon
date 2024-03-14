@@ -2,6 +2,7 @@ import { types } from '@kokitotsos/react-components';
 import { ExternalPresenter, Person } from '@kokitotsos/react-components/dist/types';
 
 export type ActivityType = {
+  map(arg0: (activity: ActivityType) => void): unknown;
   id: number;
   user_id: string;
   review_id?: ReviewType[] | [];

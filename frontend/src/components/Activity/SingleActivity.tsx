@@ -4,8 +4,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import DateText from '@/styles/DateText';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
-import axios from 'axios';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import React from 'react';
 
 interface SingleActivityProps {
   activity: ActivityType;
@@ -16,9 +15,8 @@ interface SingleActivityProps {
   setExpandInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedActivityId: number | null;
   date: string;
+  allActivites: ActivityType[];
 }
-
-const backendUrl = import.meta.env.VITE_API_URL;
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
   const {
@@ -32,12 +30,8 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     date,
   } = props;
 
-  const handleDeleteOfActivity = async (value: any) => {
-    await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
-  };
-
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       <a
         key={activity.id}
         style={{ cursor: 'pointer' }}
@@ -79,18 +73,6 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
           ></ExpandInfo>
         )}
       </a>
-      <RemoveCircleIcon
-        onClick={() => {
-          handleDeleteOfActivity(activity.id);
-        }}
-        style={{
-          position: 'absolute',
-          right: '0',
-          bottom: '0',
-          height: '25px',
-          width: '25px',
-        }}
-      ></RemoveCircleIcon>
     </div>
   );
 };

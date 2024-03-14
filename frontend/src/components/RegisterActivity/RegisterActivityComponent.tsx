@@ -92,7 +92,6 @@ function Activity({ onClose }: any) {
 
   //Function to handle the submit of the form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('yoo');
     e.preventDefault();
     try {
       const activityData = { ...activity, location: location };
@@ -193,7 +192,9 @@ function Activity({ onClose }: any) {
       externalPresenter: [...activity.externalPresenter, newExternalPresenter],
     });
     // Check if the external presenter is filled
-    setIsExternalPresenterFilled(externalPresenter.name !== '' || activity.externalPresenter.length > 0);
+    setIsExternalPresenterFilled(
+      externalPresenter.name !== '' || activity.externalPresenter.length > 0,
+    );
     setExternalPresenter({
       name: '',
       avatarSrc: '',

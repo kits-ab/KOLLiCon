@@ -23,16 +23,16 @@ import { Colors } from '@/styles/Common/colors';
 
 interface Props {
   window?: () => Window;
+  setShowEditMode: (value: boolean) => void;
 }
 
-function MenuDrawer(props: Props) {
-  const { window } = props;
+function MenuDrawer({ window, setShowEditMode }: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
-  const [showEditModeButtons, setShowEditModeButtons] = React.useState(false);
+  const [showEditModePen, setShowEditModePen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -47,8 +47,9 @@ function MenuDrawer(props: Props) {
     SetDisplay(true);
   };
 
-  const handleShowEditModeButtons = () => {
-    setShowEditModeButtons(true);
+  const handleShowEditModeButtons = (value: boolean) => {
+    setShowEditModePen(value);
+    setShowEditMode(value);
   };
 
   const handleMenuItemClick = (label: string) => {
@@ -80,15 +81,15 @@ function MenuDrawer(props: Props) {
         }}
       />
       <Box>
-        {showEditModeButtons && (
+        {showEditModePen && (
           <>
-            <button>Avbryt</button>
-            <button>Spara</button>
+            <button onClick={() => handleShowEditModeButtons(false)}>Avbryt</button>
+            <button onClick={() => handleShowEditModeButtons(false)}>Spara</button>
           </>
         )}
-        {!showEditModeButtons && (
+        {!showEditModePen && (
           <>
-            <EditPenIcon onClick={() => handleShowEditModeButtons()} />
+            <EditPenIcon onClick={() => handleShowEditModeButtons(true)} />
             <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />
           </>
         )}

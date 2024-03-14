@@ -7,7 +7,7 @@ import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import axios from 'axios';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import React, { useState } from 'react';
+import React from 'react';
 
 // Pararell presenter styling for media queries
 interface ParallelActivitiesProps {
@@ -26,6 +26,8 @@ interface ParallelActivitiesProps {
 const backendUrl = import.meta.env.VITE_API_URL;
 
 export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => {
+  const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
+
   const {
     date,
     activity,
@@ -40,9 +42,12 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
 
   const handleDeleteOfActivity = async (value: any) => {
     console.log('fetched');
-    window.location.reload();
 
     await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
+  };
+
+  const markActivityAsPicked = (id: number) => {
+    console.log(id);
   };
 
   return (
@@ -102,7 +107,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         </a>
         <RemoveCircleIcon
           onClick={() => {
-            handleDeleteOfActivity(activity.id);
+            markActivityAsPicked(activity.id);
           }}
           style={{
             position: 'absolute',
@@ -158,7 +163,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         </a>
         <RemoveCircleIcon
           onClick={() => {
-            handleDeleteOfActivity(activity.id);
+            markActivityAsPicked(activity.id);
           }}
           style={{
             position: 'absolute',

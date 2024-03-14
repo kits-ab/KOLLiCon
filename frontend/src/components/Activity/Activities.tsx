@@ -3,18 +3,31 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { SingleActivity } from '@/components/Activity/SingleActivity';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 interface ActivitiesProps {
-  activitiesData: [] | any;
-  selectedActivityId: number | null;
-  setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
-  scheduleTime: Date;
+  activitiesData?: [] | any;
+  selectedActivityId?: number | null;
+  setSelectedActivityId?: React.Dispatch<React.SetStateAction<number | null>>;
+  scheduleTime?: Date;
+  showEditModeButtons: boolean;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
-  console.log(activitiesData);
+  const {
+    activitiesData,
+    setSelectedActivityId,
+    selectedActivityId,
+    scheduleTime,
+    showEditModeButtons,
+  } = props;
+
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
+
+  const markActivityAsPicked = (id: number) => {
+    setPickedActivities((prevPickedActivities) => [...prevPickedActivities, id]);
+  };
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -96,7 +109,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
               );
             }
             return (
-              <>
+              <div style={{ position: 'relative' }}>
                 <SingleActivity
                   date={date}
                   activity={activity}
@@ -106,8 +119,21 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   expandInfoOpen={expandInfoOpen}
                   setExpandInfoOpen={setExpandInfoOpen}
                   selectedActivityId={selectedActivityId}
+                  allActivites={activitiesData}
                 />
-              </>
+                {showEditModeButtons && (
+                  <RemoveCircleIcon
+                    onClick={() => markActivityAsPicked(activity.id)}
+                    style={{
+                      position: 'absolute',
+                      right: '0',
+                      bottom: '0',
+                      height: '25px',
+                      width: '25px',
+                    }}
+                  ></RemoveCircleIcon>
+                )}
+              </div>
             );
           });
         })}
