@@ -95,8 +95,8 @@ export const GridTest: any = () => {
           display: 'grid',
           justifyContent: 'center',
           gridTemplateColumns: 'repeat(2,1fr)',
-          // gridTemplateRows: 'repeat(12, 1fr)',
-          gridAutoFlow: 'row',
+          gridTemplateRows: 'repeat(12, 1fr)',
+          // gridAutoFlow: 'row',
           columnGap: '150px',
         }}
       >
@@ -107,10 +107,12 @@ export const GridTest: any = () => {
           const gridRowStart = calculateStartHour(activity) + 1;
           const gridRowEnd = calculateEndHour(activity) + 1;
           console.log('gridRowStart: ', gridRowStart, 'gridRowEnd: ', gridRowEnd);
-          const gridColumnStart =
-            prevActivity && prevActivity.end > activity.start ? 'auto' : 'span 1';
-          const gridColumnEnd =
-            nextActivity && nextActivity.start < activity.end ? 'auto' : 'span 1';
+          const gridColumnStart = hasOverlappingActivity(activity, sortedActivitesByDate)
+            ? 'span 1'
+            : 'span 2';
+          const gridColumnEnd = hasOverlappingActivity(activity, sortedActivitesByDate)
+            ? 'span 1'
+            : 'span 2'; // If there are no overlapping activities, span two columns
 
           currentRowEnd = gridRowEnd; // Update currentRowEnd
           return (
