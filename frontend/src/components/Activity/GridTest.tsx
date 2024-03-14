@@ -119,15 +119,15 @@ export const GridTest: any = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', width: '90%' }}>
       <div
         style={{
           display: 'grid',
           justifyContent: 'center',
           gridTemplateColumns: 'repeat(6, 1fr)',
-          gridTemplateRows: 'repeat(12, 1fr)',
-          width: '800px',
-          columnGap: '110px',
+          gridTemplateRows: 'repeat(24, 1fr)',
+          width: '90%',
+          columnGap: '15%',
         }}
       >
         {sortedActivitesByDate.map((activity: ActivityType, index) => {
