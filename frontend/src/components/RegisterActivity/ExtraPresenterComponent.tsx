@@ -7,21 +7,26 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
+import { RegisterPerson } from '@/types/Activities';
 
 type ExtraPresenterProps = {
   externalPresenter: any;
   handleExternalPresenterChange: any;
-  handleAddExternalPresenter: any;
-  handleDeleteExternalPresenter: any;
   activity: any;
+  setActivity: any;
+  setIsExternalPresenterFilled: any;
+  addExternalPresenter: any;
+  setExternalPresenter: any;
 };
 
 const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
   externalPresenter,
   handleExternalPresenterChange,
-  handleAddExternalPresenter,
-  handleDeleteExternalPresenter,
+  setIsExternalPresenterFilled,
+  setActivity,
   activity,
+  addExternalPresenter,
+  setExternalPresenter,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const isInputEmpty = externalPresenter.name.trim() === '';
@@ -30,17 +35,44 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
     // Disable the AddButton when the external presenter input is empty
     setInputValue(externalPresenter.name);
   }, [externalPresenter.name]);
-
+  //Function to handle the input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
     handleExternalPresenterChange(e);
   };
-
+  //Function to handle the add button click
   const handleAddButtonClick = () => {
     handleAddExternalPresenter();
     setInputValue('');
   };
+
+  //Function to delete the external presenter
+  const handleDeleteExternalPresenter = (index: number) => {
+    const updatedExternalPresenters = [...activity.externalPresenter];
+    updatedExternalPresenters.splice(index, 1);
+    setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
+    setIsExternalPresenterFilled(updatedExternalPresenters.length > 0);
+  };
+
+  //Function to handle the external presenter change
+  const handleAddExternalPresenter = () => {
+    // Add external presenter to the activity state
+    const newExternalPresenter = addExternalPresenter() as RegisterPerson;
+    setActivity({
+      ...activity,
+      externalPresenter: [...activity.externalPresenter, newExternalPresenter],
+    });
+    // Check if the external presenter is filled
+    setIsExternalPresenterFilled(
+      externalPresenter.name !== '' || activity.externalPresenter.length > 0,
+    );
+    setExternalPresenter({
+      name: '',
+      avatarSrc: '',
+    });
+  };
+
   return (
     <StyledDiv>
       <TitleStyled>Externa</TitleStyled>
@@ -68,7 +100,7 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
             ) => (
               <PresenterBoxWrapper key={index}>
                 <AddedPresenterList>{externalPresenter.name}</AddedPresenterList>
-                <DeleteButton onClick={() => handleDeleteExternalPresenter(index)}>
+                <DeleteButton onClick={() => handleDeleteExternalPresenter(Number(index))}>
                   Ta bort
                 </DeleteButton>
               </PresenterBoxWrapper>

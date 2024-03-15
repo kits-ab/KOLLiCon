@@ -3,15 +3,36 @@ import {ErrorStyled} from '../../styles/RegisterActivity/StyledActivity';
 
 type InputComponentProps = {
     activity: any;
-    handleOnInputChange: any;
-    error: any
+    error: any;
+    setIsTitleFilled: any;
+    setIsDetailsFilled: any;
+    setTextError: any;
+    setActivity: any;
 }
 
 const InputComponent: React.FC<InputComponentProps> = ({
   activity,
-  handleOnInputChange,
-  error
+  error,
+  setIsTitleFilled,
+  setTextError,
+  setIsDetailsFilled,
+  setActivity,
 }) => {
+    //Function to handle the input change for title and details
+    const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      setActivity({ ...activity, [name]: value });
+      if (name === 'details' && value.length > 2999) {
+        setTextError(true);
+        setIsDetailsFilled(!value);
+      } else if (name === 'details' && value.length <= 2999) {
+        setTextError(false);
+        setIsDetailsFilled(!!value);
+      }
+      if (name === 'title') {
+        setIsTitleFilled(!!value);
+      }
+    };
   return (
     <>
       <InputStyled

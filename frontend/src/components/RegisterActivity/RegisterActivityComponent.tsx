@@ -1,6 +1,5 @@
 import { types, GlobalStyles } from '@kokitotsos/react-components';
 import axios from 'axios';
-import dayjs from 'dayjs';
 import LocationComponent from './LocationComponent';
 import PresenterComponent from './PresenterComponent';
 import ExternalPresenterComponent from './ExtraPresenterComponent';
@@ -33,7 +32,6 @@ import {
   BoxWrapper1,
   HeaderStyled,
 } from '../../styles/RegisterActivity/StyledActivity';
-import { RegisterPerson } from '@/types/Activities';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -109,98 +107,6 @@ function Activity({ onClose }: any) {
     resetActivity();
   };
 
-  //Function to handle the input change for title and details
-  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setActivity({ ...activity, [name]: value });
-    if (name === 'details' && value.length > 2999) {
-      setTextError(true);
-      setIsDetailsFilled(!value);
-    } else if (name === 'details' && value.length <= 2999) {
-      setTextError(false);
-      setIsDetailsFilled(!!value);
-    }
-    if (name === 'title') {
-      setIsTitleFilled(!!value);
-    }
-  };
-
-  //Function to convert the array to string and add coordinates to the location
-  const handleCoordinates = (coords: number[]) => {
-    setLocation((prevLocation) => ({
-      ...prevLocation,
-      coordinates: coords.join(','),
-    }));
-  };
-
-  //function to reset the location data
-  const handleResetLocation = () => {
-    setLocation({ ...location, coordinates: '' });
-  };
-
-  //Function to handle the date change
-  const handleDateChange = (name: string, date: Date) => {
-    setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
-
-    if (name === 'start') {
-      setIsStartFilled(!!date);
-    } else if (name === 'end') {
-      setIsEndFilled(!!date);
-    }
-  };
-
-  //Function to delete the presenter
-  const handleDeletePresenter = (index: number) => {
-    const updatedPresenters = [...activity.presenter];
-    updatedPresenters.splice(index, 1);
-    setActivity({ ...activity, presenter: updatedPresenters });
-    setIsPresenterFilled(updatedPresenters.length > 0);
-  };
-
-  //Function to delete the external presenter
-  const handleDeleteExternalPresenter = (index: number) => {
-    const updatedExternalPresenters = [...activity.externalPresenter];
-    updatedExternalPresenters.splice(index, 1);
-    setActivity({ ...activity, externalPresenter: updatedExternalPresenters });
-    setIsExternalPresenterFilled(updatedExternalPresenters.length > 0);
-  };
-
-  //Function to handle the presenter change
-  const handleAddPresenter = async () => {
-    // Add presenter to the activity state
-    const newPresenter = await addPresenter();
-    if (newPresenter) {
-      setActivity({
-        ...activity,
-        presenter: [...activity.presenter, newPresenter],
-      });
-      // Check if the presenter is filled
-      setIsPresenterFilled(newPresenter.name !== '');
-      setPresenter({
-        name: '',
-        avatarSrc: '',
-      });
-    }
-  };
-
-  //Function to handle the external presenter change
-  const handleAddExternalPresenter = () => {
-    // Add external presenter to the activity state
-    const newExternalPresenter = addExternalPresenter() as RegisterPerson;
-    setActivity({
-      ...activity,
-      externalPresenter: [...activity.externalPresenter, newExternalPresenter],
-    });
-    // Check if the external presenter is filled
-    setIsExternalPresenterFilled(
-      externalPresenter.name !== '' || activity.externalPresenter.length > 0,
-    );
-    setExternalPresenter({
-      name: '',
-      avatarSrc: '',
-    });
-  };
-
   return (
     <>
       <GlobalBox>
@@ -221,12 +127,17 @@ function Activity({ onClose }: any) {
                 sxDateTimePickerStyles={sxDateTimePickerStyles}
                 DateTimePropsStyles={DateTimePropsStyles}
                 activity={activity}
-                handleDateChange={handleDateChange}
+                setActivity={setActivity}
+                setIsEndFilled={setIsEndFilled}
+                setIsStartFilled={setIsStartFilled}
               />
               <InputComponent
                 activity={activity}
-                handleOnInputChange={handleOnInputChange}
                 error={textError}
+                setIsDetailsFilled={setIsDetailsFilled}
+                setIsTitleFilled={setIsTitleFilled}
+                setActivity={setActivity}
+                setTextError={setTextError}
               />
 
               {showPresenter && (
@@ -236,26 +147,29 @@ function Activity({ onClose }: any) {
                   presenterError={presenterError}
                   handlePresenterChange={handlePresenterChange}
                   handleSuggestionClick={handleSuggestionClick}
-                  handleAddPresenter={handleAddPresenter}
-                  handleDeletePresenter={handleDeletePresenter}
                   activity={activity}
+                  setActivity={setActivity}
+                  setPresenter={setPresenter}
+                  setIsPresenterFilled={setIsPresenterFilled}
+                  addPresenter={addPresenter}
                 />
               )}
               {showExternalPresenter && (
                 <ExternalPresenterComponent
                   externalPresenter={externalPresenter}
                   handleExternalPresenterChange={handleExternalPresenterChange}
-                  handleAddExternalPresenter={handleAddExternalPresenter}
-                  handleDeleteExternalPresenter={handleDeleteExternalPresenter}
                   activity={activity}
+                  setActivity={setActivity}
+                  setIsExternalPresenterFilled={setIsExternalPresenterFilled}
+                  addExternalPresenter={addExternalPresenter}
+                  setExternalPresenter={setExternalPresenter}
                 />
               )}
               {showLocation && (
                 <LocationComponent
                   location={location}
                   handleLocationChange={handleLocationChange}
-                  handleCoordinates={handleCoordinates}
-                  handleResetLocation={handleResetLocation}
+                  setLocation={setLocation}
                 />
               )}
 
