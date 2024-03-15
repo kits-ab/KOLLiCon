@@ -182,8 +182,16 @@ export const TypeFormStyled = {
     color: 'gray',
     fontSize: '15px',
   },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: `${Colors.primaryAddButton}`,
+
+  },
   '& .MuiOutlinedInput-root': {
     height: '50px',
+    color: 'gray',
+  },
+  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderColor: `${Colors.primaryAddButton}`,
   },
 };
 
@@ -215,6 +223,7 @@ export const SuggestionBoxStyled = styled(Box)`
 `;
 
 export const DateTimePickerWrapper = styled(Box)`
+  margin-left: 6.2%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -222,14 +231,35 @@ export const DateTimePickerWrapper = styled(Box)`
 `;
 
 export const InputStyled = styled(Input)`
-  margin: 2% 7% 0 7%;
+  margin: 10px 7% 0 7%;
   padding: 0 0 0 12px;
   background-color: ${Colors.primaryBackground};
   color: ${Colors.secondaryPlaceholder};
   border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
+  &.MuiInput-underline:after {
+    border-bottom: 2px solid ${Colors.primaryAddButton};
+  }
   @media (max-width: 650px) {
     padding: 0 0 0% 2%;
+  }
+`;
+
+export const LengthStyled = styled(InputStyled)`
+  margin: 0% 6.5% 0 7%;
+  padding: 0 0 0 12px;
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    appearance: none;
+  }
+
+  &.MuiInput-underline:after {
+    border-bottom: 2px solid ${Colors.primaryAddButton};
+  }
+
+  @media (max-width: 650px) {
+    padding: 2px 0 0% 2%;
   }
 `;
 
@@ -244,6 +274,19 @@ export const TextAreaStyled = styled(TextArea)`
   scrollbar-width: thin;
   scrollbar-color: ${Colors.textColor} ${Colors.scrollColor};
   font-family: sans-serif;
+
+  --Textarea-focusedInset: var(--any);
+  --Textarea-focusedThickness: 2px;
+  --Textarea-focusedHighlight: ${Colors.primaryAddButton};
+  --joy-palette-focusVisible: ${Colors.primaryAddButton};
+  &::before {
+    transition: box-shadow 0.1s ease-in-out;
+  }
+  &:focus-within {
+    border-color: ${Colors.primaryAddButton};
+    box-shadow: 1px;
+  }
+
   @media (max-width: 650px) {
     padding: 2% 0 0% 2%;
   }

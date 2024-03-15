@@ -17,4 +17,5 @@ export enum Colors {
   secondaryPlaceholder = '#DDDDDD',
   scrollColor = '#424241',
   primaryBackground2 = '#777777',
+  attentionColor = '#B29B21'
 }

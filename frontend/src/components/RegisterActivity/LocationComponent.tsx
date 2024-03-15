@@ -7,16 +7,28 @@ import MapBox from '../MapBox/MapBox';
 type LocationProps = {
     location: any;
     handleLocationChange: any;
-    handleCoordinates: any;
-    handleResetLocation: any;
+    setLocation: any;
     };
 
 const LocationComponent: React.FC<LocationProps> = ({
   location,
   handleLocationChange,
-  handleCoordinates,
-  handleResetLocation,
+  setLocation
 }) => {
+
+  //Function to convert the array to string and add coordinates to the location
+  const handleCoordinates = (coords: number[]) => {
+    setLocation((prevLocation: any) => ({
+      ...prevLocation,
+      coordinates: coords.join(','),
+    }));
+  };
+
+  //function to reset the location data
+  const handleResetLocation = () => {
+    setLocation({ ...location, coordinates: '' });
+  };
+
   return (
     <StyledDiv>
       <TitleStyled>Plats</TitleStyled>
