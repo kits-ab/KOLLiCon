@@ -34,7 +34,11 @@ export const Home = () => {
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuDrawer />
-        <GridTest activitiesData={activities} />
+        <GridTest
+          activitiesData={activities}
+          selectedActivityId={selectedActivityId}
+          setSelectedActivityId={setSelectedActivityId}
+        />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>
           <AddIcon style={{ fontSize: '60px', cursor: 'pointer' }} onClick={activateDrawer} />

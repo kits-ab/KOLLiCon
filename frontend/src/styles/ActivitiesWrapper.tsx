@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 const ActivitiesWrapper = styled(Box)`
   margin-left: auto;
   margin-right: auto;
-  max-width: 50%;
+  max-width: 60%;
   @media (max-width: 500px) {
     margin-left: auto;
     margin-right: auto;

@@ -3,18 +3,24 @@ import { Timeslot } from '@kokitotsos/react-components';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import { useState } from 'react';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
+import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
+import styled from '@emotion/styled';
+import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 
 interface GridTestProps {
   activitiesData: ActivityType[];
+  selectedActivityId: number | null;
+  setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export const GridTest: React.FC<GridTestProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const { activitiesData, setSelectedActivityId, selectedActivityId } = props;
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
 
-  const activities: ActivityType[] = props.activitiesData;
+  const activities: ActivityType[] = activitiesData;
 
   const sortedActivitesByDate = activities.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -82,53 +88,68 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     return { gridRowStart, gridRowEnd, columnSpan };
   };
 
-  return (
-    <div
-      style={{
-        display: 'grid',
+  const GridWrapper = styled.div`
+    display: grid;
+    justify-content: center;
+    // grid-template-columns: repeat(6, 1fr);
+    // grid-template-rows: repeat(12, 1fr);
+    column-gap: 2%;
+  `;
 
-        justifyContent: 'center',
-        gridTemplateColumns: 'repeat(6, 1fr)',
-        gridTemplateRows: 'repeat(12, 1fr)',
-        columnGap: '2%',
-      }}
-    >
+  return (
+    <GridWrapper>
       {sortedActivitesByDate.map((activity: ActivityType, index) => {
         const { gridRowStart, gridRowEnd, columnSpan } = getGridLayout(
           activity,
           sortedActivitesByDate,
         );
         return (
-          <>
-            <Timeslot
-              key={index}
-              style={{
-                gridRowStart,
-                gridRowEnd,
-                gridColumnStart: `auto`,
-                gridColumnEnd: `span ${columnSpan}`,
-              }}
-              presenters={getPresenter(activity)}
-              endTime={activity.end}
-              heading={activity.title}
-              startTime={activity.start}
-              type={activity.type}
-              showEndTime={true}
-              {...(activity.location.coordinates[0] !== 0
-                ? {
-                    location: {
-                      coordinates: activity.location.coordinates,
-                      title: (activity.location.title as string) || 'Location',
-                      subtitle: activity.location.subtitle,
-                    },
-                  }
-                : {})}
-            >
-              <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
-            </Timeslot>
-          </>
+          <a
+            key={index}
+            style={{
+              cursor: 'pointer',
+              gridRowStart,
+              gridRowEnd,
+              gridColumnStart: `auto`,
+              gridColumnEnd: `span ${columnSpan}`,
+            }}
+            onClick={() => {
+              setSelectedActivityId(activity.id);
+              expandInfo();
+            }}
+          >
+            <StyledTimeslot style={{ height: '90%' }}>
+              <Timeslot
+                style={{ height: '100%' }}
+                presenters={getPresenter(activity)}
+                endTime={activity.end}
+                heading={activity.title}
+                startTime={activity.start}
+                type={activity.type}
+                showEndTime={true}
+                {...(activity.location.coordinates[0] !== 0
+                  ? {
+                      location: {
+                        coordinates: activity.location.coordinates,
+                        title: (activity.location.title as string) || 'Location',
+                        subtitle: activity.location.subtitle,
+                      },
+                    }
+                  : {})}
+              >
+                <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
+              </Timeslot>
+            </StyledTimeslot>
+            {selectedActivityId === activity.id && (
+              <ExpandInfo
+                activityProp={activity}
+                open={expandInfoOpen}
+                setOpen={setExpandInfoOpen}
+              />
+            )}
+          </a>
         );
       })}
-    </div>
+    </GridWrapper>
   );
 };
