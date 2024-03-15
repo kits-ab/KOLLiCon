@@ -1,11 +1,20 @@
 import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
 import useSchedule from '@/utils/Hooks/useSchedule';
+import { useState } from 'react';
+import { getPresenter } from '@/utils/Helpers/getPresenter';
 
-export const GridTest: any = () => {
-  const [activitiesData, scheduleTime] = useSchedule();
+interface GridTestProps {
+  activitiesData: ActivityType[];
+}
 
-  const activities: ActivityType[] = activitiesData;
+export const GridTest: React.FC<GridTestProps> = (props) => {
+  const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const expandInfo = () => {
+    setExpandInfoOpen(!expandInfoOpen);
+  };
+
+  const activities: ActivityType[] = props.activitiesData;
 
   const sortedActivitesByDate = activities.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -59,55 +68,67 @@ export const GridTest: any = () => {
     return false;
   };
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', width: '90%' }}>
-      <div
-        style={{
-          display: 'grid',
-          justifyContent: 'center',
-          gridTemplateColumns: 'repeat(6, 1fr)',
-          gridTemplateRows: 'repeat(12, 1fr)',
-          width: '90%',
-          columnGap: '15%',
-        }}
-      >
-        {sortedActivitesByDate.map((activity: ActivityType, index) => {
-          const gridRowStart = calculateStartHour(activity) + 1;
-          const gridRowEnd = calculateEndHour(activity) + 1;
-          let columnSpan = 0;
-          if (hasThreeOngoingActivities(activity, sortedActivitesByDate)) {
-            columnSpan = 2;
-          } else if (hasOverlappingActivity(activity, sortedActivitesByDate)) {
-            columnSpan = 3;
-          } else {
-            columnSpan = 6;
-          }
+  const getGridLayout = (activity: ActivityType, sortedActivitesByDate: ActivityType[]) => {
+    const gridRowStart = calculateStartHour(activity) + 1;
+    const gridRowEnd = calculateEndHour(activity) + 1;
+    let columnSpan = 0;
+    if (hasThreeOngoingActivities(activity, sortedActivitesByDate)) {
+      columnSpan = 2;
+    } else if (hasOverlappingActivity(activity, sortedActivitesByDate)) {
+      columnSpan = 3;
+    } else {
+      columnSpan = 6;
+    }
+    return { gridRowStart, gridRowEnd, columnSpan };
+  };
 
-          return (
-            <>
-              <Timeslot
-                key={index}
-                style={{
-                  color: 'white',
-                  backgroundColor: 'darkgray',
-                  border: '1px solid blue',
-                  gridRowStart,
-                  gridRowEnd,
-                  gridColumnStart: `auto`,
-                  gridColumnEnd: `span ${columnSpan}`,
-                }}
-                type={activity.type}
-                heading={activity.title}
-                startTime={activity.start}
-                endTime={activity.end}
-                showEndTime={true}
-              >
-                {activity.details}
-              </Timeslot>
-            </>
-          );
-        })}
-      </div>
+  return (
+    <div
+      style={{
+        display: 'grid',
+
+        justifyContent: 'center',
+        gridTemplateColumns: 'repeat(6, 1fr)',
+        gridTemplateRows: 'repeat(12, 1fr)',
+        columnGap: '2%',
+      }}
+    >
+      {sortedActivitesByDate.map((activity: ActivityType, index) => {
+        const { gridRowStart, gridRowEnd, columnSpan } = getGridLayout(
+          activity,
+          sortedActivitesByDate,
+        );
+        return (
+          <>
+            <Timeslot
+              key={index}
+              style={{
+                gridRowStart,
+                gridRowEnd,
+                gridColumnStart: `auto`,
+                gridColumnEnd: `span ${columnSpan}`,
+              }}
+              presenters={getPresenter(activity)}
+              endTime={activity.end}
+              heading={activity.title}
+              startTime={activity.start}
+              type={activity.type}
+              showEndTime={true}
+              {...(activity.location.coordinates[0] !== 0
+                ? {
+                    location: {
+                      coordinates: activity.location.coordinates,
+                      title: (activity.location.title as string) || 'Location',
+                      subtitle: activity.location.subtitle,
+                    },
+                  }
+                : {})}
+            >
+              <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
+            </Timeslot>
+          </>
+        );
+      })}
     </div>
   );
 };
