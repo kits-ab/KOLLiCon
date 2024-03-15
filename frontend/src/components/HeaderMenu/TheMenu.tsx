@@ -11,7 +11,7 @@ import { GlobalStyles, Text } from '@kokitotsos/react-components';
 import Beer from '@/assets/BearWithMe.png';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
-import {Colors} from '../../styles/Common/colors';
+import { Colors } from '../../styles/Common/colors';
 
 const drawerBleeding = 11;
 

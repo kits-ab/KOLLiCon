@@ -6,8 +6,8 @@ import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import axios from 'axios';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import React from 'react';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 // Pararell presenter styling for media queries
 interface ParallelActivitiesProps {
@@ -21,6 +21,8 @@ interface ParallelActivitiesProps {
   expandInfoOpen: boolean;
   setExpandInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedActivityId: number | null;
+  showRemoveButtons: boolean;
+  giveDataOfPickedActivity: (data: number) => void;
 }
 
 const backendUrl = import.meta.env.VITE_API_URL;
@@ -29,6 +31,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
   const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
 
   const {
+    giveDataOfPickedActivity,
     date,
     activity,
     nextActivity,
@@ -38,16 +41,18 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     expandInfoOpen,
     setExpandInfoOpen,
     selectedActivityId,
+    showRemoveButtons,
   } = props;
 
   const handleDeleteOfActivity = async (value: any) => {
     console.log('fetched');
-
     await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
   };
 
-  const markActivityAsPicked = (id: number) => {
-    console.log(id);
+  const calledMe = (value: any) => {
+    giveDataOfPickedActivity(value.id);
+    //console.log(value);
+    //setIdOfPickedActivity((prevIdOfPickedActivity) => [...prevIdOfPickedActivity, value]);
   };
 
   return (
@@ -105,18 +110,21 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        <RemoveCircleIcon
-          onClick={() => {
-            markActivityAsPicked(activity.id);
-          }}
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            right: '0',
-            height: '25px',
-            width: '25px',
-          }}
-        ></RemoveCircleIcon>
+        {showRemoveButtons && (
+          <RemoveCircleIcon
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              right: '51.5%',
+              zIndex: 1,
+              height: '25px',
+              width: '25px',
+            }}
+            onClick={() => {
+              calledMe(activity);
+            }}
+          ></RemoveCircleIcon>
+        )}
         <a
           key={`${activity.id}-nextactivity`}
           style={{
@@ -161,19 +169,21 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        <RemoveCircleIcon
-          onClick={() => {
-            markActivityAsPicked(activity.id);
-          }}
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            right: '50.8%',
-            zIndex: 1,
-            height: '25px',
-            width: '25px',
-          }}
-        ></RemoveCircleIcon>
+        {showRemoveButtons && (
+          <RemoveCircleIcon
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              right: '0',
+              zIndex: 1,
+              height: '25px',
+              width: '25px',
+            }}
+            onClick={() => {
+              calledMe(nextActivity);
+            }}
+          ></RemoveCircleIcon>
+        )}
       </Box>
     </div>
   );

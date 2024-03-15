@@ -5,6 +5,7 @@ import DateText from '@/styles/DateText';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import React from 'react';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 interface SingleActivityProps {
   activity: ActivityType;
@@ -16,10 +17,13 @@ interface SingleActivityProps {
   selectedActivityId: number | null;
   date: string;
   allActivites: ActivityType[];
+  showRemoveButtons: boolean;
+  giveDataOfPickedActivity: (data: number) => void;
 }
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
   const {
+    giveDataOfPickedActivity,
     activity,
     index,
     setSelectedActivityId,
@@ -28,7 +32,17 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     setExpandInfoOpen,
     selectedActivityId,
     date,
+    showRemoveButtons,
   } = props;
+
+  const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
+
+  const calledMe = (value: any) => {
+    giveDataOfPickedActivity(value.id);
+    //console.log(value);
+    // setIdOfPickedActivity(value);
+    // setIdOfPickedActivity((prevIdOfPickedActivity) => [...prevIdOfPickedActivity, value]);
+  };
 
   return (
     <div>
@@ -73,6 +87,21 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
           ></ExpandInfo>
         )}
       </a>
+      {showRemoveButtons && (
+        <RemoveCircleIcon
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            right: '0',
+            zIndex: 1,
+            height: '25px',
+            width: '25px',
+          }}
+          onClick={() => {
+            calledMe(activity);
+          }}
+        ></RemoveCircleIcon>
+      )}
     </div>
   );
 };

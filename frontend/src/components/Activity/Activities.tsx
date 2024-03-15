@@ -2,8 +2,7 @@ import { ParallelActivities } from '@/components/Activity/ParallelActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { SingleActivity } from '@/components/Activity/SingleActivity';
-import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import axios from 'axios';
 
 interface ActivitiesProps {
   activitiesData?: [] | any;
@@ -25,8 +24,16 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
 
-  const markActivityAsPicked = (id: number) => {
-    setPickedActivities((prevPickedActivities) => [...prevPickedActivities, id]);
+  const handlePickedActivity = (value: any) => {
+    console.log(value);
+    setPickedActivities((prevPickedActivities) => [...prevPickedActivities, value]);
+  };
+
+  const triggerDeleteOfActivity = async () => {
+    //console.log(pickedActivities);
+    for (let i = 0; i < pickedActivities.length; i++) {
+      await axios.delete(`http://localhost:8080/api/activity/delete/${pickedActivities[i]}`);
+    }
   };
 
   const activitiesSortedByDate = activitiesData.sort(
@@ -82,6 +89,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   return (
     <>
+      <button onClick={() => triggerDeleteOfActivity()}>click</button>
       {separatedActivities &&
         Object.keys(separatedActivities).map((date) => {
           return separatedActivities[date].map((activity: ActivityType, index: number) => {
@@ -92,7 +100,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
               skipIndices.add(index + 1);
               return (
-                <>
+                <div style={{ position: 'relative' }}>
                   <ParallelActivities
                     date={date}
                     activity={activity}
@@ -104,8 +112,10 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                     expandInfoOpen={expandInfoOpen}
                     setExpandInfoOpen={setExpandInfoOpen}
                     selectedActivityId={selectedActivityId}
+                    showRemoveButtons={showEditModeButtons}
+                    giveDataOfPickedActivity={handlePickedActivity}
                   />
-                </>
+                </div>
               );
             }
             return (
@@ -120,19 +130,9 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   setExpandInfoOpen={setExpandInfoOpen}
                   selectedActivityId={selectedActivityId}
                   allActivites={activitiesData}
+                  showRemoveButtons={showEditModeButtons}
+                  giveDataOfPickedActivity={handlePickedActivity}
                 />
-                {showEditModeButtons && (
-                  <RemoveCircleIcon
-                    onClick={() => markActivityAsPicked(activity.id)}
-                    style={{
-                      position: 'absolute',
-                      right: '0',
-                      bottom: '0',
-                      height: '25px',
-                      width: '25px',
-                    }}
-                  ></RemoveCircleIcon>
-                )}
               </div>
             );
           });
