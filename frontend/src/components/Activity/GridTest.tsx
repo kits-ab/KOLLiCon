@@ -32,13 +32,17 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
 
   const calculateStartHour = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours() - 6; // Subtract 6 to start from 06:00
+    const startMinutes = new Date(activity.start).getMinutes();
+    const startQuarter = startHour * 4 + Math.floor(startMinutes / 15);
 
-    return Math.ceil(startHour);
+    return Math.ceil(startQuarter);
   };
 
   const calculateEndHour = (activity: ActivityType) => {
     const endHour = new Date(activity.end).getHours() - 6; // Subtract 6 to start from 06:00
-    return Math.ceil(endHour);
+    const endMinutes = new Date(activity.end).getMinutes();
+    const endQuarter = endHour * 4 + Math.floor(endMinutes / 15);
+    return Math.ceil(endQuarter);
   };
 
   const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
@@ -55,7 +59,7 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     const activityEnd = activity.end.getTime();
 
     // Iterate over each minute in the duration of the activity
-    for (let time = activityStart; time <= activityEnd; time += 60000) {
+    for (let time = activityStart; time < activityEnd; time += 60000) {
       let overlappingActivities = 0;
 
       // Check if there are three or more activities that overlap with the current time
@@ -64,7 +68,7 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
           const otherStart = otherActivity.start.getTime();
           const otherEnd = otherActivity.end.getTime();
 
-          if (otherStart <= time && otherEnd > time) {
+          if (otherStart < time && otherEnd > time) {
             overlappingActivities++;
           }
 
@@ -78,7 +82,11 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     return false;
   };
 
-  const getGridLayout = (activity: ActivityType, sortedActivitesByDate: ActivityType[]) => {
+  const getGridLayout = (
+    activity: ActivityType,
+    sortedActivitesByDate: ActivityType[],
+    separatedActivities: ActivityType[],
+  ) => {
     let gridRowStart = calculateStartHour(activity) + 1;
     let gridRowEnd = calculateEndHour(activity) + 1;
     let fontSize = '16px';
@@ -93,13 +101,17 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     );
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * 24; // Assuming each day has 24 grid rows
-    gridRowEnd += diffDays * 24;
+    gridRowStart += diffDays * 24 * 4; // Assuming each day has 24 grid rows
+    gridRowEnd += diffDays * 24 * 4;
 
-    if (hasThreeOngoingActivities(activity, sortedActivitesByDate)) {
+    if (activity.id === sortedActivitesByDate[0].id) {
+      gridRowStart = 2;
+    }
+
+    if (hasThreeOngoingActivities(activity, separatedActivities)) {
       columnSpan = 2;
       fontSize = '10px';
-    } else if (hasOverlappingActivity(activity, sortedActivitesByDate)) {
+    } else if (hasOverlappingActivity(activity, separatedActivities)) {
       columnSpan = 3;
     } else {
       columnSpan = 6;
@@ -117,7 +129,7 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     display: grid;
     justify-content: center;
     grid-template-columns: repeat(6, 1fr);
-    // grid-template-rows: repeat(12, 1fr);
+    // grid-template-rows: repeat(96, 1fr);
     column-gap: 2%;
     // row-gap: 30px;
     // justify-items: center;
@@ -172,78 +184,77 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <GridWrapper>
-          {separatedActivities &&
-            Object.keys(separatedActivities).map((date) => {
-              return separatedActivities[date].map((activity: ActivityType, index: number) => {
-                const { gridRowStart, gridRowEnd, columnSpan, fontSize } = getGridLayout(
-                  activity,
-                  sortedActivitesByDate,
-                );
-                return (
-                  <>
-                    {index === 0 ? (
-                      <DateText
-                        style={{
-                          gridRowStart: gridRowStart - 1,
-                          gridColumnStart: 2,
-                          gridColumnEnd: 6,
-                        }}
-                      >
-                        {date}
-                      </DateText>
-                    ) : null}
-                    <a
-                      key={index}
+      <GridWrapper>
+        {separatedActivities &&
+          Object.keys(separatedActivities).map((date) => {
+            return separatedActivities[date].map((activity: ActivityType, index: number) => {
+              const { gridRowStart, gridRowEnd, columnSpan, fontSize } = getGridLayout(
+                activity,
+                sortedActivitesByDate,
+                separatedActivities[date],
+              );
+              return (
+                <>
+                  {index === 0 ? (
+                    <DateText
                       style={{
-                        cursor: 'pointer',
-                        gridRowStart,
-                        gridRowEnd,
-                        gridColumnStart: `auto`,
-                        gridColumnEnd: `span ${columnSpan}`,
-                      }}
-                      onClick={() => {
-                        setSelectedActivityId(activity.id);
-                        expandInfo();
+                        gridRowStart: gridRowStart - 1,
+                        gridColumnStart: 2,
+                        gridColumnEnd: 6,
                       }}
                     >
-                      <StyledTimeslot style={{ height: '90%' }}>
-                        <Timeslot
-                          style={{ height: '100%', fontSize: `${fontSize}` }}
-                          presenters={getPresenter(activity)}
-                          endTime={activity.end}
-                          heading={activity.title}
-                          startTime={activity.start}
-                          type={activity.type}
-                          showEndTime={true}
-                          {...(activity.location.coordinates[0] !== 0
-                            ? {
-                                location: {
-                                  coordinates: activity.location.coordinates,
-                                  title: (activity.location.title as string) || 'Location',
-                                  subtitle: activity.location.subtitle,
-                                },
-                              }
-                            : {})}
-                        >
-                          <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
-                        </Timeslot>
-                      </StyledTimeslot>
-                      {selectedActivityId === activity.id && (
-                        <ExpandInfo
-                          activityProp={activity}
-                          open={expandInfoOpen}
-                          setOpen={setExpandInfoOpen}
-                        />
-                      )}
-                    </a>
-                  </>
-                );
-              });
-            })}
-        </GridWrapper>
-      </div>
+                      {date}
+                    </DateText>
+                  ) : null}
+                  <a
+                    key={index}
+                    style={{
+                      cursor: 'pointer',
+                      gridRowStart,
+                      gridRowEnd,
+                      gridColumnStart: `auto`,
+                      gridColumnEnd: `span ${columnSpan}`,
+                    }}
+                    onClick={() => {
+                      setSelectedActivityId(activity.id);
+                      expandInfo();
+                    }}
+                  >
+                    <StyledTimeslot style={{ height: '90%' }}>
+                      <Timeslot
+                        style={{ height: '100%', fontSize: `${fontSize}` }}
+                        presenters={getPresenter(activity)}
+                        endTime={activity.end}
+                        heading={activity.title}
+                        startTime={activity.start}
+                        type={activity.type}
+                        showEndTime={true}
+                        {...(activity.location.coordinates[0] !== 0
+                          ? {
+                              location: {
+                                coordinates: activity.location.coordinates,
+                                title: (activity.location.title as string) || 'Location',
+                                subtitle: activity.location.subtitle,
+                              },
+                            }
+                          : {})}
+                      >
+                        <p key={`${activity.id}-details`}>{activity.details.slice(0, 200)}</p>
+                      </Timeslot>
+                    </StyledTimeslot>
+                    {selectedActivityId === activity.id && (
+                      <ExpandInfo
+                        activityProp={activity}
+                        open={expandInfoOpen}
+                        setOpen={setExpandInfoOpen}
+                      />
+                    )}
+                  </a>
+                </>
+              );
+            });
+          })}
+      </GridWrapper>
     </>
   );
 };
