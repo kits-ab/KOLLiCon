@@ -38,6 +38,7 @@ export const Home = () => {
           activitiesData={activities}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
+          scheduleTime={scheduleTime}
         />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>
