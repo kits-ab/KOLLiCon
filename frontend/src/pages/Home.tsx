@@ -18,6 +18,7 @@ export const Home = () => {
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const [showEditMode, setShowEditMode] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
 
   const activateDrawer = () => {
     setOpen(true);
@@ -31,13 +32,19 @@ export const Home = () => {
     <>
       <GlobalStyles />
       <ActivitiesWrapper>
-        <MenuDrawer setShowEditMode={setShowEditMode} />
+        <MenuDrawer
+          setShowEditMode={setShowEditMode}
+          showButtons={showButtons}
+          setShowButtons={setShowButtons}
+        />
         <Activities
           activitiesData={activitiesData}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
           scheduleTime={scheduleTime}
           showEditModeButtons={showEditMode}
+          showButtons={showButtons}
+          setShowButtons={setShowButtons}
         />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>

@@ -10,6 +10,8 @@ interface ActivitiesProps {
   setSelectedActivityId?: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime?: Date;
   showEditModeButtons: boolean;
+  showButtons: boolean;
+  setShowButtons: (value: boolean) => void;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
@@ -19,6 +21,8 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     selectedActivityId,
     scheduleTime,
     showEditModeButtons,
+    showButtons,
+    setShowButtons,
   } = props;
 
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
@@ -34,6 +38,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     for (let i = 0; i < pickedActivities.length; i++) {
       await axios.delete(`http://localhost:8080/api/activity/delete/${pickedActivities[i]}`);
     }
+    setShowButtons(false);
   };
 
   const activitiesSortedByDate = activitiesData.sort(
@@ -89,7 +94,18 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   return (
     <>
-      <button onClick={() => triggerDeleteOfActivity()}>click</button>
+      {showButtons && (
+        <>
+          <button
+            onClick={() => {
+              triggerDeleteOfActivity();
+            }}
+          >
+            Spara
+          </button>
+          <button onClick={() => setShowButtons(false)}>Avbryt</button>
+        </>
+      )}
       {separatedActivities &&
         Object.keys(separatedActivities).map((date) => {
           return separatedActivities[date].map((activity: ActivityType, index: number) => {
@@ -114,6 +130,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                     selectedActivityId={selectedActivityId}
                     showRemoveButtons={showEditModeButtons}
                     giveDataOfPickedActivity={handlePickedActivity}
+                    showButtons={showButtons}
                   />
                 </div>
               );
@@ -132,6 +149,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   allActivites={activitiesData}
                   showRemoveButtons={showEditModeButtons}
                   giveDataOfPickedActivity={handlePickedActivity}
+                  showButtons={showButtons}
                 />
               </div>
             );

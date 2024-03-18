@@ -19,6 +19,7 @@ interface SingleActivityProps {
   allActivites: ActivityType[];
   showRemoveButtons: boolean;
   giveDataOfPickedActivity: (data: number) => void;
+  showButtons: boolean;
 }
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
@@ -33,6 +34,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     selectedActivityId,
     date,
     showRemoveButtons,
+    showButtons,
   } = props;
 
   const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
@@ -87,7 +89,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
           ></ExpandInfo>
         )}
       </a>
-      {showRemoveButtons && (
+      {showButtons && (
         <RemoveCircleIcon
           style={{
             position: 'absolute',

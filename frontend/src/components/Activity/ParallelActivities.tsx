@@ -23,6 +23,7 @@ interface ParallelActivitiesProps {
   selectedActivityId: number | null;
   showRemoveButtons: boolean;
   giveDataOfPickedActivity: (data: number) => void;
+  showButtons: boolean;
 }
 
 const backendUrl = import.meta.env.VITE_API_URL;
@@ -42,6 +43,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     setExpandInfoOpen,
     selectedActivityId,
     showRemoveButtons,
+    showButtons,
   } = props;
 
   const handleDeleteOfActivity = async (value: any) => {
@@ -110,7 +112,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        {showRemoveButtons && (
+        {showButtons && (
           <RemoveCircleIcon
             style={{
               position: 'absolute',
@@ -169,7 +171,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
             ></ExpandInfo>
           )}
         </a>
-        {showRemoveButtons && (
+        {showButtons && (
           <RemoveCircleIcon
             style={{
               position: 'absolute',
