@@ -3,6 +3,10 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { SingleActivity } from '@/components/Activity/SingleActivity';
 import axios from 'axios';
+import { SaveButton } from '@/styles/RegisterActivity/StyledActivity';
+import { CancelButton } from '@/styles/RegisterActivity/StyledActivity';
+
+const backendUrl = import.meta.env.VITE_API_URL;
 
 interface ActivitiesProps {
   activitiesData?: [] | any;
@@ -29,16 +33,23 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
 
   const handlePickedActivity = (value: any) => {
-    console.log(value);
-    setPickedActivities((prevPickedActivities) => [...prevPickedActivities, value]);
+    const isAlreadyPicked = pickedActivities.includes(value);
+
+    if (isAlreadyPicked) {
+      setPickedActivities((prevPickedActivities) =>
+        prevPickedActivities.filter((activity) => activity !== value),
+      );
+    } else {
+      setPickedActivities((prevPickedActivities) => [...prevPickedActivities, value]);
+    }
   };
 
   const triggerDeleteOfActivity = async () => {
-    //console.log(pickedActivities);
     for (let i = 0; i < pickedActivities.length; i++) {
-      await axios.delete(`http://localhost:8080/api/activity/delete/${pickedActivities[i]}`);
+      await axios.delete(`${backendUrl}/api/activity/delete/${pickedActivities[i]}`);
     }
     setShowButtons(false);
+    window.location.reload();
   };
 
   const activitiesSortedByDate = activitiesData.sort(
@@ -95,16 +106,19 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   return (
     <>
       {showButtons && (
-        <>
-          <button
+        <div style={{ height: '0.02px' }}>
+          <SaveButton
+            style={{ left: '80%' }}
             onClick={() => {
               triggerDeleteOfActivity();
             }}
           >
             Spara
-          </button>
-          <button onClick={() => setShowButtons(false)}>Avbryt</button>
-        </>
+          </SaveButton>
+          <CancelButton style={{ left: '-10%' }} onClick={() => setShowButtons(false)}>
+            Avbryt
+          </CancelButton>
+        </div>
       )}
       {separatedActivities &&
         Object.keys(separatedActivities).map((date) => {

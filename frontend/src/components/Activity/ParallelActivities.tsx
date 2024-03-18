@@ -5,7 +5,6 @@ import { ActivityType } from '@/types/Activities';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
-import axios from 'axios';
 import React from 'react';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
@@ -26,10 +25,9 @@ interface ParallelActivitiesProps {
   showButtons: boolean;
 }
 
-const backendUrl = import.meta.env.VITE_API_URL;
-
 export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => {
-  const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
+  const [methodCalled, setMethodCalled] = React.useState(false);
+  const [secondMethod, setSecondMethod] = React.useState(false);
 
   const {
     giveDataOfPickedActivity,
@@ -42,19 +40,13 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     expandInfoOpen,
     setExpandInfoOpen,
     selectedActivityId,
-    showRemoveButtons,
     showButtons,
   } = props;
 
-  const handleDeleteOfActivity = async (value: any) => {
-    console.log('fetched');
-    await axios.delete(`${backendUrl}/api/activity/delete/${value}`);
-  };
-
   const calledMe = (value: any) => {
     giveDataOfPickedActivity(value.id);
-    //console.log(value);
-    //setIdOfPickedActivity((prevIdOfPickedActivity) => [...prevIdOfPickedActivity, value]);
+    setMethodCalled((prevState) => !prevState);
+    setSecondMethod((prevState) => !prevState);
   };
 
   return (
@@ -115,6 +107,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         {showButtons && (
           <RemoveCircleIcon
             style={{
+              backgroundColor: methodCalled ? 'red' : 'transparent',
               position: 'absolute',
               bottom: '0',
               right: '51.5%',
@@ -174,6 +167,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         {showButtons && (
           <RemoveCircleIcon
             style={{
+              backgroundColor: secondMethod ? 'red' : 'transparent',
               position: 'absolute',
               bottom: '0',
               right: '0',

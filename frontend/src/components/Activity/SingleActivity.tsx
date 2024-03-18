@@ -33,17 +33,14 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     setExpandInfoOpen,
     selectedActivityId,
     date,
-    showRemoveButtons,
     showButtons,
   } = props;
 
-  const [idOfPickedActivity, setIdOfPickedActivity] = React.useState<string[]>([]);
+  const [methodCalled, setMethodCalled] = React.useState(false);
 
   const calledMe = (value: any) => {
     giveDataOfPickedActivity(value.id);
-    //console.log(value);
-    // setIdOfPickedActivity(value);
-    // setIdOfPickedActivity((prevIdOfPickedActivity) => [...prevIdOfPickedActivity, value]);
+    setMethodCalled((prevState) => !prevState);
   };
 
   return (
@@ -90,19 +87,22 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
         )}
       </a>
       {showButtons && (
-        <RemoveCircleIcon
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            right: '0',
-            zIndex: 1,
-            height: '25px',
-            width: '25px',
-          }}
-          onClick={() => {
-            calledMe(activity);
-          }}
-        ></RemoveCircleIcon>
+        <>
+          <RemoveCircleIcon
+            style={{
+              backgroundColor: methodCalled ? '#cccccc' : 'transparent',
+              position: 'absolute',
+              bottom: '0',
+              right: '0',
+              zIndex: 1,
+              height: '25px',
+              width: '25px',
+            }}
+            onClick={() => {
+              calledMe(activity);
+            }}
+          ></RemoveCircleIcon>
+        </>
       )}
     </div>
   );

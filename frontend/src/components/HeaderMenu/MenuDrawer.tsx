@@ -34,7 +34,6 @@ function MenuDrawer({ window, setShowEditMode, showButtons, setShowButtons }: Pr
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
-  const [showEditModePen, setShowEditModePen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -50,7 +49,6 @@ function MenuDrawer({ window, setShowEditMode, showButtons, setShowButtons }: Pr
   };
 
   const handleShowEditModeButtons = (value: boolean) => {
-    setShowEditModePen(value);
     setShowEditMode(value);
     setShowButtons(value);
   };
