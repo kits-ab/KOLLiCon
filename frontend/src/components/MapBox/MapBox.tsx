@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLatLike } from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@/styles/MapBox/MapBox.css';
@@ -15,11 +15,10 @@ const MapBox = ({
   resetLocation: () => void;
   storedCoords: number[];
 }) => {
-  const [coordinates, setCoordinates] = useState(null);
-  // const [switchedCoordinates, setSwitchedCoordinates] = useState(null);
-  const geocoderRef = useRef(null);
-  const mapRef = useRef('');
-  const [marker, setMarker] = useState(null);
+  const [coordinates, setCoordinates] = useState<LngLatLike | null>(null);
+  const geocoderRef = useRef<MapboxGeocoder | null>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [marker, setMarker] = useState<mapboxgl.Marker | null>(null);
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1Ijoia29raXRvdHNvcyIsImEiOiJjaXk0d3R5bjEwMDJsMnlscWhtOGlydDl3In0.Xfr-Sr_D4JJVK2kVNsm4vA';
@@ -142,7 +141,6 @@ const MapBox = ({
       >
         Rensa
       </DeleteButton>
-      {/* <StyledLine style={{ marginBottom: '-6%' }} /> */}
     </div>
   );
 };

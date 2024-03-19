@@ -1,4 +1,3 @@
-import { ActivityType } from '@/types/Activities';
 import { useState, useEffect } from 'react';
 
 export const useFormField = (initialValue: boolean) => {
