@@ -31,6 +31,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
+  const [resetButtonColor, setResetButtonColor] = React.useState(false);
 
   const handlePickedActivity = (value: any) => {
     const isAlreadyPicked = pickedActivities.includes(value);
@@ -42,6 +43,10 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     } else {
       setPickedActivities((prevPickedActivities) => [...prevPickedActivities, value]);
     }
+  };
+
+  const handleChangeChildState = () => {
+    setResetButtonColor((prevState) => !prevState);
   };
 
   const triggerDeleteOfActivity = async () => {
@@ -125,6 +130,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             onClick={() => {
               setShowButtons(false);
               setPickedActivities([]);
+              handleChangeChildState();
             }}
           >
             Avbryt
@@ -175,6 +181,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   showRemoveButtons={showEditModeButtons}
                   giveDataOfPickedActivity={handlePickedActivity}
                   showButtons={showButtons}
+                  resetButtonColor={resetButtonColor}
                 />
               </div>
             );

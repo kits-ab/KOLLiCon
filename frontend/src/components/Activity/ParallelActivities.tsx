@@ -50,6 +50,10 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
     setSecondMethod((prevState) => !prevState);
   };
 
+  // First activity call
+
+  // Second activity call
+
   return (
     <div>
       {index === 0 ? <DateText>{date}</DateText> : null}

@@ -21,6 +21,7 @@ interface SingleActivityProps {
   showRemoveButtons: boolean;
   giveDataOfPickedActivity: (data: number) => void;
   showButtons: boolean;
+  resetButtonColor: boolean;
 }
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
@@ -35,14 +36,14 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     selectedActivityId,
     date,
     showButtons,
+    resetButtonColor,
   } = props;
 
-  // Change the value of this state inside acitivites.
-  const [methodCalled, setMethodCalled] = React.useState(false);
+  const [changeColorWhenPicked, setChangeColorWhenPicked] = React.useState(false);
 
-  const calledMe = (value: any) => {
+  const addActivityToDeleteQue = (value: any) => {
     giveDataOfPickedActivity(value.id);
-    setMethodCalled((prevState) => !prevState);
+    setChangeColorWhenPicked((prevState) => !prevState);
   };
 
   return (
@@ -92,7 +93,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
         <>
           <RemoveCircleIcon
             style={{
-              color: methodCalled ? '#963939' : '#596b4d',
+              color: resetButtonColor ? '#596b4d' : changeColorWhenPicked ? '#963939' : '#596b4d',
               position: 'absolute',
               bottom: '0',
               right: '0',
@@ -101,7 +102,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
               width: '25px',
             }}
             onClick={() => {
-              calledMe(activity);
+              addActivityToDeleteQue(activity);
             }}
           ></RemoveCircleIcon>
         </>
