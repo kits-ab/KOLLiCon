@@ -45,11 +45,16 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   };
 
   const triggerDeleteOfActivity = async () => {
-    for (let i = 0; i < pickedActivities.length; i++) {
-      await axios.delete(`${backendUrl}/api/activity/delete/${pickedActivities[i]}`);
+    if (pickedActivities.length === 0) {
+      setShowButtons(false);
+      return;
+    } else {
+      for (let i = 0; i < pickedActivities.length; i++) {
+        await axios.delete(`${backendUrl}/api/activity/delete/${pickedActivities[i]}`);
+      }
+      setShowButtons(false);
+      window.location.reload();
     }
-    setShowButtons(false);
-    window.location.reload();
   };
 
   const activitiesSortedByDate = activitiesData.sort(
@@ -106,7 +111,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   return (
     <>
       {showButtons && (
-        <div style={{ height: '0.02px' }}>
+        <div style={{ height: '0.02px', marginTop: '10px' }}>
           <SaveButton
             style={{ left: '80%' }}
             onClick={() => {
@@ -115,7 +120,13 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           >
             Spara
           </SaveButton>
-          <CancelButton style={{ left: '-10%' }} onClick={() => setShowButtons(false)}>
+          <CancelButton
+            style={{ left: '-10%' }}
+            onClick={() => {
+              setShowButtons(false);
+              setPickedActivities([]);
+            }}
+          >
             Avbryt
           </CancelButton>
         </div>

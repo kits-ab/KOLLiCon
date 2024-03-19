@@ -7,6 +7,7 @@ import DateText from '@/styles/DateText';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import React from 'react';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { Colors } from '../../styles/Common/colors';
 
 // Pararell presenter styling for media queries
 interface ParallelActivitiesProps {
@@ -107,7 +108,7 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         {showButtons && (
           <RemoveCircleIcon
             style={{
-              backgroundColor: methodCalled ? 'red' : 'transparent',
+              color: secondMethod ? `#963939` : '#596b4d',
               position: 'absolute',
               bottom: '0',
               right: '51.5%',
@@ -167,8 +168,8 @@ export const ParallelActivities: React.FC<ParallelActivitiesProps> = (props) => 
         {showButtons && (
           <RemoveCircleIcon
             style={{
-              backgroundColor: secondMethod ? 'red' : 'transparent',
               position: 'absolute',
+              color: secondMethod ? `#963939` : '#596b4d',
               bottom: '0',
               right: '0',
               zIndex: 1,

@@ -6,6 +6,7 @@ import { getPresenter } from '@/utils/Helpers/getPresenter';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import React from 'react';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { Colors } from '../../styles/Common/colors';
 
 interface SingleActivityProps {
   activity: ActivityType;
@@ -36,6 +37,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     showButtons,
   } = props;
 
+  // Change the value of this state inside acitivites.
   const [methodCalled, setMethodCalled] = React.useState(false);
 
   const calledMe = (value: any) => {
@@ -90,7 +92,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
         <>
           <RemoveCircleIcon
             style={{
-              backgroundColor: methodCalled ? '#cccccc' : 'transparent',
+              color: methodCalled ? '#963939' : '#596b4d',
               position: 'absolute',
               bottom: '0',
               right: '0',

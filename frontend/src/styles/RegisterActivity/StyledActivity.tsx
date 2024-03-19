@@ -184,7 +184,6 @@ export const TypeFormStyled = {
   },
   '& .MuiInputLabel-root.Mui-focused': {
     color: `${Colors.primaryAddButton}`,
-
   },
   '& .MuiOutlinedInput-root': {
     height: '50px',
