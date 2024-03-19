@@ -1,3 +1,4 @@
+import { ActivityType } from '@/types/Activities';
 import { useState, useEffect } from 'react';
 
 export const useFormField = (initialValue: boolean) => {
@@ -30,7 +31,7 @@ export const useAllFieldsFilled = (
             (showExternalPresenter && isExternalPresenterFilled)) &&
           (activity.presenter.length > 0 || activity.externalPresenter.length > 0))
     );
-  }, [isStartFilled, isEndFilled, isTitleFilled, isDetailsFilled, showLocation, showPresenter, isPresenterFilled, showExternalPresenter, isExternalPresenterFilled, activity]);
+  }, [isStartFilled, isEndFilled, isTitleFilled, isDetailsFilled, showLocation, showPresenter, isPresenterFilled, showExternalPresenter, isExternalPresenterFilled]);
 
   return isAllFieldsFilled;
 };
