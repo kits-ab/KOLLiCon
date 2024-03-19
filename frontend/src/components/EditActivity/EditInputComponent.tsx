@@ -4,26 +4,26 @@ import {RegisterActivity } from '../../types/Activities';
 
 
 type InputComponentProps = {
-    activity: RegisterActivity;
+  editActivity: RegisterActivity;
     error?: boolean | any;
     setIsTitleFilled?: boolean | any;
     setIsDetailsFilled?: boolean | any;
     setTextError?: boolean | any;
-    setActivity?: RegisterActivity | any;
+    setEditActivity?: RegisterActivity | any;
 }
 
 const EditInputComponent: React.FC<InputComponentProps> = ({
-  activity,
+  editActivity,
   error,
   setIsTitleFilled,
   setTextError,
   setIsDetailsFilled,
-  setActivity,
+  setEditActivity,
 }) => {
     //Function to handle the input change for title and details
     const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
-      setActivity({ ...activity, [name]: value });
+      setEditActivity({ ...editActivity, [name]: value });
       if (name === 'details' && value.length > 2999) {
         setTextError(true);
         setIsDetailsFilled(!value);
@@ -40,14 +40,14 @@ const EditInputComponent: React.FC<InputComponentProps> = ({
       <InputStyled
         type='text'
         name='title'
-        placeholder={activity.title || 'Titel'}
-        value={activity.title}
+        placeholder={editActivity.title || 'Titel'}
+        value={editActivity.title}
         onChange={handleOnInputChange}
       />
       <TextAreaStyled
         name='details'
-        placeholder={activity.details || 'Beskrivning'}
-        value={activity.details}
+        placeholder={editActivity.details || 'Beskrivning'}
+        value={editActivity.details}
         onChange={handleOnInputChange}
         maxRows={3}
       />

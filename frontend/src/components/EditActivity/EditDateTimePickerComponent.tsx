@@ -14,8 +14,8 @@ import { RegisterActivity } from '@/types/Activities';
 type DateTimePickerProps = {
   sxDateTimePickerStyles?: any;
   DateTimePropsStyles?: any;
-  activity: RegisterActivity | any;
-  setActivity?: RegisterActivity | any;
+  editActivity: RegisterActivity | any;
+  setEditActivity?: RegisterActivity | any;
   setIsStartFilled?: boolean | any;
   setIsEndFilled?: boolean | any;
   endTime?: string;
@@ -25,8 +25,8 @@ type DateTimePickerProps = {
 const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   sxDateTimePickerStyles,
   DateTimePropsStyles,
-  activity,
-  setActivity,
+  editActivity,
+  setEditActivity,
   setIsStartFilled,
   setIsEndFilled,
   endTime,
@@ -37,12 +37,12 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
     const formattedDate = dayjs(date).format('YYYY-MM-DDTHH:mm');
-    setActivity({ ...activity, [name]: formattedDate });
+    setEditActivity({ ...editActivity, [name]: formattedDate });
 
     if (name === 'start') {
       setIsStartFilled(!!date);
       // Calculate end time when start time changes
-      calculateEndTime(formattedDate, activity.duration);
+      calculateEndTime(formattedDate, editActivity.duration);
     }
   };
 
@@ -52,7 +52,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
 
     const [hours, minutes] = duration.split(':').map((val: string) => parseInt(val));
     const end = dayjs(start).add(hours, 'hours').add(minutes, 'minutes').format('YYYY-MM-DDTHH:mm');
-    setActivity({ ...activity, end });
+    setEditActivity({ ...editActivity, end });
     setIsEndFilled(!!duration);
   };
 
@@ -73,7 +73,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
     setError('');
     if (!value) {
       // If duration becomes empty, set the end time to an empty string
-      setActivity({ ...activity, end: endTime });
+      setEditActivity({ ...editActivity, end: endTime });
       setIsEndFilled(false);
       return;
     }
@@ -91,7 +91,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
       if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && minutes >= 0 && minutes < 60) {
         // If input is in HH:mm format, calculate end time
         const duration = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-        const formattedStart = dayjs(activity.start).format('YYYY-MM-DDTHH:mm');
+        const formattedStart = dayjs(editActivity.start).format('YYYY-MM-DDTHH:mm');
         calculateEndTime(formattedStart, duration);
         return;
         // Check if minutes are equal to or greater than 60
@@ -106,7 +106,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
       const hours = parseInt(value);
       if (!isNaN(hours) && hours >= 0) {
         const duration = `${hours}:00`;
-        calculateEndTime(activity.start, duration);
+        calculateEndTime(editActivity.start, duration);
         return;
       }
     }
@@ -143,13 +143,13 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
             format='YYYY-MM-DD HH:mm'
             label={'Starttid'}
             name='start'
-            value={activity.start}
+            value={editActivity.start}
             onChange={(date: any) => handleDateChange('start', date)}
           />
           <LengthStyled
             sx={{ ...sxDateTimePickerStyles }}
             name='duration'
-            value={activity.duration}
+            value={editActivity.duration}
             placeholder={calculatedDuration}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}

@@ -11,21 +11,21 @@ type TypeComponentProps = {
   TypeFormStyled: any;
   TypeSelectStyled: any;
   type: types.TimeslotType;
-  setActivity: RegisterActivity | any;
-  activity: RegisterActivity;
+  setEditActivity: RegisterActivity | any;
+  editActivity: RegisterActivity;
 };
 
 const EditTypeComponent: React.FC<TypeComponentProps> = ({
   TypeFormStyled,
   TypeSelectStyled,
   type,
-  setActivity,
-  activity,
+  setEditActivity,
+  editActivity,
 }) => {
   function handleActivityInputChange(e: any) {
     const { name, value } = e.target;
     if (name === 'type' && value) {
-      setActivity({ ...activity, type: value as types.TimeslotType });
+      setEditActivity({ ...editActivity, type: value as types.TimeslotType });
     }
   }
 

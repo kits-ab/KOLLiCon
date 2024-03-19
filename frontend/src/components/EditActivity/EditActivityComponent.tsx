@@ -28,6 +28,7 @@ import {
   TypeFormStyled,
   TypeSelectStyled,
 } from '@/styles/RegisterActivity/StyledActivity';
+import EditLocationComponent from './EditLocationComponent';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -45,7 +46,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
   const [endTime, setEndTime] = useState<RegisterActivity | null>(null);
   const [showTimeDuration, setShowTimeDuration] = useState<number>(0);
 
-  const [activity, setActivity] = useState({
+  const [editActivity, setEditActivity] = useState({
     id: activityProp.id,
     schedule: 1,
     userId: '',
@@ -72,19 +73,8 @@ const EditActivity: React.FC<EditActivityProps> = ({
   // const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(false);
   const [textError, setTextError] = useFormField(false);
 
-  // const {
-  //   showPresenter,
-  //   showLocation,
-  //   showExternalPresenter,
-  //   handleActivityInputChange,
-  //   setActivity,
-  //   resetActivity,
-  //   handleLocationChange,
-  //   setLocation,
-  //   location,
-  // } = useActivityInput(types.TimeslotType.Airplane);
 
-  // const { handleActivityInputChange, resetActivity, handleLocationChange } = useActivityInput(
+  // const { handleLocationChange, setLocation } = useActivityInput(
   //   types.TimeslotType.Airplane,
   // );
 
@@ -111,7 +101,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
           dayjs(fetchedActivity.start),
           'minutes',
         );
-        setActivity(response.data);
+        setEditActivity(response.data);
         setEndTime(response.data);
         setShowTimeDuration(durationInMinutes);
       } catch (error) {
@@ -120,7 +110,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
     };
     fetchActivity();
     return () => {
-      setActivity({} as RegisterActivity);
+      setEditActivity({} as RegisterActivity);
     };
   }, [openEditModal]);
 
@@ -129,7 +119,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
     e.preventDefault();
 
     try {
-      await axios.put(`${backendIP}/api/activity/update`, activity);
+      await axios.put(`${backendIP}/api/activity/update`, editActivity);
 
       setOpenEditModal(false);
     } catch (error) {
@@ -152,16 +142,16 @@ const EditActivity: React.FC<EditActivityProps> = ({
             <EditTypeComponent
               TypeFormStyled={TypeFormStyled}
               TypeSelectStyled={TypeSelectStyled}
-              type={activity.type as types.TimeslotType}
-              setActivity={setActivity}
-              activity={activity}
+              type={editActivity.type as types.TimeslotType}
+              setEditActivity={setEditActivity}
+              editActivity={editActivity}
             />
 
             <EditDateTimePickerComponent
               sxDateTimePickerStyles={sxDateTimePickerStyles}
               DateTimePropsStyles={DateTimePropsStyles}
-              activity={activity}
-              setActivity={setActivity}
+              editActivity={editActivity}
+              setEditActivity={setEditActivity}
               setIsEndFilled={setIsEndFilled}
               setIsStartFilled={setIsStartFilled}
               endTime={endTime?.end}
@@ -169,12 +159,18 @@ const EditActivity: React.FC<EditActivityProps> = ({
             />
 
             <EditInputComponent
-              activity={activity}
-              setActivity={setActivity}
+              editActivity={editActivity}
+              setEditActivity={setEditActivity}
               setIsTitleFilled={setIsTitleFilled}
               setIsDetailsFilled={setIsDetailsFilled}
               setTextError={setTextError}
               error={textError}
+            />
+
+            <EditLocationComponent
+             setEditActivity={setEditActivity}
+             editActivity={editActivity}
+             StoredCoords={activityProp?.location?.coordinates}
             />
 
             <StyledLine1 />

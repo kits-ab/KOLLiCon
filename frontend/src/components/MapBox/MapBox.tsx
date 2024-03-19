@@ -9,9 +9,11 @@ import { Colors } from '../../styles/Common/colors';
 const MapBox = ({
   onCoordinatesChange,
   resetLocation,
+  storedCoords
 }: {
   onCoordinatesChange: (coords: number[]) => void;
   resetLocation: () => void;
+  storedCoords: number[];
 }) => {
   const [coordinates, setCoordinates] = useState(null);
   // const [switchedCoordinates, setSwitchedCoordinates] = useState(null);
@@ -25,8 +27,9 @@ const MapBox = ({
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
-      center: [11.967017, 57.707233],
-      zoom: 11,
+      center: storedCoords?.length !==1 && storedCoords ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+      // center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+      zoom: 12,
     });
     // Update the type of mapRef.current
     mapRef.current = map;
@@ -104,10 +107,11 @@ const MapBox = ({
         // Cast mapRef.current to mapboxgl.Map
         (mapRef.current as mapboxgl.Map).flyTo({
           // Convert initialCenter to LngLatLike
-          center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+          center: storedCoords?.length !==1 && storedCoords ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+          // center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
           essential: true,
           animate: true,
-          zoom: 11,
+          zoom: 12,
           duration: 1500,
         });
       }
