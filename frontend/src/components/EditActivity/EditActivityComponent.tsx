@@ -7,6 +7,9 @@ import EditDateTimePickerComponent from './EditDateTimePickerComponent';
 import EditInputComponent from './EditInputComponent';
 import EditTypeComponent from './EditKitsConTypeComponent';
 import { useActivityInput } from '@/utils/Hooks/RegisterActivity/useActivityInput';
+import { useExternalPresenter, usePresenter } from '@/utils/Hooks/RegisterActivity/usePresenter';
+import EditLocationComponent from './EditLocationComponent';
+import EditPresenterComponent from './EditPresenterComponent';
 import {
   useAllFieldsFilled,
   useFormField,
@@ -28,7 +31,7 @@ import {
   TypeFormStyled,
   TypeSelectStyled,
 } from '@/styles/RegisterActivity/StyledActivity';
-import EditLocationComponent from './EditLocationComponent';
+import EditExternalPresenterComponent from './EditExtraPresenterComponent';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -69,14 +72,26 @@ const EditActivity: React.FC<EditActivityProps> = ({
   const [isEndFilled, setIsEndFilled] = useFormField(false);
   const [isTitleFilled, setIsTitleFilled] = useFormField(false);
   const [isDetailsFilled, setIsDetailsFilled] = useFormField(false);
-  // const [isPresenterFilled, setIsPresenterFilled] = useFormField(false);
-  // const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(false);
+  const [isPresenterFilled, setIsPresenterFilled] = useFormField(false);
+  const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(false);
   const [textError, setTextError] = useFormField(false);
 
+  const {
+    presenter,
+    presenterError,
+    suggestions,
+    handlePresenterChange,
+    handleSuggestionClick,
+    addPresenter,
+    setPresenter,
+  } = usePresenter();
 
-  // const { handleLocationChange, setLocation } = useActivityInput(
-  //   types.TimeslotType.Airplane,
-  // );
+  const {
+    externalPresenter,
+    handleExternalPresenterChange,
+    addExternalPresenter,
+    setExternalPresenter,
+  } = useExternalPresenter();
 
   // const isAllFieldsFilled = useAllFieldsFilled(
   //   isStartFilled,
@@ -171,6 +186,29 @@ const EditActivity: React.FC<EditActivityProps> = ({
              setEditActivity={setEditActivity}
              editActivity={editActivity}
              StoredCoords={activityProp?.location?.coordinates}
+            />
+
+            <EditPresenterComponent
+            presenter={presenter}
+            suggestions={suggestions}
+            presenterError={presenterError}
+            handlePresenterChange={handlePresenterChange}
+            handleSuggestionClick={handleSuggestionClick}
+            editActivity={editActivity}
+            setEditActivity={setEditActivity}
+            setPresenter={setPresenter}
+            setIsPresenterFilled={setIsPresenterFilled}
+            addPresenter={addPresenter}
+            />
+
+            <EditExternalPresenterComponent
+            externalPresenter={externalPresenter}
+            handleExternalPresenterChange={handleExternalPresenterChange}
+            editActivity={editActivity}
+            setEditActivity={setEditActivity}
+            setIsExternalPresenterFilled={setIsExternalPresenterFilled}
+            addExternalPresenter={addExternalPresenter}
+            setExternalPresenter={setExternalPresenter}
             />
 
             <StyledLine1 />
