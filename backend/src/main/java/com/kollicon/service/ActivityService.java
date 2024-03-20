@@ -96,6 +96,7 @@ public class ActivityService {
 
             updateFieldIfNotNull(existingLocation::setCoordinates, updatedLocation.getCoordinates());
             updateFieldIfNotNull(existingLocation::setTitle, updatedLocation.getTitle());
+            updateFieldIfNotNull(existingLocation::setSubtitle, updatedLocation.getSubtitle());
 
             existingLocation.setActivity(existingActivity);
         }
