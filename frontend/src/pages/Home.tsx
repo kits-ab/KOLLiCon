@@ -12,7 +12,7 @@ import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
-import { GridTest } from '@/components/Activity/GridTest';
+import { GridComponent } from '@/components/Activity/GridComponent';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
@@ -34,7 +34,7 @@ export const Home = () => {
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuDrawer />
-        <GridTest
+        <GridComponent
           activitiesData={activities}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}

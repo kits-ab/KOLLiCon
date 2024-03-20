@@ -6,15 +6,16 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
+import { getWeek } from 'date-fns';
 
-interface GridTestProps {
+interface GridComponentProps {
   activitiesData: ActivityType[];
   selectedActivityId: number | null;
   setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
 }
 
-export const GridTest: React.FC<GridTestProps> = (props) => {
+export const GridComponent: React.FC<GridComponentProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
 
@@ -27,14 +28,14 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
   );
 
   const calculateStartQuarter = (activity: ActivityType) => {
-    const startHour = new Date(activity.start).getHours(); // Subtract 6 to start from 06:00
+    const startHour = new Date(activity.start).getHours();
     const startMinutes = new Date(activity.start).getMinutes();
     const startQuarter = startHour * 4 + Math.floor(startMinutes / 15);
     return Math.ceil(startQuarter);
   };
 
   const calculateEndQuarter = (activity: ActivityType) => {
-    const endHour = new Date(activity.end).getHours(); // Subtract 6 to start from 06:00
+    const endHour = new Date(activity.end).getHours();
     const endMinutes = new Date(activity.end).getMinutes();
     const endQuarter = endHour * 4 + Math.floor(endMinutes / 15);
     return Math.ceil(endQuarter);
@@ -52,8 +53,6 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
   const hasThreeOngoingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
-    // const activityDay = activity.start.getDay();
-    // console.log('Day: ', activity.title, activityDay);
 
     // Iterate over each minute in the duration of the activity
     for (let time = activityStart; time < activityEnd; time += 60000) {
@@ -91,20 +90,22 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     let showEndTime = true;
     let numberOfParallellActivities = 1;
 
+    const startWeek = getWeek(sortedActivitesByDate[0].start);
+    const currentActivityWeek = getWeek(activity.start);
+
     // Calculate the number of days between the first activity and the current activity
     const firstActivityDate = new Date(sortedActivitesByDate[0].start).getDay();
     const currentActivityDate = new Date(activity.start).getDay();
     const diffDays = currentActivityDate - firstActivityDate;
-    // const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    // const diffDays = Math.round(
-    //   Math.abs((firstActivityDate.getTime() - currentActivityDate.getTime()) / oneDay),
-    // );
-
-    console.log(activity.title, diffDays);
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * 24 * 4; // Assuming each day has 24 grid rows
+    gridRowStart += diffDays * 24 * 4; // Multiply by 24 hours and 4 quarters per hour
     gridRowEnd += diffDays * 24 * 4;
+
+    if (currentActivityWeek > startWeek) {
+      gridRowStart += 24 * 4 * 7;
+      gridRowEnd += 24 * 4 * 7;
+    }
 
     if (hasThreeOngoingActivities(activity, separatedActivities)) {
       columnSpan = 2;
@@ -129,7 +130,7 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
   };
 
   const separateActivitiesByDate = (
-    sortedActivitesByDate: [],
+    sortedActivitesByDate: ActivityType[],
   ): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
@@ -170,7 +171,6 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
 
   if (!sortedActivitesByDate) return null;
   const separatedActivities = separateActivitiesByDate(sortedActivitesByDate);
-  const skipIndices = new Set<number>();
 
   return (
     <>
@@ -215,7 +215,7 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
                     <TimeSlotWrapper
                       activityType={activity.type}
                       numberOfParallellActivities={numberOfParallellActivities}
-                      style={{ height: '90%', marginTop: `30px` }}
+                      style={{ height: '100%', marginTop: `30px`, paddingBottom: `30px` }}
                     >
                       <Timeslot
                         style={{ height: '100%' }}
@@ -235,7 +235,9 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
                             }
                           : {})}
                       >
-                        <p>{activity.details.slice(0, detailsSlice)}</p>
+                        <p style={{ wordBreak: 'break-word' }}>
+                          {activity.details.slice(0, detailsSlice)}
+                        </p>
                       </Timeslot>
                     </TimeSlotWrapper>
                     {selectedActivityId === activity.id && (

@@ -38,7 +38,7 @@ export const TimeSlotWrapper = styled(StyledTimeslot)<StyledTimeslotProps>`
 ${({ numberOfParallellActivities, activityType }) => {
     if (numberOfParallellActivities === 3 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
         return `
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
         .Timeslot-header {
             display: flex;
             flex-direction: column;
@@ -64,7 +64,7 @@ ${({ numberOfParallellActivities, activityType }) => {
         }}
   `} else if (numberOfParallellActivities === 3 && (activityType === "presentation" || activityType === "externalpresentation")) {
         return `
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
         .Timeslot-header{
             display: flex;
             flex-direction: column;
@@ -81,7 +81,7 @@ ${({ numberOfParallellActivities, activityType }) => {
    `
   } else if (numberOfParallellActivities === 2 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
         return `
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
         .Timeslot-header {
             display: flex;
             flex-direction: column;
