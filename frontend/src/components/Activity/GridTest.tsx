@@ -1,15 +1,11 @@
 import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
-import useSchedule from '@/utils/Hooks/useSchedule';
 import { useState } from 'react';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
-import styled from '@emotion/styled';
-import { StyledTimeslot, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
+import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
-import { TimeslotComponent } from '@/components/Activity/TimslotComponent';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 
 interface GridTestProps {
   activitiesData: ActivityType[];
@@ -21,28 +17,24 @@ interface GridTestProps {
 export const GridTest: React.FC<GridTestProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
-  // const separatedActivities: { [key: string]: ActivityType[] } = {};
 
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
 
-  // const activities: ActivityType[] = activitiesData;
-
   const sortedActivitesByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
-  const calculateStartHour = (activity: ActivityType) => {
-    const startHour = new Date(activity.start).getHours() - 6; // Subtract 6 to start from 06:00
+  const calculateStartQuarter = (activity: ActivityType) => {
+    const startHour = new Date(activity.start).getHours(); // Subtract 6 to start from 06:00
     const startMinutes = new Date(activity.start).getMinutes();
     const startQuarter = startHour * 4 + Math.floor(startMinutes / 15);
-
     return Math.ceil(startQuarter);
   };
 
-  const calculateEndHour = (activity: ActivityType) => {
-    const endHour = new Date(activity.end).getHours() - 6; // Subtract 6 to start from 06:00
+  const calculateEndQuarter = (activity: ActivityType) => {
+    const endHour = new Date(activity.end).getHours(); // Subtract 6 to start from 06:00
     const endMinutes = new Date(activity.end).getMinutes();
     const endQuarter = endHour * 4 + Math.floor(endMinutes / 15);
     return Math.ceil(endQuarter);
@@ -60,6 +52,8 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
   const hasThreeOngoingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
+    // const activityDay = activity.start.getDay();
+    // console.log('Day: ', activity.title, activityDay);
 
     // Iterate over each minute in the duration of the activity
     for (let time = activityStart; time < activityEnd; time += 60000) {
@@ -90,34 +84,30 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
     sortedActivitesByDate: ActivityType[],
     separatedActivities: ActivityType[],
   ) => {
-    let gridRowStart = calculateStartHour(activity) + 1;
-    let gridRowEnd = calculateEndHour(activity) + 1;
-    let fontSize = '16px';
+    let gridRowStart = calculateStartQuarter(activity) + 1;
+    let gridRowEnd = calculateEndQuarter(activity) + 1;
     let columnSpan = 0;
     let detailsSlice = 200;
-    let marginTop = '0px';
     let showEndTime = true;
     let numberOfParallellActivities = 1;
 
     // Calculate the number of days between the first activity and the current activity
-    const firstActivityDate = sortedActivitesByDate[0].start;
-    const currentActivityDate = activity.start;
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    const diffDays = Math.round(
-      Math.abs((firstActivityDate.getTime() - currentActivityDate.getTime()) / oneDay),
-    );
+    const firstActivityDate = new Date(sortedActivitesByDate[0].start).getDay();
+    const currentActivityDate = new Date(activity.start).getDay();
+    const diffDays = currentActivityDate - firstActivityDate;
+    // const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    // const diffDays = Math.round(
+    //   Math.abs((firstActivityDate.getTime() - currentActivityDate.getTime()) / oneDay),
+    // );
+
+    console.log(activity.title, diffDays);
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
     gridRowStart += diffDays * 24 * 4; // Assuming each day has 24 grid rows
     gridRowEnd += diffDays * 24 * 4;
 
-    // if (activity.id === sortedActivitesByDate[0].id) {
-    //   gridRowStart = 2;
-    // }
-
     if (hasThreeOngoingActivities(activity, separatedActivities)) {
       columnSpan = 2;
-      fontSize = '10px';
       detailsSlice = 50;
       showEndTime = false;
       numberOfParallellActivities = 3;
@@ -132,32 +122,11 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
       gridRowStart,
       gridRowEnd,
       columnSpan,
-      fontSize,
       detailsSlice,
       showEndTime,
       numberOfParallellActivities,
     };
   };
-
-  const getWeekday = (activity: ActivityType) => {
-    const date = new Date(activity.start);
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    return date.toLocaleDateString('sv-SE', options);
-  };
-
-  const GridWrapper = styled.div`
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(6, 1fr);
-    // grid-auto-rows: 1fr;
-    // grid-template-rows: repeat(24, 4fr);
-    column-gap: 2%;
-    // row-gap: 30px;
-    // justify-items: center;
-    // & > h1 {
-    //   align-self: center;
-    // }
-  `;
 
   const separateActivitiesByDate = (
     sortedActivitesByDate: [],
@@ -213,13 +182,9 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
                 gridRowStart,
                 gridRowEnd,
                 columnSpan,
-                fontSize,
                 detailsSlice,
-                showEndTime,
                 numberOfParallellActivities,
               } = getGridLayout(activity, sortedActivitesByDate, separatedActivities[date]);
-
-              console.log(activity.type);
 
               return (
                 <React.Fragment key={index}>
@@ -253,16 +218,13 @@ export const GridTest: React.FC<GridTestProps> = (props) => {
                       style={{ height: '90%', marginTop: `30px` }}
                     >
                       <Timeslot
-                        style={{
-                          height: '100%',
-                          fontSize: `${fontSize}`,
-                        }}
+                        style={{ height: '100%' }}
                         presenters={getPresenter(activity)}
                         endTime={activity.end}
                         heading={activity.title}
                         startTime={activity.start}
                         type={activity.type}
-                        showEndTime={showEndTime}
+                        showEndTime={true}
                         {...(activity.location.coordinates[0] !== 0
                           ? {
                               location: {

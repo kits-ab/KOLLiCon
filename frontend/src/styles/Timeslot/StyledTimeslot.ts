@@ -39,28 +39,29 @@ ${({ numberOfParallellActivities, activityType }) => {
     if (numberOfParallellActivities === 3 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
         return `
         @media (max-width: 500px) {
-  .Timeslot-header {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    flex-wrap: wrap;
-  }
-    .Timeslot-info {
-        display: flex;
-        flex-direction: column;
-    }
-    .Timeslot-info > h3 {
-        width: 100%;
-        margin-left: 0;
-    }
-    .Timeslot-times {
-        display: flex;
-        flex-direction: row;
-        justify-content: start;
-        align-items: center;
-        width: 100%;
-    }}
+        .Timeslot-header {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .Timeslot-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .Timeslot-info > h3 {
+            width: 100%;
+            margin-left: 0;
+        }
+        .Timeslot-heading {
+            font-size: 15px;
+        }
+        .Timeslot-times {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            width: 100%;
+        }}
   `} else if (numberOfParallellActivities === 3 && (activityType === "presentation" || activityType === "externalpresentation")) {
         return `
         @media (max-width: 500px) {
@@ -76,43 +77,44 @@ ${({ numberOfParallellActivities, activityType }) => {
             width: 100%;
             flex-wrap: wrap;
         }
-        // .Timeslot-presenter > img {
-        //     width: 50px;
-        //     height: 50px;
-            
-        // }
-        // .Timeslot-presenter > figure > svg {
-        //     width: 50px;
-        //     height: 50px;
-            
-        // }
-        .Timeslot-times {
-            margin-right: 1px;
-        }   
     }
    `
   } else if (numberOfParallellActivities === 2 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
-    return `
-    @media (max-width: 500px) {
-    .Timeslot-header {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
-    .Timeslot-info {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        justify-content: start;
-    }
-    .Timeslot-info > h3 {
-        width: 100%;
-        margin-left: 0;
-    }
+        return `
+        @media (max-width: 500px) {
+        .Timeslot-header {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+        .Timeslot-info {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: start;
+        }
+        .Timeslot-info > h3 {
+            width: 100%;
+            margin-left: 0;
+        }
+        }`
 }
-    
-    `
-}
-
 }}`;
+
+
+
+
+  export const GridWrapper = styled.div`
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(6, 1fr);
+  // grid-auto-rows: 1fr;
+//   grid-template-rows: repeat(24, 4fr);
+  column-gap: 2%;
+  // row-gap: 30px;
+  // justify-items: center;
+  // & > h1 {
+  //   align-self: center;
+  // }
+`;
 
