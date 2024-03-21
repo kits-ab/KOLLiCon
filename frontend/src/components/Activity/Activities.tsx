@@ -47,12 +47,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   const handleChangeChildState = () => {
     setResetButtonColor((prevState) => !prevState);
-
-    // om resetButtonColor är true sätt den till false
-    // setResetButtonColor(true);
-    //  setTimeout(() => {
-    //    setResetButtonColor(false);
-    //  }, 3000);
   };
 
   const triggerDeleteOfActivity = async () => {

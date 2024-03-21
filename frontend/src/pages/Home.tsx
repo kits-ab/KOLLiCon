@@ -12,6 +12,7 @@ import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
+import { GridComponent } from '@/components/Activity/GridComponent';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
@@ -19,6 +20,8 @@ export const Home = () => {
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
   const [showEditMode, setShowEditMode] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
+
+  const activities = activitiesData;
 
   const activateDrawer = () => {
     setOpen(true);
@@ -37,8 +40,8 @@ export const Home = () => {
           showButtons={showButtons}
           setShowButtons={setShowButtons}
         />
-        <Activities
-          activitiesData={activitiesData}
+        <GridComponent
+          activitiesData={activities}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
           scheduleTime={scheduleTime}
