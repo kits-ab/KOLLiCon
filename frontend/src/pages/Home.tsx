@@ -14,9 +14,11 @@ import { Colors } from '@/styles/Common/colors';
 import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime] = useSchedule();
+  const [activitiesData, scheduleTime, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
+
+  console.log('SchedulesData', schedulesData);
 
   const activateDrawer = () => {
     setOpen(true);

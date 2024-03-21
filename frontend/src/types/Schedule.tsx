@@ -4,10 +4,11 @@ export type Schedule = {
   id: number;
   userId: string;
   activityId?: ActivityType;
+  imageUrl?: string;
   type: string;
   title: string;
   tagLine: string;
-  details: string;
+  description: string;
   location: string;
   start: Date;
   end: Date;

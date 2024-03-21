@@ -4,9 +4,21 @@ import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
 
-function useSchedule(): [[], Date] {
+function useSchedule(): [[], Date, Schedule[]] {
   const [scheduleTime, setScheduleTime] = useState<Date>(new Date());
   const backendIP = import.meta.env.VITE_API_URL;
+
+  const fetchSchedules = async (): Promise<Schedule[]> => {
+    try {
+      const response = await axios.get(`${backendIP}/api/allschedule`);
+
+      setSchedulesData(response.data);
+      return response.data as Schedule[];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   const fetchData = async (): Promise<Schedule> => {
     try {
@@ -30,10 +42,12 @@ function useSchedule(): [[], Date] {
     }
   };
 
-  const { data } = useQuery<Schedule>('scheduleData', fetchData);
-  const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
+  const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchData);
+  const { data: schedules } = useQuery<[]>('schedules', fetchSchedules);
+  const [activitiesData, setActivitiesData] = useState<[]>(scheduleData?.activityId || []);
+  const [schedulesData, setSchedulesData] = useState<Schedule[]>(schedules || []);
 
-  return [activitiesData, scheduleTime];
+  return [activitiesData, scheduleTime, schedulesData];
 }
 
 export default useSchedule;
