@@ -32,6 +32,7 @@ import {
   TypeSelectStyled,
 } from '@/styles/RegisterActivity/StyledActivity';
 import EditExternalPresenterComponent from './EditExtraPresenterComponent';
+import { SelectChangeEvent } from '@mui/material';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -48,7 +49,6 @@ const EditActivity: React.FC<EditActivityProps> = ({
 }) => {
   const [endTime, setEndTime] = useState<RegisterActivity | null>(null);
   const [showTimeDuration, setShowTimeDuration] = useState<number>(0);
-
   const [editActivity, setEditActivity] = useState({
     id: activityProp.id,
     schedule: 1,
@@ -63,17 +63,29 @@ const EditActivity: React.FC<EditActivityProps> = ({
     start: dayjs(activityProp.start),
     end: dayjs(activityProp.end),
   } as unknown as RegisterActivity);
-  // const [showPresenter, setShowPresenter] = useState(false);
-  // const [showExternalPresenter, setShowExternalPresenter] = useState(false);
-  // const [showLocation, setShowLocation] = useState(false);
-  // const [location, setLocation] = useState({ title: '', subtitle: '', coordinates: '' });
 
-  const [isStartFilled, setIsStartFilled] = useFormField(false);
-  const [isEndFilled, setIsEndFilled] = useFormField(false);
-  const [isTitleFilled, setIsTitleFilled] = useFormField(false);
-  const [isDetailsFilled, setIsDetailsFilled] = useFormField(false);
-  const [isPresenterFilled, setIsPresenterFilled] = useFormField(false);
-  const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(false);
+  const [isStartFilled, setIsStartFilled] = useFormField(true);
+  const [isEndFilled, setIsEndFilled] = useFormField(true);
+  const [isTitleFilled, setIsTitleFilled] = useFormField(true);
+  const [isDetailsFilled, setIsDetailsFilled] = useFormField(true);
+  const [isPresenterFilled, setIsPresenterFilled] = useFormField(true);
+  const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(true);
+  const [showPresenter, setShowPresenter] = useFormField(false);
+  const [showLocation, setShowLocation] = useFormField(false);
+  const [showExternalPresenter, setShowExternalPresenter] = useFormField(false);
+
+  const isAllFieldsFilled = useAllFieldsFilled(
+    isStartFilled,
+    isEndFilled,
+    isTitleFilled,
+    isDetailsFilled,
+    showLocation,
+    showPresenter,
+    isPresenterFilled,
+    showExternalPresenter,
+    isExternalPresenterFilled,
+    editActivity,
+  );
   const [textError, setTextError] = useFormField(false);
 
   const {
@@ -93,18 +105,40 @@ const EditActivity: React.FC<EditActivityProps> = ({
     setExternalPresenter,
   } = useExternalPresenter();
 
-  // const isAllFieldsFilled = useAllFieldsFilled(
-  //   isStartFilled,
-  //   isEndFilled,
-  //   isTitleFilled,
-  //   isDetailsFilled,
-  //   showLocation,
-  //   showPresenter,
-  //   isPresenterFilled,
-  //   showExternalPresenter,
-  //   isExternalPresenterFilled,
-  //   activity,
-  // );
+  function handleActivityInputChange(e: SelectChangeEvent<types.TimeslotType>) {
+    const { name, value } = e.target;
+    if (name === 'type' && value) {
+      setEditActivity({ ...editActivity, type: value as types.TimeslotType });
+
+      if (value === types.TimeslotType.Presentation) {
+        setShowPresenter(true);
+        setShowLocation(false);
+        setShowExternalPresenter(false);
+      } else if (
+        value === types.TimeslotType.Airplane ||
+        value === types.TimeslotType.Boat ||
+        value === types.TimeslotType.Bus ||
+        value === types.TimeslotType.CheckIn ||
+        value === types.TimeslotType.Coffee ||
+        value === types.TimeslotType.Drink ||
+        value === types.TimeslotType.Food ||
+        value === types.TimeslotType.Hotel ||
+        value === types.TimeslotType.Running ||
+        value === types.TimeslotType.Skiing ||
+        value === types.TimeslotType.Train ||
+        value === types.TimeslotType.Workshop ||
+        value === types.TimeslotType.Location
+      ) {
+        setShowPresenter(false);
+        setShowExternalPresenter(false);
+        setShowLocation(true);
+      } else if (value === types.TimeslotType.ExternalPresentation) {
+        setShowPresenter(false);
+        setShowExternalPresenter(true);
+        setShowLocation(false);
+      }
+    }
+  }
 
   // Fetch activity data, set it to the state, and calculate the duration
   useEffect(() => {
@@ -119,14 +153,40 @@ const EditActivity: React.FC<EditActivityProps> = ({
         setEditActivity(response.data);
         setEndTime(response.data);
         setShowTimeDuration(durationInMinutes);
+  
+        // Set showPresenter, showExternalPresenter, and showLocation based on fetchedActivity.type
+        if (fetchedActivity.type === types.TimeslotType.Presentation) {
+          setShowPresenter(true);
+          setShowLocation(false);
+          setShowExternalPresenter(false);
+        } else if (
+          fetchedActivity.type === types.TimeslotType.Airplane ||
+          fetchedActivity.type === types.TimeslotType.Boat ||
+          fetchedActivity.type === types.TimeslotType.Bus ||
+          fetchedActivity.type === types.TimeslotType.CheckIn ||
+          fetchedActivity.type === types.TimeslotType.Coffee ||
+          fetchedActivity.type === types.TimeslotType.Drink ||
+          fetchedActivity.type === types.TimeslotType.Food ||
+          fetchedActivity.type === types.TimeslotType.Hotel ||
+          fetchedActivity.type === types.TimeslotType.Running ||
+          fetchedActivity.type === types.TimeslotType.Skiing ||
+          fetchedActivity.type === types.TimeslotType.Train ||
+          fetchedActivity.type === types.TimeslotType.Workshop ||
+          fetchedActivity.type === types.TimeslotType.Location
+        ) {
+          setShowPresenter(false);
+          setShowExternalPresenter(false);
+          setShowLocation(true);
+        } else if (fetchedActivity.type === types.TimeslotType.ExternalPresentation) {
+          setShowPresenter(false);
+          setShowExternalPresenter(true);
+          setShowLocation(false);
+        }
       } catch (error) {
         console.error('Error fetching activity:', error);
       }
     };
     fetchActivity();
-    return () => {
-      setEditActivity({} as RegisterActivity);
-    };
   }, [openEditModal]);
 
   // Function to submit the form
@@ -158,8 +218,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
               TypeFormStyled={TypeFormStyled}
               TypeSelectStyled={TypeSelectStyled}
               type={editActivity.type as types.TimeslotType}
-              setEditActivity={setEditActivity}
-              editActivity={editActivity}
+              handleActivityInputChange={handleActivityInputChange}
             />
 
             <EditDateTimePickerComponent
@@ -181,39 +240,42 @@ const EditActivity: React.FC<EditActivityProps> = ({
               setTextError={setTextError}
               error={textError}
             />
+            {showLocation && (
+              <EditLocationComponent
+                setEditActivity={setEditActivity}
+                editActivity={editActivity}
+                StoredCoords={activityProp?.location?.coordinates}
+              />
+            )}
 
-            <EditLocationComponent
-             setEditActivity={setEditActivity}
-             editActivity={editActivity}
-             StoredCoords={activityProp?.location?.coordinates}
-            />
-
-            <EditPresenterComponent
-            presenter={presenter}
-            suggestions={suggestions}
-            presenterError={presenterError}
-            handlePresenterChange={handlePresenterChange}
-            handleSuggestionClick={handleSuggestionClick}
-            editActivity={editActivity}
-            setEditActivity={setEditActivity}
-            setPresenter={setPresenter}
-            setIsPresenterFilled={setIsPresenterFilled}
-            addPresenter={addPresenter}
-            />
-
+            {showPresenter && (
+              <EditPresenterComponent
+                presenter={presenter}
+                suggestions={suggestions}
+                presenterError={presenterError}
+                handlePresenterChange={handlePresenterChange}
+                handleSuggestionClick={handleSuggestionClick}
+                editActivity={editActivity}
+                setEditActivity={setEditActivity}
+                setPresenter={setPresenter}
+                setIsPresenterFilled={setIsPresenterFilled}
+                addPresenter={addPresenter}
+              />
+            )}
+            {showExternalPresenter && (
             <EditExternalPresenterComponent
-            externalPresenter={externalPresenter}
-            handleExternalPresenterChange={handleExternalPresenterChange}
-            editActivity={editActivity}
-            setEditActivity={setEditActivity}
-            setIsExternalPresenterFilled={setIsExternalPresenterFilled}
-            addExternalPresenter={addExternalPresenter}
-            setExternalPresenter={setExternalPresenter}
+              externalPresenter={externalPresenter}
+              handleExternalPresenterChange={handleExternalPresenterChange}
+              editActivity={editActivity}
+              setEditActivity={setEditActivity}
+              setIsExternalPresenterFilled={setIsExternalPresenterFilled}
+              addExternalPresenter={addExternalPresenter}
+              setExternalPresenter={setExternalPresenter}
             />
-
+            )}
             <StyledLine1 />
             <BoxWrapper1>
-              <SaveButton type='submit' id='spara-button'>
+              <SaveButton type='submit' id='spara-button' disabled={!isAllFieldsFilled}>
                 Uppdatera
               </SaveButton>
               <CancelButton onClick={handleCloseModal}>Avbryt</CancelButton>
