@@ -47,6 +47,12 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   const handleChangeChildState = () => {
     setResetButtonColor((prevState) => !prevState);
+
+    // om resetButtonColor är true sätt den till false
+    // setResetButtonColor(true);
+    //  setTimeout(() => {
+    //    setResetButtonColor(false);
+    //  }, 3000);
   };
 
   const triggerDeleteOfActivity = async () => {
@@ -127,10 +133,11 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           </SaveButton>
           <CancelButton
             style={{ left: '-10%' }}
-            onClick={() => {
+            onClick={(event) => {
               setShowButtons(false);
               setPickedActivities([]);
               handleChangeChildState();
+              event.stopPropagation();
             }}
           >
             Avbryt
@@ -182,6 +189,8 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
                   giveDataOfPickedActivity={handlePickedActivity}
                   showButtons={showButtons}
                   resetButtonColor={resetButtonColor}
+                  setResetButtonColor={setResetButtonColor}
+                  setResetButtonColor={setResetButtonColor}
                 />
               </div>
             );

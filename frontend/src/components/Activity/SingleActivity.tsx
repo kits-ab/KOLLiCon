@@ -22,6 +22,7 @@ interface SingleActivityProps {
   giveDataOfPickedActivity: (data: number) => void;
   showButtons: boolean;
   resetButtonColor: boolean;
+  setResetButtonColor: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
@@ -37,6 +38,7 @@ export const SingleActivity: React.FC<SingleActivityProps> = (props) => {
     date,
     showButtons,
     resetButtonColor,
+    setResetButtonColor,
   } = props;
 
   const [changeColorWhenPicked, setChangeColorWhenPicked] = React.useState(false);
