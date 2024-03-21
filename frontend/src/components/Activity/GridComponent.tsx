@@ -11,6 +11,7 @@ import { SaveButton } from '@/styles/RegisterActivity/StyledActivity';
 import { CancelButton } from '@/styles/RegisterActivity/StyledActivity';
 import axios from 'axios';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { useDeleteActivity } from '@/utils/Hooks/DeleteActivity/useDeleteActivity';
 
 const backendUrl = import.meta.env.VITE_API_URL;
 
@@ -26,11 +27,11 @@ interface GridComponentProps {
 
 export const GridComponent: React.FC<GridComponentProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
-  const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
+  //const [pickedActivities, setPickedActivities] = React.useState<number[]>([]);
   //const [resetButtonColor, setResetButtonColor] = React.useState(false);
-  const [changeColorWhenPicked, setChangeColorWhenPicked] = React.useState<Record<number, boolean>>(
-    {},
-  );
+  //const [changeColorWhenPicked, setChangeColorWhenPicked] = React.useState<Record<number, boolean>>(
+  //  {},
+  // );
   const {
     activitiesData,
     setSelectedActivityId,
@@ -40,40 +41,13 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     setShowButtons,
   } = props;
 
-  const addActivityToDeleteQue = (value: any) => {
-    const isAlreadyPicked = pickedActivities.includes(value.id);
-
-    if (isAlreadyPicked) {
-      setPickedActivities((prevPickedActivities) =>
-        prevPickedActivities.filter((activity) => activity !== value.id),
-      );
-    } else {
-      setPickedActivities((prevPickedActivities) => [...prevPickedActivities, value.id]);
-    }
-
-    setChangeColorWhenPicked((prevColors) => ({
-      ...prevColors,
-      [value.id]: !prevColors[value.id],
-    }));
-  };
-
-  const handleChangeChildState = () => {
-    //  setResetButtonColor((prevState) => !prevState);
-    setChangeColorWhenPicked({});
-  };
-
-  const triggerDeleteOfActivity = async () => {
-    if (pickedActivities.length === 0) {
-      setShowButtons(false);
-      return;
-    } else {
-      for (let i = 0; i < pickedActivities.length; i++) {
-        await axios.delete(`${backendUrl}/api/activity/delete/${pickedActivities[i]}`);
-      }
-      setShowButtons(false);
-      window.location.reload();
-    }
-  };
+  const {
+    addActivityToDeleteQue,
+    handleChangeChildState,
+    changeColorWhenPicked,
+    triggerDeleteOfActivity,
+    setPickedActivities,
+  } = useDeleteActivity();
 
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
@@ -236,7 +210,7 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
             <SaveButton
               style={{ left: '80%' }}
               onClick={() => {
-                triggerDeleteOfActivity();
+                triggerDeleteOfActivity(setShowButtons);
               }}
             >
               Spara
