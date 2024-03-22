@@ -99,12 +99,12 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     const diffDays = currentActivityDate - firstActivityDate;
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * 24 * 4; // Multiply by 24 hours and 4 quarters per hour
+    gridRowStart += diffDays * 24 * 4;
     gridRowEnd += diffDays * 24 * 4;
 
     if (currentActivityWeek > startWeek) {
-      gridRowStart += 24 * 4 * 7;
-      gridRowEnd += 24 * 4 * 7;
+      gridRowStart += 24 * 4 * (currentActivityWeek - startWeek) * 7;
+      gridRowEnd += 24 * 4 * (currentActivityWeek - startWeek) * 7;
     }
 
     if (hasThreeOngoingActivities(activity, separatedActivities)) {

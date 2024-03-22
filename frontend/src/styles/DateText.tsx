@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
+import { fonts } from '@kokitotsos/react-components/dist/styles/constants';
 
-const DateText = styled.h1`
+const DateText = styled.h2`
   color: #bbbbbb;
   position: relative;
   text-align: center;
+  font-family: ${fonts.thin};
+  font-weight: 200;
 
   &::before,
   &::after {
