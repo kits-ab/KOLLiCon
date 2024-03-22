@@ -22,7 +22,7 @@ public class PresenterModel {
     private String AvatarSrc;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     @JsonIdentityReference(alwaysAsId = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private ActivityModel activity;
 
     public PresenterModel() {

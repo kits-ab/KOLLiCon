@@ -5,17 +5,16 @@ import { InputStyled } from '@/styles/RegisterActivity/StyledActivity';
 import MapBox from '../MapBox/MapBox';
 
 type LocationProps = {
-    location: any;
-    handleLocationChange: any;
-    setLocation: any;
-    };
+  location:   { title: string; subtitle: string; coordinates: string };
+  handleLocationChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  setLocation:  React.Dispatch<React.SetStateAction<{ title: string; subtitle: string; coordinates: string }>>
+};
 
 const LocationComponent: React.FC<LocationProps> = ({
   location,
   handleLocationChange,
-  setLocation
+  setLocation,
 }) => {
-
   //Function to convert the array to string and add coordinates to the location
   const handleCoordinates = (coords: number[]) => {
     setLocation((prevLocation: any) => ({
@@ -49,6 +48,7 @@ const LocationComponent: React.FC<LocationProps> = ({
       <MapBox
         onCoordinatesChange={handleCoordinates}
         resetLocation={handleResetLocation}
+        storedCoords={[]}
       />
     </StyledDiv>
   );

@@ -7,16 +7,16 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
-import { RegisterPerson } from '@/types/Activities';
+import { RegisterActivity, RegisterPerson } from '@/types/Activities';
 
 type ExtraPresenterProps = {
-  externalPresenter: any;
-  handleExternalPresenterChange: any;
-  activity: any;
-  setActivity: any;
-  setIsExternalPresenterFilled: any;
-  addExternalPresenter: any;
-  setExternalPresenter: any;
+  externalPresenter: RegisterPerson;
+  handleExternalPresenterChange:  (e: React.ChangeEvent<HTMLInputElement>) => void;
+  activity: RegisterActivity;
+  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  setIsExternalPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
+  addExternalPresenter:   () => void;
+  setExternalPresenter: React.Dispatch<React.SetStateAction<{name: string; avatarSrc:string}>>;
 };
 
 const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
@@ -58,7 +58,7 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
   //Function to handle the external presenter change
   const handleAddExternalPresenter = () => {
     // Add external presenter to the activity state
-    const newExternalPresenter = addExternalPresenter() as RegisterPerson;
+    const newExternalPresenter = addExternalPresenter() as unknown as RegisterPerson;
     setActivity({
       ...activity,
       externalPresenter: [...activity.externalPresenter, newExternalPresenter],
@@ -92,7 +92,7 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
       {/* List added presenters */}
       <BoxWrapper>
         {activity.externalPresenter
-          .filter((externalPresenter: null) => externalPresenter !== null)
+          .filter((externalPresenter: RegisterPerson| null) => externalPresenter !== null)
           .map(
             (
               externalPresenter: { name: React.ReactElement<string> | Iterable<React.ReactNode> },
