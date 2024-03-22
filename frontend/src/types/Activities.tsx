@@ -45,14 +45,16 @@ export type RegisterActivity = {
   details: string;
   start: string;
   end: string;
+  duration?: string;
 };
 
 export type RegisterPerson = {
+  id?: number;
   name: string;
   tagLine?: string;
   imageSrc?: string;
   imageSrcSet?: string;
-  avatarSrc?: string;
+  avatarSrc: string;
   avatarSrcSet?: string;
   href?: string;
   tags?: string[];

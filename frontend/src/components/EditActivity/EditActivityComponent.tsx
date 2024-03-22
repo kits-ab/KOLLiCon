@@ -6,7 +6,6 @@ import { GlobalStyles, types } from '@kokitotsos/react-components';
 import EditDateTimePickerComponent from './EditDateTimePickerComponent';
 import EditInputComponent from './EditInputComponent';
 import EditTypeComponent from './EditKitsConTypeComponent';
-import { useActivityInput } from '@/utils/Hooks/RegisterActivity/useActivityInput';
 import { useExternalPresenter, usePresenter } from '@/utils/Hooks/RegisterActivity/usePresenter';
 import EditLocationComponent from './EditLocationComponent';
 import EditPresenterComponent from './EditPresenterComponent';
@@ -197,6 +196,8 @@ const EditActivity: React.FC<EditActivityProps> = ({
       await axios.put(`${backendIP}/api/activity/update`, editActivity);
 
       setOpenEditModal(false);
+      // temporary solution to refresh the page after updating an activity
+      window.location.reload();
     } catch (error) {
       console.error('Error updating activity:', error);
     }
@@ -240,7 +241,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
               setTextError={setTextError}
               error={textError}
             />
-            {showLocation && (
+            {showLocation && editActivity.location.coordinates !== '' && (
               <EditLocationComponent
                 setEditActivity={setEditActivity}
                 editActivity={editActivity}
@@ -263,15 +264,15 @@ const EditActivity: React.FC<EditActivityProps> = ({
               />
             )}
             {showExternalPresenter && (
-            <EditExternalPresenterComponent
-              externalPresenter={externalPresenter}
-              handleExternalPresenterChange={handleExternalPresenterChange}
-              editActivity={editActivity}
-              setEditActivity={setEditActivity}
-              setIsExternalPresenterFilled={setIsExternalPresenterFilled}
-              addExternalPresenter={addExternalPresenter}
-              setExternalPresenter={setExternalPresenter}
-            />
+              <EditExternalPresenterComponent
+                externalPresenter={externalPresenter}
+                handleExternalPresenterChange={handleExternalPresenterChange}
+                editActivity={editActivity}
+                setEditActivity={setEditActivity}
+                setIsExternalPresenterFilled={setIsExternalPresenterFilled}
+                addExternalPresenter={addExternalPresenter}
+                setExternalPresenter={setExternalPresenter}
+              />
             )}
             <StyledLine1 />
             <BoxWrapper1>

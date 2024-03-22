@@ -5,9 +5,9 @@ import { InputStyled } from '@/styles/RegisterActivity/StyledActivity';
 import MapBox from '../MapBox/MapBox';
 
 type LocationProps = {
-  location: any;
-  handleLocationChange: any;
-  setLocation: any;
+  location:   { title: string; subtitle: string; coordinates: string };
+  handleLocationChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  setLocation:  React.Dispatch<React.SetStateAction<{ title: string; subtitle: string; coordinates: string }>>
 };
 
 const LocationComponent: React.FC<LocationProps> = ({

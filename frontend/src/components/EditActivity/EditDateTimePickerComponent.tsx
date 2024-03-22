@@ -15,9 +15,9 @@ type DateTimePickerProps = {
   sxDateTimePickerStyles?: any;
   DateTimePropsStyles?: any;
   editActivity: RegisterActivity | any;
-  setEditActivity?: RegisterActivity | any;
-  setIsStartFilled?: boolean | any;
-  setIsEndFilled?: boolean | any;
+  setEditActivity?: React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
+  setIsStartFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+  setIsEndFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
   endTime?: string;
   showTimeDuration: number;
 };

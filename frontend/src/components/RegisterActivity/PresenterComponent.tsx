@@ -11,18 +11,19 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
+import { RegisterActivity, RegisterPerson } from '@/types/Activities';
 
 type PresenterProps = {
-  presenter: any;
-  suggestions: any;
-  presenterError: any;
-  handlePresenterChange: any;
-  handleSuggestionClick: any;
-  activity: any;
-  setActivity: any;
-  addPresenter: any;
-  setIsPresenterFilled: any;
-  setPresenter: any;
+  presenter:  RegisterPerson;
+  suggestions:  { title: string }[];
+  presenterError:   string;
+  handlePresenterChange:  (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSuggestionClick:  (title: string) => void;
+  activity:   RegisterActivity;
+  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  addPresenter:   () => Promise<RegisterActivity['presenter'][number] | undefined>;
+  setIsPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
+  setPresenter:   React.Dispatch<React.SetStateAction<RegisterPerson>>;
 };
 
 const PresenterComponent: React.FC<PresenterProps> = ({

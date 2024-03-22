@@ -6,10 +6,10 @@ import {RegisterActivity } from '../../types/Activities';
 type InputComponentProps = {
   editActivity: RegisterActivity;
     error?: boolean | any;
-    setIsTitleFilled?: boolean | any;
-    setIsDetailsFilled?: boolean | any;
-    setTextError?: boolean | any;
-    setEditActivity?: RegisterActivity | any;
+    setIsTitleFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setIsDetailsFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setTextError?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setEditActivity?: React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
 }
 
 const EditInputComponent: React.FC<InputComponentProps> = ({

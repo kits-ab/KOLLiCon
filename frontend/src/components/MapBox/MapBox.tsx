@@ -26,10 +26,9 @@ const MapBox = ({
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
-      center: storedCoords?.length !==1 && storedCoords ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
-      // center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+      center: storedCoords.length >= 1 ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
       zoom: 12,
-    });
+    } as mapboxgl.MapboxOptions);
     // Update the type of mapRef.current
     mapRef.current = map;
 
@@ -106,7 +105,7 @@ const MapBox = ({
         // Cast mapRef.current to mapboxgl.Map
         (mapRef.current as mapboxgl.Map).flyTo({
           // Convert initialCenter to LngLatLike
-          center: storedCoords?.length !==1 && storedCoords ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+          center: storedCoords.length >= 1 ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
           // center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
           essential: true,
           animate: true,

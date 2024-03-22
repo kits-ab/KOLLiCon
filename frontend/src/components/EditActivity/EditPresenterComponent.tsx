@@ -12,20 +12,21 @@ import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 import axios from 'axios';
+import { RegisterActivity } from '@/types/Activities';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
 type PresenterProps = {
   presenter: { name: string; avatarSrc: string };
-  suggestions: any;
-  presenterError: any;
-  handlePresenterChange: any;
-  handleSuggestionClick: any;
-  editActivity: any;
-  setEditActivity: any;
-  addPresenter: any;
-  setIsPresenterFilled: any;
-  setPresenter: any;
+  suggestions:  { title: string }[];
+  presenterError: string;
+  handlePresenterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSuggestionClick: (title: string) => void;
+  editActivity: RegisterActivity;
+  setEditActivity: React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  addPresenter: () => Promise<RegisterActivity['presenter'][number] | undefined>;
+  setIsPresenterFilled: React.Dispatch<React.SetStateAction<boolean>>;
+  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string }>>;
 };
 
 const EditPresenterComponent: React.FC<PresenterProps> = ({
@@ -38,11 +39,18 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
   setEditActivity,
   addPresenter,
   setIsPresenterFilled,
-  setPresenter
+  setPresenter,
 }) => {
-
   const [inputValue, setInputValue] = useState('');
   const isInputEmpty = presenter.name.trim() === '';
+  const [error, setError] = useState('');
+
+  // Function to clear error after 10 seconds
+  const clearError = () => {
+    setTimeout(() => {
+      setError('');
+    }, 5000);
+  };
 
   useEffect(() => {
     // Disable the AddButton when the presenter input is empty
@@ -53,13 +61,14 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
     const value = e.target.value;
     setInputValue(value);
     handlePresenterChange(e);
+    setError('');
   };
 
   const handleAddPresenter = async () => {
     // Add presenter to the activity state
     const newPresenter = await addPresenter();
     if (newPresenter) {
-        setEditActivity({
+      setEditActivity({
         ...editActivity,
         presenter: [...editActivity.presenter, newPresenter],
       });
@@ -71,12 +80,18 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
       });
     }
   };
+
   // Function to delete a presenter from the activity state and from database if presenter has id.
   const handleDeletePresenter = async (index: number) => {
     const updatedPresenters = [...editActivity.presenter];
     const deletedPresenter = updatedPresenters[index];
 
-    if (deletedPresenter.id) {
+    // Check if there's only one presenter left, if so, show error and return
+    if (updatedPresenters.length === 1) {
+      setError('Du kan inte ta bort den sista presentatören.');
+      clearError();
+      return;
+    } else if (updatedPresenters.length > 1 && deletedPresenter.id) {
       // Trigger endpoint to delete presenter from the database using Axios
       try {
         await axios.delete(`${backendIP}/api/presenter/delete/${deletedPresenter.id}`);
@@ -84,7 +99,7 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
         console.error('Error deleting presenter:', error);
       }
     }
-
+    // Remove presenter from the activity state
     updatedPresenters.splice(index, 1);
     setEditActivity({ ...editActivity, presenter: updatedPresenters });
     setIsPresenterFilled(updatedPresenters.length > 0);
@@ -122,13 +137,21 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
 
         {/* List added presenters */}
         <BoxWrapper>
-          {editActivity?.presenter?.map((presenter: { name: React.ReactElement< string> | Iterable<React.ReactNode>; }, index: React.Key) => (
-            <PresenterBoxWrapper key={index}>
-              <AddedPresenterList>{presenter?.name}</AddedPresenterList>
-              <DeleteButton onClick={() => handleDeletePresenter(index as number)}>Ta bort</DeleteButton>
-            </PresenterBoxWrapper>
-          ))}
+          {editActivity?.presenter?.map(
+            (
+              presenter: { name: React.ReactElement<string> | Iterable<React.ReactNode> },
+              index: React.Key,
+            ) => (
+              <PresenterBoxWrapper key={index}>
+                <AddedPresenterList>{presenter?.name}</AddedPresenterList>
+                <DeleteButton onClick={() => handleDeletePresenter(index as number)}>
+                  Ta bort
+                </DeleteButton>
+              </PresenterBoxWrapper>
+            ),
+          )}
         </BoxWrapper>
+        {error && <ErrorStyled style={{ marginBottom: '-5px' }}>{error}</ErrorStyled>}
       </StyledDiv>
     </>
   );
