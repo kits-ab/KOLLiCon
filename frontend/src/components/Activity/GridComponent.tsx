@@ -20,9 +20,10 @@ interface GridComponentProps {
   selectedActivityId: number | null;
   setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
-  showEditModeButtons: boolean;
-  showButtons: boolean;
-  setShowButtons: (value: boolean) => void;
+  showDeleteMode: boolean;
+  setShowDeleteMode: (value: boolean) => void;
+  showDeleteAndCancelButton: boolean;
+  setShowDeleteAndCancelButton: (value: boolean) => void;
 }
 
 export const GridComponent: React.FC<GridComponentProps> = (props) => {
@@ -37,9 +38,15 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     setSelectedActivityId,
     selectedActivityId,
     scheduleTime,
-    showButtons,
-    setShowButtons,
+    showDeleteMode,
+    setShowDeleteMode,
+    setShowDeleteAndCancelButton,
+    showDeleteAndCancelButton,
   } = props;
+
+  const toggleShowSaveAndDelete = () => {
+    setShowDeleteAndCancelButton(!showDeleteAndCancelButton);
+  };
 
   const {
     addActivityToDeleteQue,
@@ -205,12 +212,13 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
   return (
     <>
       <div>
-        {showButtons && (
-          <div style={{ height: '0.02px', marginTop: '10px', zIndex: '100', position: 'relative' }}>
+        {showDeleteAndCancelButton && (
+          <div style={{ height: '0.02px', marginTop: '10px', zIndex: '2', position: 'relative' }}>
             <SaveButton
               style={{ left: '80%' }}
               onClick={() => {
-                triggerDeleteOfActivity(setShowButtons);
+                triggerDeleteOfActivity(setShowDeleteMode);
+                setShowDeleteAndCancelButton(false);
               }}
             >
               Spara
@@ -218,7 +226,8 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
             <CancelButton
               style={{ left: '-10%' }}
               onClick={(event) => {
-                setShowButtons(false);
+                setShowDeleteMode(false);
+                setShowDeleteAndCancelButton(false);
                 setPickedActivities([]);
                 handleChangeChildState();
                 event.stopPropagation();
@@ -228,7 +237,7 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
             </CancelButton>
           </div>
         )}
-        <GridWrapper style={{ position: 'relative', zIndex: '10' }}>
+        <GridWrapper style={{ position: 'relative' }}>
           {separatedActivities &&
             Object.keys(separatedActivities).map((date) => {
               return separatedActivities[date].map((activity: ActivityType, index: number) => {
@@ -262,9 +271,10 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
                         gridColumnStart: `auto`,
                         gridColumnEnd: `span ${columnSpan}`,
                       }}
-                      onClick={() => {
+                      onClick={(event) => {
                         setSelectedActivityId(activity.id);
                         expandInfo();
+                        event.stopPropagation();
                       }}
                     >
                       <TimeSlotWrapper
@@ -293,7 +303,7 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
                           <p style={{ wordBreak: 'break-word' }}>
                             {activity.details.slice(0, detailsSlice)}
                           </p>
-                          {showButtons && (
+                          {showDeleteMode && (
                             <>
                               <RemoveCircleIcon
                                 style={{
@@ -313,13 +323,13 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
                           )}
                         </Timeslot>
                       </TimeSlotWrapper>
-                      {selectedActivityId === activity.id && (
+                      <div onClick={() => setShowDeleteAndCancelButton(true)}>
                         <ExpandInfo
                           activityProp={activity}
                           open={expandInfoOpen}
                           setOpen={setExpandInfoOpen}
                         />
-                      )}
+                      </div>
                     </a>
                   </React.Fragment>
                 );

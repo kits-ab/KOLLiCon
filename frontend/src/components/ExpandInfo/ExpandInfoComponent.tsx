@@ -16,6 +16,7 @@ interface ExpandInfoProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   activityProp?: ActivityType;
   scheduleProp?: Schedule;
+  setShowDeleteAndCancelButton?: (value: boolean) => void;
 }
 
 const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, scheduleProp }) => {

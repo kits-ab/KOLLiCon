@@ -24,8 +24,6 @@ export const useDeleteActivity = () => {
       ...prevColors,
       [value.id]: !prevColors[value.id],
     }));
-
-    console.log(pickedActivities);
   };
 
   const handleChangeChildState = () => {

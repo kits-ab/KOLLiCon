@@ -23,12 +23,19 @@ import { Colors } from '@/styles/Common/colors';
 
 interface Props {
   window?: () => Window;
-  setShowEditMode: (value: boolean) => void;
-  showButtons: boolean;
-  setShowButtons: (value: boolean) => void;
+  showDeleteMode: boolean;
+  setShowDeleteMode: (value: boolean) => void;
+  showDeleteAndCancelButton: boolean;
+  setShowDeleteAndCancelButton: (value: boolean) => void;
 }
 
-function MenuDrawer({ window, setShowEditMode, showButtons, setShowButtons }: Props) {
+function MenuDrawer({
+  window,
+  showDeleteMode,
+  setShowDeleteMode,
+  showDeleteAndCancelButton,
+  setShowDeleteAndCancelButton,
+}: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   const [open, setOpen] = React.useState(false);
@@ -49,8 +56,8 @@ function MenuDrawer({ window, setShowEditMode, showButtons, setShowButtons }: Pr
   };
 
   const handleShowEditModeButtons = (value: boolean) => {
-    setShowEditMode(value);
-    setShowButtons(value);
+    setShowDeleteMode(value);
+    setShowDeleteAndCancelButton(value);
   };
 
   const handleMenuItemClick = (label: string) => {
@@ -82,7 +89,7 @@ function MenuDrawer({ window, setShowEditMode, showButtons, setShowButtons }: Pr
         }}
       />
       <Box>
-        {!showButtons && (
+        {!showDeleteMode && (
           <>
             <EditPenIcon onClick={() => handleShowEditModeButtons(true)} />
             <FixedMenuIcon fontSize='large' cursor='pointer' sx={{}} onClick={toggleDrawer(true)} />

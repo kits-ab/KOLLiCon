@@ -7,7 +7,6 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import KolliconFooter from '../components/Footer/KolliconFooter';
 import Activity from '../components/RegisterActivity/RegisterActivityComponent';
 import FloatingButton from '../components/Common/FloatingAddButton';
-import { Activities } from '@/components/Activity/Activities.tsx';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
@@ -18,8 +17,8 @@ export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
   const [open, setOpen] = useState(false);
   const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
-  const [showEditMode, setShowEditMode] = useState(false);
-  const [showButtons, setShowButtons] = useState(false);
+  const [showDeleteMode, setShowDeleteMode] = useState(false);
+  const [showDeleteAndCancelButton, setShowDeleteAndCancelButton] = useState(false);
 
   const activities = activitiesData;
 
@@ -36,18 +35,20 @@ export const Home = () => {
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuDrawer
-          setShowEditMode={setShowEditMode}
-          showButtons={showButtons}
-          setShowButtons={setShowButtons}
+          showDeleteMode={showDeleteMode}
+          setShowDeleteMode={setShowDeleteMode}
+          setShowDeleteAndCancelButton={setShowDeleteAndCancelButton}
+          showDeleteAndCancelButton={showDeleteAndCancelButton}
         />
         <GridComponent
           activitiesData={activities}
           selectedActivityId={selectedActivityId}
           setSelectedActivityId={setSelectedActivityId}
           scheduleTime={scheduleTime}
-          showEditModeButtons={showEditMode}
-          showButtons={showButtons}
-          setShowButtons={setShowButtons}
+          showDeleteMode={showDeleteMode}
+          setShowDeleteMode={setShowDeleteMode}
+          setShowDeleteAndCancelButton={setShowDeleteAndCancelButton}
+          showDeleteAndCancelButton={showDeleteAndCancelButton}
         />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>
