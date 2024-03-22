@@ -7,6 +7,9 @@ import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
 import { getWeek } from 'date-fns';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { todo } from 'node:test';
 
 interface GridComponentProps {
   activitiesData: ActivityType[];
@@ -99,18 +102,18 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     const diffDays = currentActivityDate - firstActivityDate;
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * 24 * 4;
-    gridRowEnd += diffDays * 24 * 4;
+    gridRowStart += diffDays * 24 * 4 + 1;
+    gridRowEnd += diffDays * 24 * 4 + 1; // TODO: Check if this is correct
 
     if (currentActivityWeek > startWeek) {
-      gridRowStart += 24 * 4 * (currentActivityWeek - startWeek) * 7;
-      gridRowEnd += 24 * 4 * (currentActivityWeek - startWeek) * 7;
+      console.log('weeks: ', currentActivityWeek - startWeek);
+      gridRowStart += (currentActivityWeek - startWeek) * 7 * 24 * 4;
+      gridRowEnd += (currentActivityWeek - startWeek) * 7 * 24 * 4;
     }
 
     if (hasThreeOngoingActivities(activity, separatedActivities)) {
       columnSpan = 2;
       detailsSlice = 50;
-      showEndTime = false;
       numberOfParallellActivities = 3;
     } else if (hasOverlappingActivity(activity, separatedActivities)) {
       columnSpan = 3;
@@ -166,11 +169,46 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
+    console.log('separatedActivities: ', separatedActivities);
     return separatedActivities;
   };
 
   if (!sortedActivitesByDate) return null;
   const separatedActivities = separateActivitiesByDate(sortedActivitesByDate);
+
+  interface MyTimeslotComponentProps {
+    activity: ActivityType;
+    detailsSlice: number;
+  }
+
+  const MyTimeslotComponent = (props: MyTimeslotComponentProps) => {
+    const { activity, detailsSlice } = props;
+    return (
+      <Timeslot
+        style={{ height: '100%' }}
+        presenters={getPresenter(activity)}
+        endTime={activity.end}
+        heading={activity.title}
+        startTime={activity.start}
+        type={activity.type}
+        showEndTime={true}
+        {...(activity.location.coordinates[0] !== 0
+          ? {
+              location: {
+                coordinates: activity.location.coordinates,
+                title: (activity.location.title as string) || 'Location',
+                subtitle: activity.location.subtitle,
+              },
+            }
+          : {})}
+      >
+        <p style={{ wordBreak: 'break-word' }}>{activity.details.slice(0, detailsSlice)}</p>
+      </Timeslot>
+    );
+  };
+
+  // Add a variable to keep track of the last rendered day
+  let lastRenderedDay = 0;
 
   return (
     <>
@@ -186,9 +224,18 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
                 numberOfParallellActivities,
               } = getGridLayout(activity, sortedActivitesByDate, separatedActivities[date]);
 
+              // Get the day of the current activity
+              const currentDay = new Date(activity.start).getDate();
+
+              // Check if the current day is different from the last rendered day
+              const isFirstActivityOfDay = currentDay !== lastRenderedDay;
+
+              // Update the last rendered day
+              lastRenderedDay = currentDay;
+
               return (
                 <React.Fragment key={index}>
-                  {index === 0 ? (
+                  {isFirstActivityOfDay ? (
                     <DateText
                       style={{
                         gridRowStart: gridRowStart - 1,
@@ -217,28 +264,7 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
                       numberOfParallellActivities={numberOfParallellActivities}
                       style={{ height: '100%', marginTop: `30px`, paddingBottom: `30px` }}
                     >
-                      <Timeslot
-                        style={{ height: '100%' }}
-                        presenters={getPresenter(activity)}
-                        endTime={activity.end}
-                        heading={activity.title}
-                        startTime={activity.start}
-                        type={activity.type}
-                        showEndTime={true}
-                        {...(activity.location.coordinates[0] !== 0
-                          ? {
-                              location: {
-                                coordinates: activity.location.coordinates,
-                                title: (activity.location.title as string) || 'Location',
-                                subtitle: activity.location.subtitle,
-                              },
-                            }
-                          : {})}
-                      >
-                        <p style={{ wordBreak: 'break-word' }}>
-                          {activity.details.slice(0, detailsSlice)}
-                        </p>
-                      </Timeslot>
+                      <MyTimeslotComponent activity={activity} detailsSlice={detailsSlice} />
                     </TimeSlotWrapper>
                     {selectedActivityId === activity.id && (
                       <ExpandInfo

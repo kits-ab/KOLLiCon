@@ -107,6 +107,7 @@ ${({ numberOfParallellActivities, activityType }) => {
   export const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
+//   overflow: auto;
   grid-template-columns: repeat(6, 1fr);
   // grid-auto-rows: 1fr;
 //   grid-template-rows: repeat(24, 4fr);
