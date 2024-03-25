@@ -13,6 +13,7 @@ import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 import axios from 'axios';
 import { RegisterActivity } from '@/types/Activities';
+import Box from '@mui/material/Box';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -129,10 +130,11 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
             </SuggestionBoxStyled>
           </SuggestionBoxWrapper>
         )}
-
+        <Box sx={{display:'flex', justifyContent:'center'}}>
         <AddButton type='button' onClick={handleAddPresenter} disabled={isInputEmpty}>
           Lägg till
         </AddButton>
+        </Box>
         {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
 
         {/* List added presenters */}

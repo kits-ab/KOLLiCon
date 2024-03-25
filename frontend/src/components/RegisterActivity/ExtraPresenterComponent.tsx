@@ -8,6 +8,7 @@ import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 import { RegisterActivity, RegisterPerson } from '@/types/Activities';
+import Box from '@mui/material/Box';
 
 type ExtraPresenterProps = {
   externalPresenter: RegisterPerson;
@@ -84,11 +85,11 @@ const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
         onChange={handleInputChange}
       />
       <InputStyled type='file' id='file' />
-
+      <Box sx={{display:'flex', justifyContent:'center'}}>
       <AddButton onClick={handleAddButtonClick} disabled={isInputEmpty}>
         Lägg till
       </AddButton>
-
+      </Box>
       {/* List added presenters */}
       <BoxWrapper>
         {activity.externalPresenter

@@ -1,4 +1,4 @@
-import { types, GlobalStyles } from '@kokitotsos/react-components';
+import { types, GlobalStyles, Text } from '@kokitotsos/react-components';
 import axios from 'axios';
 import LocationComponent from './LocationComponent';
 import PresenterComponent from './PresenterComponent';
@@ -112,7 +112,10 @@ function Activity({ onClose }: any) {
       <GlobalBox>
         <img src='' alt='' />
         <GlobalStyles />
-        <HeaderStyled>Ny aktivitiet</HeaderStyled>
+       <Text>
+        <HeaderStyled>
+          <h3>Ny aktivitiet</h3>
+        </HeaderStyled>
         <StyledLine />
         <EventsWrapper>
           <form onSubmit={handleSubmit}>
@@ -152,7 +155,6 @@ function Activity({ onClose }: any) {
                   setPresenter={setPresenter}
                   setIsPresenterFilled={setIsPresenterFilled}
                   addPresenter={addPresenter}
-                  
                 />
               )}
               {showExternalPresenter && (
@@ -176,14 +178,15 @@ function Activity({ onClose }: any) {
 
               <StyledLine1 />
               <BoxWrapper1>
+                <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
                 <SaveButton type='submit' id='spara-button' disabled={!isAllFieldsFilled}>
                   Spara
                 </SaveButton>
-                <CancelButton onClick={handleCancelButtonClick}>Avbryt</CancelButton>
               </BoxWrapper1>
             </StyledDiv>
           </form>
         </EventsWrapper>
+        </Text>
       </GlobalBox>
     </>
   );
