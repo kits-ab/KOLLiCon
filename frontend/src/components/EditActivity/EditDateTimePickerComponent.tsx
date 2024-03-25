@@ -12,31 +12,37 @@ import { Colors } from '../../styles/Common/colors';
 import { RegisterActivity } from '@/types/Activities';
 
 type DateTimePickerProps = {
-  sxDateTimePickerStyles: any;
-  DateTimePropsStyles: any;
-  activity: RegisterActivity;
-  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
-  setIsStartFilled: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsEndFilled: React.Dispatch<React.SetStateAction<boolean>>;
+  sxDateTimePickerStyles?: any;
+  DateTimePropsStyles?: any;
+  editActivity: RegisterActivity | any;
+  setEditActivity?: React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
+  setIsStartFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+  setIsEndFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+  endTime?: string;
+  showTimeDuration: number;
 };
 
-const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
+const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   sxDateTimePickerStyles,
   DateTimePropsStyles,
-  activity,
-  setActivity,
+  editActivity,
+  setEditActivity,
   setIsStartFilled,
   setIsEndFilled,
+  endTime,
+  showTimeDuration,
 }) => {
   const [error, setError] = React.useState<string>('');
+
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
-    setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
+    const formattedDate = dayjs(date).format('YYYY-MM-DDTHH:mm');
+    setEditActivity({ ...editActivity, [name]: formattedDate });
 
     if (name === 'start') {
       setIsStartFilled(!!date);
       // Calculate end time when start time changes
-      calculateEndTime(dayjs(date).format('YYYY-MM-DDTHH:mm'), activity.duration);
+      calculateEndTime(formattedDate, editActivity.duration);
     }
   };
 
@@ -46,9 +52,20 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
 
     const [hours, minutes] = duration.split(':').map((val: string) => parseInt(val));
     const end = dayjs(start).add(hours, 'hours').add(minutes, 'minutes').format('YYYY-MM-DDTHH:mm');
-    setActivity({ ...activity, end });
+    setEditActivity({ ...editActivity, end });
     setIsEndFilled(!!duration);
   };
+
+  // Function to convert duration in minutes to hours and minutes
+  const convertShowDurationToHoursAndMinutes = (duration: number) => {
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    const paddedHours = hours < 10 ? `0${hours}` : `${hours}`;
+    const paddedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    return `${paddedHours}:${paddedMinutes}`;
+  };
+
+  const calculatedDuration = convertShowDurationToHoursAndMinutes(showTimeDuration);
 
   // Function to handle the duration change
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +73,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
     setError('');
     if (!value) {
       // If duration becomes empty, set the end time to an empty string
-      setActivity({ ...activity, end: '' });
+      setEditActivity({ ...editActivity, end: endTime });
       setIsEndFilled(false);
       return;
     }
@@ -67,13 +84,15 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
         // Display an error message or handle it as needed
         setError('Fyll i minuter');
         setIsEndFilled(false);
-        return;}
+        return;
+      }
       const [hours, minutes] = value.split(':').map((val: string) => parseInt(val));
       // Validate hours and minutes
       if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && minutes >= 0 && minutes < 60) {
         // If input is in HH:mm format, calculate end time
         const duration = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-        calculateEndTime(activity.start, duration);
+        const formattedStart = dayjs(editActivity.start).format('YYYY-MM-DDTHH:mm');
+        calculateEndTime(formattedStart, duration);
         return;
         // Check if minutes are equal to or greater than 60
       } else if (minutes >= 60) {
@@ -87,7 +106,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
       const hours = parseInt(value);
       if (!isNaN(hours) && hours >= 0) {
         const duration = `${hours}:00`;
-        calculateEndTime(activity.start, duration);
+        calculateEndTime(editActivity.start, duration);
         return;
       }
     }
@@ -121,17 +140,17 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
             ampm={false}
             sx={{ ...sxDateTimePickerStyles }}
             slotProps={DateTimePropsStyles}
-            format='YYYY-MM-DD-HH:mm'
-            label='Starttid'
+            format='YYYY-MM-DD HH:mm'
+            label={'Starttid'}
             name='start'
-            value={activity.start || null}
+            value={editActivity.start}
             onChange={(date: any) => handleDateChange('start', date)}
           />
           <LengthStyled
             sx={{ ...sxDateTimePickerStyles }}
             name='duration'
-            value={activity.duration}
-            placeholder='Längd (HH:mm)'
+            value={editActivity.duration}
+            placeholder={calculatedDuration}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             inputProps={{
@@ -141,18 +160,24 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
         </LocalizationProvider>
       </DateTimePickerWrapper>
       {error === 'Fyll i minuter' && (
-        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px', color: `${Colors.attentionColor}` }}>
+        <ErrorStyled
+          style={{
+            height: '2px',
+            margin: '5px 0 7px 47%',
+            fontSize: '13px',
+            color: `${Colors.attentionColor}`,
+          }}
+        >
           {error}
         </ErrorStyled>
       )}
       {error === 'Minuter (0-59)' && (
-        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px' }}>
+        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize: '13px' }}>
           {error}
         </ErrorStyled>
-      
       )}
     </div>
   );
 };
 
-export default DateTimePickerComponent;
+export default EditDateTimePickerComponent;

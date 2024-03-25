@@ -1,9 +1,10 @@
+import { RegisterActivity } from '@/types/Activities';
 import { useState, useEffect } from 'react';
 
 export const useFormField = (initialValue: boolean) => {
-    const [value, setValue] = useState(initialValue);
-    return [value, setValue] as const;
-  };  
+  const [value, setValue] = useState(initialValue);
+  return [value, setValue] as const;
+};
 
 export const useAllFieldsFilled = (
   isStartFilled: boolean,
@@ -15,7 +16,7 @@ export const useAllFieldsFilled = (
   isPresenterFilled: boolean,
   showExternalPresenter: boolean,
   isExternalPresenterFilled: boolean,
-  activity: any
+  editActivity: RegisterActivity,
 ) => {
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
 
@@ -28,9 +29,21 @@ export const useAllFieldsFilled = (
           isDetailsFilled &&
           ((showPresenter && isPresenterFilled) ||
             (showExternalPresenter && isExternalPresenterFilled)) &&
-          (activity.presenter.length > 0 || activity.externalPresenter.length > 0))
+          (editActivity.presenter.length > 0 || editActivity.externalPresenter.length > 0)),
     );
-  }, [isStartFilled, isEndFilled, isTitleFilled, isDetailsFilled, showLocation, showPresenter, isPresenterFilled, showExternalPresenter, isExternalPresenterFilled, activity]);
+  }, [
+    isStartFilled,
+    isEndFilled,
+    isTitleFilled,
+    isDetailsFilled,
+    showLocation,
+    showPresenter,
+    isPresenterFilled,
+    showExternalPresenter,
+    isExternalPresenterFilled,
+    editActivity.presenter.length,
+    editActivity.externalPresenter.length,
+  ]);
 
   return isAllFieldsFilled;
 };

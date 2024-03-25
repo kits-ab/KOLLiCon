@@ -1,7 +1,7 @@
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import { types } from '@kokitotsos/react-components';
@@ -10,7 +10,7 @@ type TypeComponentProps = {
   TypeFormStyled: any;
   TypeSelectStyled: any;
   type: types.TimeslotType;
-  handleActivityInputChange: any;
+  handleActivityInputChange: (e: SelectChangeEvent<types.TimeslotType>) => void;
 };
 
 const TypeComponent: React.FC<TypeComponentProps> = ({
