@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 import { ActivityType } from '@/types/Activities';
 import { Location, Text, Timeslot } from '@kokitotsos/react-components';
 import Drawer from '@mui/material/Drawer';
@@ -10,21 +11,24 @@ import { useExpandInfo } from '../../utils/Hooks/useExpandInfo';
 import { getMapLink } from '../../utils/Helpers/getMapLink';
 import DialogContent from '@mui/material/DialogContent';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
-
+import EditActivity from '../EditActivity/EditActivityComponent';
+import Box from '@mui/material/Box';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { Colors } from '@/styles/Common/colors';
 interface ExpandInfoProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activityProp?: ActivityType;
+  activityProp?: ActivityType | any;
   scheduleProp?: Schedule;
-  setShowDeleteAndCancelButton?: (value: boolean) => void;
 }
-
 const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, scheduleProp }) => {
   const data = useExpandInfo({ activityProp, scheduleProp });
   const isDesktop = useMediaQuery('(min-width:600px)');
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   return (
-    <div style={{ width: '50%' }}>
+    <div>
+      {/** Expanded Timeslot */}
       <Drawer
         PaperProps={{
           overflow: 'hidden',
@@ -39,15 +43,36 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
         onClick={(event) => event.stopPropagation()}
         hideBackdrop={false}
       >
-        <IconButton
-          sx={{ justifyContent: 'start', maxWidth: '30px' }}
-          onClick={(event) => {
-            event.stopPropagation();
-            setOpen(false);
-          }}
-        >
-          <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
-        </IconButton>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignContent: 'flex-start' }}>
+          {/** Back button */}
+          <IconButton
+            sx={{ justifyContent: 'start', maxWidth: '30px' }}
+            onClick={(event) => {
+              event.stopPropagation();
+              setOpen(false);
+            }}
+          >
+            <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
+          </IconButton>
+          {/** Edit button */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <IconButton
+              style={{
+                color: '#DBDBD8',
+                maxWidth: '30px',
+                justifyContent: 'end',
+                marginRight: '3px',
+                padding: '0',
+              }}
+              onClick={() => setOpenEditModal(true)}
+            >
+              <EditIcon style={{ marginTop: '10px' }} />
+              <Text>
+                <h3 style={{ color: '#DBDBD8' }}>Redigera</h3>
+              </Text>
+            </IconButton>
+          </Box>
+        </Box>
         <DialogContent sx={{ padding: '0' }}>
           <StyledTimeslot>
             <Timeslot
@@ -76,8 +101,29 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
           </StyledTimeslot>
         </DialogContent>
       </Drawer>
+      {/** Edit mode drawer */}
+      <SwipeableDrawer
+        anchor='bottom'
+        open={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        onOpen={() => setOpenEditModal(true)}
+        onClick={(event) => event.stopPropagation()}
+        PaperProps={{
+          style: {
+            height: '100%',
+            overflow: 'scroll',
+            backgroundColor: `${Colors.primaryBackground}`,
+            borderRadius: '0',
+          },
+        }}
+      >
+        <EditActivity
+          activityProp={activityProp}
+          setOpenEditModal={setOpenEditModal}
+          openEditModal={openEditModal}
+        />
+      </SwipeableDrawer>
     </div>
   );
 };
-
 export default ExpandInfo;

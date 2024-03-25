@@ -233,7 +233,7 @@ export const InputStyled = styled(Input)`
   margin: 10px 7% 0 7%;
   padding: 0 0 0 12px;
   background-color: ${Colors.primaryBackground};
-  color: ${Colors.secondaryPlaceholder};
+  color: ${Colors.primaryPlaceholder};
   border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
   &.MuiInput-underline:after {
@@ -247,6 +247,7 @@ export const InputStyled = styled(Input)`
 export const LengthStyled = styled(InputStyled)`
   margin: 0% 6.5% 0 7%;
   padding: 0 0 0 12px;
+  color: ${Colors.othercolor};
 
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {

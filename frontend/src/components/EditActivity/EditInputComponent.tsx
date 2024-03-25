@@ -1,28 +1,29 @@
 import {  InputStyled, TextAreaStyled} from '@/styles/RegisterActivity/StyledActivity';
 import {ErrorStyled} from '../../styles/RegisterActivity/StyledActivity';
-import { RegisterActivity } from '@/types/Activities';
+import {RegisterActivity } from '../../types/Activities';
+
 
 type InputComponentProps = {
-    activity:   RegisterActivity;
-    error:  boolean | any;
-    setIsTitleFilled:   React.Dispatch<React.SetStateAction<boolean>> | any;
-    setIsDetailsFilled:   React.Dispatch<React.SetStateAction<boolean>> | any;
-    setTextError: React.Dispatch<React.SetStateAction<boolean>> | any;
-    setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
+  editActivity: RegisterActivity;
+    error?: boolean | any;
+    setIsTitleFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setIsDetailsFilled?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setTextError?: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setEditActivity?: React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
 }
 
-const InputComponent: React.FC<InputComponentProps> = ({
-  activity,
+const EditInputComponent: React.FC<InputComponentProps> = ({
+  editActivity,
   error,
   setIsTitleFilled,
   setTextError,
   setIsDetailsFilled,
-  setActivity,
+  setEditActivity,
 }) => {
     //Function to handle the input change for title and details
     const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
-      setActivity({ ...activity, [name]: value });
+      setEditActivity({ ...editActivity, [name]: value });
       if (name === 'details' && value.length > 2999) {
         setTextError(true);
         setIsDetailsFilled(!value);
@@ -39,14 +40,14 @@ const InputComponent: React.FC<InputComponentProps> = ({
       <InputStyled
         type='text'
         name='title'
-        placeholder='Titel'
-        value={activity.title}
+        placeholder={editActivity.title || 'Titel'}
+        value={editActivity.title}
         onChange={handleOnInputChange}
       />
       <TextAreaStyled
         name='details'
-        placeholder='Beskrivning'
-        value={activity.details}
+        placeholder={editActivity.details || 'Beskrivning'}
+        value={editActivity.details}
         onChange={handleOnInputChange}
         maxRows={3}
       />
@@ -55,4 +56,4 @@ const InputComponent: React.FC<InputComponentProps> = ({
   );
 };
 
-export default InputComponent;
+export default EditInputComponent;

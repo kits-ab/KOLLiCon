@@ -34,10 +34,11 @@ export type ReviewType = {
 
 //Types for RegisterActivity which can not include id.
 export type RegisterActivity = {
+  id?: number;
   schedule: number;
   userId: string;
   winner: boolean;
-  type: types.TimeslotType;
+  type: types.TimeslotType | '';
   presenter: RegisterPerson[];
   externalPresenter: RegisterPerson[];
   location: { title: string; coordinates: string; subtitle: string };
@@ -45,14 +46,16 @@ export type RegisterActivity = {
   details: string;
   start: string;
   end: string;
+  duration?: string;
 };
 
 export type RegisterPerson = {
+  id?: number;
   name: string;
   tagLine?: string;
   imageSrc?: string;
   imageSrcSet?: string;
-  avatarSrc?: string;
+  avatarSrc: string;
   avatarSrcSet?: string;
   href?: string;
   tags?: string[];
