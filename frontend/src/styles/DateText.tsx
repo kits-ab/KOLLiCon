@@ -1,12 +1,21 @@
 import styled from '@emotion/styled';
 import { fonts } from '@kokitotsos/react-components/dist/styles/constants';
 
-const DateText = styled.h2`
+interface DateTextProps {
+  gridrowStart?: number;
+}
+
+const DateText = styled.h2<DateTextProps>`
+  grid-row-start: ${({ gridrowStart }) => (gridrowStart ? gridrowStart - 1 : 1)};
+  grid-column-start: 1;
+  grid-column-end: 7;
+
   color: #bbbbbb;
   position: relative;
   text-align: center;
   font-family: ${fonts.thin};
   font-weight: 200;
+  margin-bottom: 0px;
 
   &::before,
   &::after {

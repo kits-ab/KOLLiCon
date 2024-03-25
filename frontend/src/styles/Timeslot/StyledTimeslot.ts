@@ -2,13 +2,9 @@ import styled from "@emotion/styled";
 import {Colors} from "../Common/colors";
 
 export const StyledTimeslot = styled('div')`
-    
-    // display: grid;
-    // justify-content: center;
-    // grid-template-columns: repeat(6, 1fr);
-    // grid-template-rows: repeat(12, 1fr);
-    // column-gap: 5%;
-    
+    height: 100%;
+    margin-top: 30px;
+    padding-bottom: 30px;
 
     & > section, 
     .MuiDialogContent-root > section {
@@ -110,7 +106,7 @@ ${({ numberOfParallellActivities, activityType }) => {
 //   overflow: auto;
   grid-template-columns: repeat(6, 1fr);
   // grid-auto-rows: 1fr;
-//   grid-template-rows: repeat(24, 4fr);
+    // grid-template-rows: repeat(192, 1fr);
   column-gap: 2%;
   // row-gap: 30px;
   // justify-items: center;

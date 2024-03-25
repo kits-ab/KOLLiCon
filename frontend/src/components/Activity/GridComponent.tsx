@@ -1,15 +1,14 @@
 import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
-import { getWeek } from 'date-fns';
-import Carousel from 'react-multi-carousel';
+import { format, getWeek } from 'date-fns';
 import 'react-multi-carousel/lib/styles.css';
-import { todo } from 'node:test';
+import { sv } from 'date-fns/locale/sv';
 
 interface GridComponentProps {
   activitiesData: ActivityType[];
@@ -22,13 +21,21 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
 
+  const MILLISECONDS_PER_MINUTE = 60000;
+  const MINUTES_PER_QUARTER = 15;
+  const QUARTERS_PER_HOUR = 4;
+  const HOURS_PER_DAY = 24;
+  const DAYS_PER_WEEK = 7;
+
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
   };
 
-  const sortedActivitesByDate = activitiesData.sort(
-    (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
-  );
+  const sortedActivitesByDate = useMemo(() => {
+    return activitiesData.sort(
+      (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
+    );
+  }, [activitiesData]);
 
   const calculateStartQuarter = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
@@ -41,6 +48,9 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     const endHour = new Date(activity.end).getHours();
     const endMinutes = new Date(activity.end).getMinutes();
     const endQuarter = endHour * 4 + Math.floor(endMinutes / 15);
+    if (activity.start.getDay() !== activity.end.getDay()) {
+      return Math.ceil(endQuarter) + 24 * 4;
+    }
     return Math.ceil(endQuarter);
   };
 
@@ -81,23 +91,18 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     return false;
   };
 
-  const getGridLayout = (
-    activity: ActivityType,
-    sortedActivitesByDate: ActivityType[],
-    separatedActivities: ActivityType[],
-  ) => {
+  const getGridLayout = (activity: ActivityType, filterdActivities: ActivityType[]) => {
     let gridRowStart = calculateStartQuarter(activity) + 1;
     let gridRowEnd = calculateEndQuarter(activity) + 1;
     let columnSpan = 0;
     let detailsSlice = 200;
-    let showEndTime = true;
     let numberOfParallellActivities = 1;
 
-    const startWeek = getWeek(sortedActivitesByDate[0].start);
+    const startWeek = getWeek(filterdActivities[0].start);
     const currentActivityWeek = getWeek(activity.start);
 
     // Calculate the number of days between the first activity and the current activity
-    const firstActivityDate = new Date(sortedActivitesByDate[0].start).getDay();
+    const firstActivityDate = new Date(filterdActivities[0].start).getDay();
     const currentActivityDate = new Date(activity.start).getDay();
     const diffDays = currentActivityDate - firstActivityDate;
 
@@ -106,16 +111,15 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
     gridRowEnd += diffDays * 24 * 4 + 1; // TODO: Check if this is correct
 
     if (currentActivityWeek > startWeek) {
-      console.log('weeks: ', currentActivityWeek - startWeek);
       gridRowStart += (currentActivityWeek - startWeek) * 7 * 24 * 4;
       gridRowEnd += (currentActivityWeek - startWeek) * 7 * 24 * 4;
     }
 
-    if (hasThreeOngoingActivities(activity, separatedActivities)) {
+    if (hasThreeOngoingActivities(activity, filterdActivities)) {
       columnSpan = 2;
       detailsSlice = 50;
       numberOfParallellActivities = 3;
-    } else if (hasOverlappingActivity(activity, separatedActivities)) {
+    } else if (hasOverlappingActivity(activity, filterdActivities)) {
       columnSpan = 3;
       detailsSlice = 100;
       numberOfParallellActivities = 2;
@@ -127,156 +131,104 @@ export const GridComponent: React.FC<GridComponentProps> = (props) => {
       gridRowEnd,
       columnSpan,
       detailsSlice,
-      showEndTime,
       numberOfParallellActivities,
     };
   };
 
-  const separateActivitiesByDate = (
-    sortedActivitesByDate: ActivityType[],
-  ): { [key: string]: ActivityType[] } => {
-    const separatedActivities: { [key: string]: ActivityType[] } = {};
-
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-
-    sortedActivitesByDate?.map((activity: ActivityType) => {
-      let date = activity.start.toLocaleDateString('sv-SE', options);
-      date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
-      const today = new Date();
-
-      if (activity.presenter === null) {
-        activity.presenter = [];
-      }
-      if (activity.review_id === null) {
-        activity.review_id = [];
-      }
-      if (!separatedActivities[date]) {
-        separatedActivities[date] = [];
-      }
-
-      const scheduleEndTime = new Date(scheduleTime);
-      if (today > scheduleEndTime) {
-        separatedActivities[date].push(activity);
-      } else {
-        if (today <= activity.end) {
-          separatedActivities[date].push(activity);
-        }
-      }
-    });
-
-    Object.keys(separatedActivities).map((date) => {
-      separatedActivities[date].sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
-      );
-    });
-    console.log('separatedActivities: ', separatedActivities);
-    return separatedActivities;
-  };
-
-  if (!sortedActivitesByDate) return null;
-  const separatedActivities = separateActivitiesByDate(sortedActivitesByDate);
-
-  interface MyTimeslotComponentProps {
-    activity: ActivityType;
-    detailsSlice: number;
-  }
-
-  const MyTimeslotComponent = (props: MyTimeslotComponentProps) => {
-    const { activity, detailsSlice } = props;
-    return (
-      <Timeslot
-        style={{ height: '100%' }}
-        presenters={getPresenter(activity)}
-        endTime={activity.end}
-        heading={activity.title}
-        startTime={activity.start}
-        type={activity.type}
-        showEndTime={true}
-        {...(activity.location.coordinates[0] !== 0
-          ? {
-              location: {
-                coordinates: activity.location.coordinates,
-                title: (activity.location.title as string) || 'Location',
-                subtitle: activity.location.subtitle,
-              },
-            }
-          : {})}
-      >
-        <p style={{ wordBreak: 'break-word' }}>{activity.details.slice(0, detailsSlice)}</p>
-      </Timeslot>
-    );
-  };
-
-  // Add a variable to keep track of the last rendered day
   let lastRenderedDay = 0;
+
+  const filterdActivities = sortedActivitesByDate.filter((activity) => {
+    const today = new Date();
+    const scheduleEndTime = new Date(scheduleTime);
+    if (today > scheduleEndTime) {
+      return true;
+    } else {
+      return today <= activity.end;
+    }
+  });
 
   return (
     <>
       <GridWrapper>
-        {separatedActivities &&
-          Object.keys(separatedActivities).map((date) => {
-            return separatedActivities[date].map((activity: ActivityType, index: number) => {
-              const {
-                gridRowStart,
-                gridRowEnd,
-                columnSpan,
-                detailsSlice,
-                numberOfParallellActivities,
-              } = getGridLayout(activity, sortedActivitesByDate, separatedActivities[date]);
+        {filterdActivities &&
+          filterdActivities.map((activity: ActivityType) => {
+            const {
+              gridRowStart,
+              gridRowEnd,
+              columnSpan,
+              detailsSlice,
+              numberOfParallellActivities,
+            } = getGridLayout(activity, filterdActivities);
 
-              // Get the day of the current activity
-              const currentDay = new Date(activity.start).getDate();
+            // Get the day of the current activity
+            const currentDay = new Date(activity.start).getDate();
 
-              // Check if the current day is different from the last rendered day
-              const isFirstActivityOfDay = currentDay !== lastRenderedDay;
+            // Check if the current day is different from the last rendered day
+            const isFirstActivityOfDay = currentDay !== lastRenderedDay;
 
-              // Update the last rendered day
-              lastRenderedDay = currentDay;
+            // Update the last rendered day
+            lastRenderedDay = currentDay;
 
-              return (
-                <React.Fragment key={index}>
-                  {isFirstActivityOfDay ? (
-                    <DateText
-                      style={{
-                        gridRowStart: gridRowStart - 1,
-                        gridColumnStart: 1,
-                        gridColumnEnd: 7,
-                      }}
-                    >
-                      {date}
-                    </DateText>
-                  ) : null}
-                  <a
-                    style={{
-                      cursor: 'pointer',
-                      gridRowStart,
-                      gridRowEnd,
-                      gridColumnStart: `auto`,
-                      gridColumnEnd: `span ${columnSpan}`,
-                    }}
-                    onClick={() => {
-                      setSelectedActivityId(activity.id);
-                      expandInfo();
-                    }}
+            return (
+              <React.Fragment key={activity.id}>
+                {isFirstActivityOfDay ? (
+                  <DateText gridrowStart={gridRowStart}>
+                    {format(new Date(activity.start), 'iiii', { locale: sv })
+                      .charAt(0)
+                      .toUpperCase() +
+                      format(new Date(activity.start), 'iiii', { locale: sv }).slice(1)}
+                  </DateText>
+                ) : null}
+                <a
+                  style={{
+                    cursor: 'pointer',
+                    gridRowStart,
+                    gridRowEnd,
+                    gridColumnStart: `auto`,
+                    gridColumnEnd: `span ${columnSpan}`,
+                  }}
+                  onClick={() => {
+                    setSelectedActivityId(activity.id);
+                    expandInfo();
+                  }}
+                >
+                  <TimeSlotWrapper
+                    activityType={activity.type}
+                    numberOfParallellActivities={numberOfParallellActivities}
                   >
-                    <TimeSlotWrapper
-                      activityType={activity.type}
-                      numberOfParallellActivities={numberOfParallellActivities}
-                      style={{ height: '100%', marginTop: `30px`, paddingBottom: `30px` }}
+                    <Timeslot
+                      style={{ height: '100%' }}
+                      presenters={getPresenter(activity)}
+                      endTime={activity.end}
+                      heading={activity.title}
+                      startTime={activity.start}
+                      type={activity.type}
+                      showEndTime={true}
+                      {...(activity.location.coordinates[0] !== 0
+                        ? {
+                            location: {
+                              coordinates: activity.location.coordinates,
+                              title: (activity.location.title as string) || 'Location',
+                              subtitle: activity.location.subtitle,
+                            },
+                          }
+                        : {})}
                     >
-                      <MyTimeslotComponent activity={activity} detailsSlice={detailsSlice} />
-                    </TimeSlotWrapper>
-                    {selectedActivityId === activity.id && (
-                      <ExpandInfo
-                        activityProp={activity}
-                        open={expandInfoOpen}
-                        setOpen={setExpandInfoOpen}
-                      />
-                    )}
-                  </a>
-                </React.Fragment>
-              );
-            });
+                      <p style={{ wordBreak: 'break-word' }}>
+                        {activity.details.slice(0, detailsSlice)}
+                      </p>
+                    </Timeslot>
+                  </TimeSlotWrapper>
+                  {selectedActivityId === activity.id && (
+                    <ExpandInfo
+                      activityProp={activity}
+                      open={expandInfoOpen}
+                      setOpen={setExpandInfoOpen}
+                    />
+                  )}
+                </a>
+              </React.Fragment>
+            );
           })}
       </GridWrapper>
     </>
