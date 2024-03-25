@@ -35,7 +35,7 @@ import { SelectChangeEvent } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import { Colors } from '../../styles/Common/colors';
-
+import Dialog from '@mui/material/Dialog';
 const backendIP = import.meta.env.VITE_API_URL;
 
 interface EditActivityProps {
@@ -75,6 +75,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
   const [showPresenter, setShowPresenter] = useFormField(false);
   const [showLocation, setShowLocation] = useFormField(false);
   const [showExternalPresenter, setShowExternalPresenter] = useFormField(false);
+  const [openAreYouSureModal, setOpenAreYouSureModal] = useFormField(false);
   // Check if all fields are filled
   const isAllFieldsFilled = useAllFieldsFilled(
     isStartFilled,
@@ -211,10 +212,15 @@ const EditActivity: React.FC<EditActivityProps> = ({
   };
 
   function handleDeleteActivity(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-
-    console.log('Run delete method')
-
+    event.preventDefault();
+    setOpenAreYouSureModal(true);
   }
+
+  const finalTermination = async (e: any) => {
+    e.preventDefault();
+    await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`);
+    window.location.reload();
+  };
 
   return (
     <GlobalBox>
@@ -222,7 +228,14 @@ const EditActivity: React.FC<EditActivityProps> = ({
       <Text>
         <HeaderEditStyled>
           <h3>Uppdatera aktivitiet</h3>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom:'-10px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: '-10px',
+            }}
+          >
             <Box
               onClick={handleDeleteActivity}
               sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
@@ -309,6 +322,35 @@ const EditActivity: React.FC<EditActivityProps> = ({
             </StyledDiv>
           </form>
         </EventsWrapper>
+        <Dialog
+          open={openAreYouSureModal}
+          onClose={() => setOpenAreYouSureModal(false)}
+          PaperProps={{ style: { backgroundColor: `${Colors.primaryBackground}` } }}
+        >
+          <Text>
+            <div style={{ position: 'relative', right: 20, padding: '20px' }}>
+              <h3 style={{ position: 'relative', left: 20, marginBottom: '20px', color: 'white' }}>
+                Vill du terminera aktiviteten?
+              </h3>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <SaveButton
+                  style={{ position: 'relative', left: 40, fontSize: '16px' }}
+                  onClick={finalTermination}
+                  color='error'
+                >
+                  Ja
+                </SaveButton>
+                <CancelButton
+                  style={{ position: 'relative', right: 3, fontSize: '16px' }}
+                  onClick={() => setOpenAreYouSureModal(false)}
+                  color='primary'
+                >
+                  Nej
+                </CancelButton>
+              </Box>
+            </div>
+          </Text>
+        </Dialog>
       </Text>
     </GlobalBox>
   );
