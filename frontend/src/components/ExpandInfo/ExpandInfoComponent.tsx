@@ -15,6 +15,7 @@ import EditActivity from '../EditActivity/EditActivityComponent';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
+import Testing from '../Testing';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -107,8 +108,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
       <SwipeableDrawer
         anchor='bottom'
         open={openEditModal}
-        onClose={() => setOpenEditModal(false)} 
-        onOpen={() => setOpenEditModal(true)} 
+        onClose={() => setOpenEditModal(false)}
+        onOpen={() => setOpenEditModal(true)}
         onClick={(event) => event.stopPropagation()}
         PaperProps={{
           style: {
@@ -121,7 +122,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
       >
         <EditActivity
           activityProp={activityProp}
-          setOpenEditModal={setOpenEditModal} 
+          setOpenEditModal={setOpenEditModal}
           openEditModal={openEditModal}
         />
       </SwipeableDrawer>
