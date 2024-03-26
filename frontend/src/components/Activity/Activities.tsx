@@ -175,7 +175,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
             return (
               <React.Fragment key={activity.id}>
-                {isFirstActivityOfDay ? (
+                {isFirstActivityOfDay && !hasOverlappingActivity(activity, filterdActivities) ? ( // Det här kommer inte fungera, vad händer om en dag startar med en parallell aktivitet?
                   <DateText gridrowStart={gridRowStart}>
                     {format(new Date(activity.start), 'iiii', { locale: sv })
                       .charAt(0)
