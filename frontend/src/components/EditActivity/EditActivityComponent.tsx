@@ -9,10 +9,7 @@ import EditTypeComponent from './EditKitsConTypeComponent';
 import { useExternalPresenter, usePresenter } from '@/utils/Hooks/RegisterActivity/usePresenter';
 import EditLocationComponent from './EditLocationComponent';
 import EditPresenterComponent from './EditPresenterComponent';
-import {
-  useAllFieldsFilled,
-  useFormField,
-} from '@/utils/Hooks/RegisterActivity/useAllFieldsFilled';
+import { useFormField } from '@/utils/Hooks/RegisterActivity/useAllFieldsFilled';
 import {
   DateTimePropsStyles,
   sxDateTimePickerStyles,
@@ -28,14 +25,17 @@ import {
   StyledLine1,
   TypeFormStyled,
   TypeSelectStyled,
-  HeaderEditStyled,
 } from '@/styles/RegisterActivity/StyledActivity';
 import EditExternalPresenterComponent from './EditExtraPresenterComponent';
 import { SelectChangeEvent } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Box from '@mui/material/Box';
-import { Colors } from '../../styles/Common/colors';
-import Dialog from '@mui/material/Dialog';
+import TerminateActivityDialog from './DeleteActivityDialog';
+import { fetchActivityToSetType } from '../../utils/Hooks/EditActivity/fetchActivityToSetType';
+import {
+  useActivityState,
+  handleActivityInputChange,
+} from '@/utils/Hooks/EditActivity/useActivityState';
+import { DeleteActivityBox } from './DeleteActivityBox';
+
 const backendIP = import.meta.env.VITE_API_URL;
 
 interface EditActivityProps {
@@ -51,6 +51,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
 }) => {
   const [endTime, setEndTime] = useState<RegisterActivity | null>(null);
   const [showTimeDuration, setShowTimeDuration] = useState<number>(0);
+  const [textError, setTextError] = useFormField(false);
   const [editActivity, setEditActivity] = useState({
     id: activityProp.id,
     schedule: 1,
@@ -66,30 +67,23 @@ const EditActivity: React.FC<EditActivityProps> = ({
     end: dayjs(activityProp.end),
   } as unknown as RegisterActivity);
 
-  const [isStartFilled, setIsStartFilled] = useFormField(true);
-  const [isEndFilled, setIsEndFilled] = useFormField(true);
-  const [isTitleFilled, setIsTitleFilled] = useFormField(true);
-  const [isDetailsFilled, setIsDetailsFilled] = useFormField(true);
-  const [isPresenterFilled, setIsPresenterFilled] = useFormField(true);
-  const [isExternalPresenterFilled, setIsExternalPresenterFilled] = useFormField(true);
-  const [showPresenter, setShowPresenter] = useFormField(false);
-  const [showLocation, setShowLocation] = useFormField(false);
-  const [showExternalPresenter, setShowExternalPresenter] = useFormField(false);
-  const [openAreYouSureModal, setOpenAreYouSureModal] = useFormField(false);
-  // Check if all fields are filled
-  const isAllFieldsFilled = useAllFieldsFilled(
-    isStartFilled,
-    isEndFilled,
-    isTitleFilled,
-    isDetailsFilled,
-    showLocation,
+  const {
+    setIsStartFilled,
+    setIsEndFilled,
+    setIsTitleFilled,
+    setIsDetailsFilled,
+    setIsPresenterFilled,
+    setIsExternalPresenterFilled,
     showPresenter,
-    isPresenterFilled,
+    setShowPresenter,
+    showLocation,
+    setShowLocation,
     showExternalPresenter,
-    isExternalPresenterFilled,
-    editActivity,
-  );
-  const [textError, setTextError] = useFormField(false);
+    setShowExternalPresenter,
+    openApproveModal,
+    setOpenApproveModal,
+    isAllFieldsFilled,
+  } = useActivityState();
 
   const {
     presenter,
@@ -107,89 +101,30 @@ const EditActivity: React.FC<EditActivityProps> = ({
     addExternalPresenter,
     setExternalPresenter,
   } = useExternalPresenter();
-  //Function to handle the presenter change
-  function handleActivityInputChange(e: SelectChangeEvent<types.TimeslotType>) {
-    const { name, value } = e.target;
-    if (name === 'type' && value) {
-      setEditActivity({ ...editActivity, type: value as types.TimeslotType });
 
-      if (value === types.TimeslotType.Presentation) {
-        setShowPresenter(true);
-        setShowLocation(false);
-        setShowExternalPresenter(false);
-      } else if (
-        value === types.TimeslotType.Airplane ||
-        value === types.TimeslotType.Boat ||
-        value === types.TimeslotType.Bus ||
-        value === types.TimeslotType.CheckIn ||
-        value === types.TimeslotType.Coffee ||
-        value === types.TimeslotType.Drink ||
-        value === types.TimeslotType.Food ||
-        value === types.TimeslotType.Hotel ||
-        value === types.TimeslotType.Running ||
-        value === types.TimeslotType.Skiing ||
-        value === types.TimeslotType.Train ||
-        value === types.TimeslotType.Workshop ||
-        value === types.TimeslotType.Location
-      ) {
-        setShowPresenter(false);
-        setShowExternalPresenter(false);
-        setShowLocation(true);
-      } else if (value === types.TimeslotType.ExternalPresentation) {
-        setShowPresenter(false);
-        setShowExternalPresenter(true);
-        setShowLocation(false);
-      }
-    }
+  // Function to handle the change of the type of the activity
+  function handleInputChange(e: SelectChangeEvent<types.TimeslotType>) {
+    handleActivityInputChange(
+      e,
+      setEditActivity,
+      setShowPresenter,
+      setShowLocation,
+      setShowExternalPresenter,
+      editActivity,
+    );
   }
 
-  // Fetch activity data, set it to the state, and calculate the duration
+  // Fetch the activity to set the type of the activity
   useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const response = await axios.get(`${backendIP}/api/activity/${activityProp.id}`);
-        const fetchedActivity = response.data;
-        const durationInMinutes = dayjs(fetchedActivity.end).diff(
-          dayjs(fetchedActivity.start),
-          'minutes',
-        );
-        setEditActivity(response.data);
-        setEndTime(response.data);
-        setShowTimeDuration(durationInMinutes);
-
-        // Set showPresenter, showExternalPresenter, and showLocation based on fetchedActivity.type
-        if (fetchedActivity.type === types.TimeslotType.Presentation) {
-          setShowPresenter(true);
-          setShowLocation(false);
-          setShowExternalPresenter(false);
-        } else if (
-          fetchedActivity.type === types.TimeslotType.Airplane ||
-          fetchedActivity.type === types.TimeslotType.Boat ||
-          fetchedActivity.type === types.TimeslotType.Bus ||
-          fetchedActivity.type === types.TimeslotType.CheckIn ||
-          fetchedActivity.type === types.TimeslotType.Coffee ||
-          fetchedActivity.type === types.TimeslotType.Drink ||
-          fetchedActivity.type === types.TimeslotType.Food ||
-          fetchedActivity.type === types.TimeslotType.Hotel ||
-          fetchedActivity.type === types.TimeslotType.Running ||
-          fetchedActivity.type === types.TimeslotType.Skiing ||
-          fetchedActivity.type === types.TimeslotType.Train ||
-          fetchedActivity.type === types.TimeslotType.Workshop ||
-          fetchedActivity.type === types.TimeslotType.Location
-        ) {
-          setShowPresenter(false);
-          setShowExternalPresenter(false);
-          setShowLocation(true);
-        } else if (fetchedActivity.type === types.TimeslotType.ExternalPresentation) {
-          setShowPresenter(false);
-          setShowExternalPresenter(true);
-          setShowLocation(false);
-        }
-      } catch (error) {
-        console.error('Error fetching activity:', error);
-      }
-    };
-    fetchActivity();
+    fetchActivityToSetType(
+      activityProp as unknown as RegisterActivity,
+      setEditActivity,
+      setEndTime,
+      setShowTimeDuration,
+      setShowPresenter,
+      setShowExternalPresenter,
+      setShowLocation,
+    );
   }, [openEditModal]);
 
   // Function to submit the form
@@ -213,42 +148,23 @@ const EditActivity: React.FC<EditActivityProps> = ({
 
   function handleDeleteActivity(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     event.preventDefault();
-    setOpenAreYouSureModal(true);
+    setOpenApproveModal(true);
   }
 
-  const finalTermination = async (e: any) => {
-    e.preventDefault();
-    await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`);
-    window.location.reload();
+  const finalTermination = async () => {
+    try {
+      await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error terminating activity:', error);
+    }
   };
 
   return (
     <GlobalBox>
       <GlobalStyles />
       <Text>
-        <HeaderEditStyled>
-          <h3>Uppdatera aktivitiet</h3>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: '-10px',
-            }}
-          >
-            <Box
-              onClick={handleDeleteActivity}
-              sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-            >
-              <DeleteIcon
-                style={{ color: `${Colors.primaryDeleteButton}`, marginTop: '5px', width: '20' }}
-              />
-              <Text>
-                <h4 style={{ marginBottom: '20px' }}>Ta bort</h4>
-              </Text>
-            </Box>
-          </Box>
-        </HeaderEditStyled>
+         <DeleteActivityBox handleDeleteActivity={handleDeleteActivity} />
         <StyledLine />
         <EventsWrapper>
           <form onSubmit={handleSubmit}>
@@ -257,7 +173,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
                 TypeFormStyled={TypeFormStyled}
                 TypeSelectStyled={TypeSelectStyled}
                 type={editActivity.type as types.TimeslotType}
-                handleActivityInputChange={handleActivityInputChange}
+                handleActivityInputChange={handleInputChange}
               />
 
               <EditDateTimePickerComponent
@@ -322,35 +238,11 @@ const EditActivity: React.FC<EditActivityProps> = ({
             </StyledDiv>
           </form>
         </EventsWrapper>
-        <Dialog
-          open={openAreYouSureModal}
-          onClose={() => setOpenAreYouSureModal(false)}
-          PaperProps={{ style: { backgroundColor: `${Colors.primaryBackground}` } }}
-        >
-          <Text>
-            <div style={{ position: 'relative', right: 20, padding: '20px' }}>
-              <h3 style={{ position: 'relative', left: 20, marginBottom: '20px', color: 'white' }}>
-                Vill du terminera aktiviteten?
-              </h3>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <SaveButton
-                  style={{ position: 'relative', left: 40, fontSize: '16px' }}
-                  onClick={finalTermination}
-                  color='error'
-                >
-                  Ja
-                </SaveButton>
-                <CancelButton
-                  style={{ position: 'relative', right: 3, fontSize: '16px' }}
-                  onClick={() => setOpenAreYouSureModal(false)}
-                  color='primary'
-                >
-                  Nej
-                </CancelButton>
-              </Box>
-            </div>
-          </Text>
-        </Dialog>
+        <TerminateActivityDialog
+          open={openApproveModal}
+          onClose={() => setOpenApproveModal(false)}
+          onTerminate={finalTermination}
+        />
       </Text>
     </GlobalBox>
   );

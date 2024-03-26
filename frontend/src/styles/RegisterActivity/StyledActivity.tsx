@@ -143,6 +143,7 @@ export const AddButton = styled(Button)({
 });
 
 export const DeleteButton = styled(Button)({
+  margin:'2px',
   width: '60px',
   fontSize: '13px',
   backgroundColor: `${Colors.primaryDeleteButton}`,
