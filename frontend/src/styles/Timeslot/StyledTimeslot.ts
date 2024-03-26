@@ -102,12 +102,13 @@ ${({ numberOfParallellActivities, activityType }) => {
 
   export const GridWrapper = styled.div`
   display: grid;
+  align-items: stretch;
   justify-content: center;
-//   overflow: auto;
   grid-template-columns: repeat(6, 1fr);
-  // grid-auto-rows: 1fr;
-    // grid-template-rows: repeat(192, 1fr);
   column-gap: 2%;
+  // overflow: auto;
+  // grid-auto-rows: 1fr;
+  // grid-template-rows: repeat(192, 1fr);
   // row-gap: 30px;
   // justify-items: center;
   // & > h1 {
