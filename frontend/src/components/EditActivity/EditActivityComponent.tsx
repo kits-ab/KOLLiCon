@@ -35,7 +35,6 @@ import {
   handleActivityInputChange,
 } from '@/utils/Hooks/EditActivity/useActivityState';
 import { DeleteActivityBox } from './DeleteActivityBox';
-
 const backendIP = import.meta.env.VITE_API_URL;
 
 interface EditActivityProps {
@@ -143,6 +142,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
   };
   //Function to close the modal
   const handleCloseModal = () => {
+    resetActivity();
     setOpenEditModal(false);
   };
 
@@ -160,6 +160,19 @@ const EditActivity: React.FC<EditActivityProps> = ({
     }
   };
 
+  const resetActivity = () => {
+    setEditActivity({
+      type: editActivity.type,
+      location: { title: editActivity.location.title , subtitle: editActivity.location.subtitle, coordinates: editActivity.location.coordinates },
+      presenter: editActivity.presenter,
+      externalPresenter: editActivity.externalPresenter,
+      title: editActivity.title,
+      details: editActivity.details,
+      start: dayjs(activityProp.start),
+      end: dayjs(activityProp.end),
+    } as unknown as RegisterActivity);
+  };
+
   return (
     <GlobalBox>
       <GlobalStyles />
@@ -175,18 +188,16 @@ const EditActivity: React.FC<EditActivityProps> = ({
                 type={editActivity.type as types.TimeslotType}
                 handleActivityInputChange={handleInputChange}
               />
-
-              <EditDateTimePickerComponent
-                sxDateTimePickerStyles={sxDateTimePickerStyles}
-                DateTimePropsStyles={DateTimePropsStyles}
-                editActivity={editActivity}
-                setEditActivity={setEditActivity}
-                setIsEndFilled={setIsEndFilled}
-                setIsStartFilled={setIsStartFilled}
-                endTime={endTime?.end}
-                showTimeDuration={showTimeDuration}
-              />
-
+                <EditDateTimePickerComponent
+                  sxDateTimePickerStyles={sxDateTimePickerStyles}
+                  DateTimePropsStyles={DateTimePropsStyles}
+                  editActivity={editActivity}
+                  setEditActivity={setEditActivity}
+                  setIsEndFilled={setIsEndFilled}
+                  setIsStartFilled={setIsStartFilled}
+                  endTime={endTime?.end}
+                  showTimeDuration={showTimeDuration}
+                />
               <EditInputComponent
                 editActivity={editActivity}
                 setEditActivity={setEditActivity}
