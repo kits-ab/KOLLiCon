@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ActivityType, RegisterActivity } from '@/types/Activities';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { GlobalStyles, types } from '@kokitotsos/react-components';
+import { GlobalStyles, Text, types } from '@kokitotsos/react-components';
 import EditDateTimePickerComponent from './EditDateTimePickerComponent';
 import EditInputComponent from './EditInputComponent';
 import EditTypeComponent from './EditKitsConTypeComponent';
@@ -22,17 +22,20 @@ import {
   CancelButton,
   EventsWrapper,
   GlobalBox,
-  HeaderStyled,
   SaveButton,
   StyledDiv,
   StyledLine,
   StyledLine1,
   TypeFormStyled,
   TypeSelectStyled,
+  HeaderEditStyled,
 } from '@/styles/RegisterActivity/StyledActivity';
 import EditExternalPresenterComponent from './EditExtraPresenterComponent';
 import { SelectChangeEvent } from '@mui/material';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import { Colors } from '../../styles/Common/colors';
+import Dialog from '@mui/material/Dialog';
 const backendIP = import.meta.env.VITE_API_URL;
 
 interface EditActivityProps {
@@ -72,7 +75,8 @@ const EditActivity: React.FC<EditActivityProps> = ({
   const [showPresenter, setShowPresenter] = useFormField(false);
   const [showLocation, setShowLocation] = useFormField(false);
   const [showExternalPresenter, setShowExternalPresenter] = useFormField(false);
-
+  const [openAreYouSureModal, setOpenAreYouSureModal] = useFormField(false);
+  // Check if all fields are filled
   const isAllFieldsFilled = useAllFieldsFilled(
     isStartFilled,
     isEndFilled,
@@ -103,7 +107,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
     addExternalPresenter,
     setExternalPresenter,
   } = useExternalPresenter();
-
+  //Function to handle the presenter change
   function handleActivityInputChange(e: SelectChangeEvent<types.TimeslotType>) {
     const { name, value } = e.target;
     if (name === 'type' && value) {
@@ -152,7 +156,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
         setEditActivity(response.data);
         setEndTime(response.data);
         setShowTimeDuration(durationInMinutes);
-  
+
         // Set showPresenter, showExternalPresenter, and showLocation based on fetchedActivity.type
         if (fetchedActivity.type === types.TimeslotType.Presentation) {
           setShowPresenter(true);
@@ -207,83 +211,147 @@ const EditActivity: React.FC<EditActivityProps> = ({
     setOpenEditModal(false);
   };
 
+  function handleDeleteActivity(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    event.preventDefault();
+    setOpenAreYouSureModal(true);
+  }
+
+  const finalTermination = async (e: any) => {
+    e.preventDefault();
+    await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`);
+    window.location.reload();
+  };
+
   return (
     <GlobalBox>
       <GlobalStyles />
-      <HeaderStyled style={{ marginTop: '27px' }}>Uppdatera aktivitiet</HeaderStyled>
-      <StyledLine />
-      <EventsWrapper>
-        <form onSubmit={handleSubmit}>
-          <StyledDiv>
-            <EditTypeComponent
-              TypeFormStyled={TypeFormStyled}
-              TypeSelectStyled={TypeSelectStyled}
-              type={editActivity.type as types.TimeslotType}
-              handleActivityInputChange={handleActivityInputChange}
-            />
-
-            <EditDateTimePickerComponent
-              sxDateTimePickerStyles={sxDateTimePickerStyles}
-              DateTimePropsStyles={DateTimePropsStyles}
-              editActivity={editActivity}
-              setEditActivity={setEditActivity}
-              setIsEndFilled={setIsEndFilled}
-              setIsStartFilled={setIsStartFilled}
-              endTime={endTime?.end}
-              showTimeDuration={showTimeDuration}
-            />
-
-            <EditInputComponent
-              editActivity={editActivity}
-              setEditActivity={setEditActivity}
-              setIsTitleFilled={setIsTitleFilled}
-              setIsDetailsFilled={setIsDetailsFilled}
-              setTextError={setTextError}
-              error={textError}
-            />
-            {showLocation && editActivity.location.coordinates !== '' && (
-              <EditLocationComponent
-                setEditActivity={setEditActivity}
-                editActivity={editActivity}
-                StoredCoords={activityProp?.location?.coordinates}
+      <Text>
+        <HeaderEditStyled>
+          <h3>Uppdatera aktivitiet</h3>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: '-10px',
+            }}
+          >
+            <Box
+              onClick={handleDeleteActivity}
+              sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+            >
+              <DeleteIcon
+                style={{ color: `${Colors.primaryDeleteButton}`, marginTop: '5px', width: '20' }}
               />
-            )}
+              <Text>
+                <h4 style={{ marginBottom: '20px' }}>Ta bort</h4>
+              </Text>
+            </Box>
+          </Box>
+        </HeaderEditStyled>
+        <StyledLine />
+        <EventsWrapper>
+          <form onSubmit={handleSubmit}>
+            <StyledDiv>
+              <EditTypeComponent
+                TypeFormStyled={TypeFormStyled}
+                TypeSelectStyled={TypeSelectStyled}
+                type={editActivity.type as types.TimeslotType}
+                handleActivityInputChange={handleActivityInputChange}
+              />
 
-            {showPresenter && (
-              <EditPresenterComponent
-                presenter={presenter}
-                suggestions={suggestions}
-                presenterError={presenterError}
-                handlePresenterChange={handlePresenterChange}
-                handleSuggestionClick={handleSuggestionClick}
+              <EditDateTimePickerComponent
+                sxDateTimePickerStyles={sxDateTimePickerStyles}
+                DateTimePropsStyles={DateTimePropsStyles}
                 editActivity={editActivity}
                 setEditActivity={setEditActivity}
-                setPresenter={setPresenter}
-                setIsPresenterFilled={setIsPresenterFilled}
-                addPresenter={addPresenter}
+                setIsEndFilled={setIsEndFilled}
+                setIsStartFilled={setIsStartFilled}
+                endTime={endTime?.end}
+                showTimeDuration={showTimeDuration}
               />
-            )}
-            {showExternalPresenter && (
-              <EditExternalPresenterComponent
-                externalPresenter={externalPresenter}
-                handleExternalPresenterChange={handleExternalPresenterChange}
+
+              <EditInputComponent
                 editActivity={editActivity}
                 setEditActivity={setEditActivity}
-                setIsExternalPresenterFilled={setIsExternalPresenterFilled}
-                addExternalPresenter={addExternalPresenter}
-                setExternalPresenter={setExternalPresenter}
+                setIsTitleFilled={setIsTitleFilled}
+                setIsDetailsFilled={setIsDetailsFilled}
+                setTextError={setTextError}
+                error={textError}
               />
-            )}
-            <StyledLine1 />
-            <BoxWrapper1>
-              <SaveButton type='submit' id='spara-button' disabled={!isAllFieldsFilled}>
-                Uppdatera
-              </SaveButton>
-              <CancelButton onClick={handleCloseModal}>Avbryt</CancelButton>
-            </BoxWrapper1>
-          </StyledDiv>
-        </form>
-      </EventsWrapper>
+              {showLocation && editActivity.location.coordinates !== '' && (
+                <EditLocationComponent
+                  setEditActivity={setEditActivity}
+                  editActivity={editActivity}
+                  StoredCoords={activityProp?.location?.coordinates}
+                />
+              )}
+
+              {showPresenter && (
+                <EditPresenterComponent
+                  presenter={presenter}
+                  suggestions={suggestions}
+                  presenterError={presenterError}
+                  handlePresenterChange={handlePresenterChange}
+                  handleSuggestionClick={handleSuggestionClick}
+                  editActivity={editActivity}
+                  setEditActivity={setEditActivity}
+                  setPresenter={setPresenter}
+                  setIsPresenterFilled={setIsPresenterFilled}
+                  addPresenter={addPresenter}
+                />
+              )}
+              {showExternalPresenter && (
+                <EditExternalPresenterComponent
+                  externalPresenter={externalPresenter}
+                  handleExternalPresenterChange={handleExternalPresenterChange}
+                  editActivity={editActivity}
+                  setEditActivity={setEditActivity}
+                  setIsExternalPresenterFilled={setIsExternalPresenterFilled}
+                  addExternalPresenter={addExternalPresenter}
+                  setExternalPresenter={setExternalPresenter}
+                />
+              )}
+              <StyledLine1 />
+              <BoxWrapper1>
+                <CancelButton onClick={handleCloseModal}>Avbryt</CancelButton>
+                <SaveButton type='submit' id='spara-button' disabled={!isAllFieldsFilled}>
+                  Uppdatera
+                </SaveButton>
+              </BoxWrapper1>
+            </StyledDiv>
+          </form>
+        </EventsWrapper>
+        <Dialog
+          open={openAreYouSureModal}
+          onClose={() => setOpenAreYouSureModal(false)}
+          PaperProps={{ style: { backgroundColor: `${Colors.primaryBackground}` } }}
+        >
+          <Text>
+            <div style={{ position: 'relative', right: 20, padding: '20px' }}>
+              <h3 style={{ position: 'relative', left: 20, marginBottom: '20px', color: 'white' }}>
+                Vill du terminera aktiviteten?
+              </h3>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <SaveButton
+                  style={{ position: 'relative', left: 40, fontSize: '16px' }}
+                  onClick={finalTermination}
+                  color='error'
+                >
+                  Ja
+                </SaveButton>
+                <CancelButton
+                  style={{ position: 'relative', right: 3, fontSize: '16px' }}
+                  onClick={() => setOpenAreYouSureModal(false)}
+                  color='primary'
+                >
+                  Nej
+                </CancelButton>
+              </Box>
+            </div>
+          </Text>
+        </Dialog>
+      </Text>
     </GlobalBox>
   );
 };
