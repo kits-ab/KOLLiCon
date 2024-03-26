@@ -35,7 +35,7 @@ export type ReviewType = {
 export type RegisterActivity = {
   id?: number;
   schedule: number;
-  userId: string;
+  userId?: string;
   winner: boolean;
   type: types.TimeslotType | '';
   presenter: RegisterPerson[];
