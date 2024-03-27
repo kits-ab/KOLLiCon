@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,6 +15,7 @@ import EditActivity from '../EditActivity/EditActivityComponent';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
+import { useUser } from '@/utils/Authorization/Auth';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -27,6 +28,26 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
   const data = useExpandInfo({ activityProp, scheduleProp });
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [openEditModal, setOpenEditModal] = useState(false);
+  const { isAdmin, email} = useUser();
+  const [isUserPresenter, setGrantedUser] = useState(false);
+  const [isUserGranted, setUserGrandted] = useState(false);
+
+  useEffect(() => {
+    if (isAdmin) {
+      setGrantedUser(true);
+    } else if (activityProp) {
+      if (activityProp.type === 'presentation' && activityProp.presenter) {
+        const presenterEmails = activityProp.presenter.map((presenter: { email: string; }) => presenter.email);
+        if (presenterEmails.includes(email)) {
+          setGrantedUser(true);
+        }
+      } else if (activityProp.userId === email) {
+        setUserGrandted(true);
+      } else {
+        setUserGrandted(false);
+      }
+    }
+  }, [isAdmin, activityProp, email]);
 
   return (
     <div>
@@ -57,24 +78,28 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
             <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
           </IconButton>
           {/** Edit button */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <IconButton
-              style={{
-                color: '#DBDBD8',
-                maxWidth: '30px',
-                justifyContent: 'end',
-                marginRight: '3px',
-                padding: '0',
-              }}
-              onClick={() => setOpenEditModal(true)}
-            >
-              <EditIcon style={{ marginTop: '10px' }} />
-              <Text>
-                <h3 style={{ color: '#DBDBD8' }}>Redigera</h3>
-              </Text>
-            </IconButton>
-          </Box>
+
+          {isAdmin || isUserPresenter || isUserGranted  ? (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                style={{
+                  color: '#DBDBD8',
+                  maxWidth: '30px',
+                  justifyContent: 'end',
+                  marginRight: '3px',
+                  padding: '0',
+                }}
+                onClick={() => setOpenEditModal(true)}
+              >
+                <EditIcon style={{ marginTop: '10px' }} />
+                <Text>
+                  <h3 style={{ color: '#DBDBD8' }}>Redigera</h3>
+                </Text>
+              </IconButton>
+            </Box>
+          ) : null}
         </Box>
+        
         <DialogContent sx={{ padding: '0' }}>
           <StyledTimeslot>
             <Timeslot
@@ -107,8 +132,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
       <SwipeableDrawer
         anchor='bottom'
         open={openEditModal}
-        onClose={() => setOpenEditModal(false)} 
-        onOpen={() => setOpenEditModal(true)} 
+        onClose={() => setOpenEditModal(false)}
+        onOpen={() => setOpenEditModal(true)}
         onClick={(event) => event.stopPropagation()}
         PaperProps={{
           style: {
@@ -121,7 +146,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
       >
         <EditActivity
           activityProp={activityProp}
-          setOpenEditModal={setOpenEditModal} 
+          setOpenEditModal={setOpenEditModal}
           openEditModal={openEditModal}
         />
       </SwipeableDrawer>

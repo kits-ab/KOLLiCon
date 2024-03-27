@@ -24,7 +24,7 @@ type PresenterProps = {
   setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
   addPresenter:   () => Promise<RegisterActivity['presenter'][number] | undefined>;
   setIsPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
-  setPresenter:   React.Dispatch<React.SetStateAction<RegisterPerson>>;
+  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string, email: string }>>;
 };
 
 const PresenterComponent: React.FC<PresenterProps> = ({
@@ -67,6 +67,7 @@ const PresenterComponent: React.FC<PresenterProps> = ({
       setPresenter({
         name: '',
         avatarSrc: '',
+        email: '',
       });
     }
   };
