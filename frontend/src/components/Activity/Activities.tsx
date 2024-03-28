@@ -22,7 +22,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
 
   const MILLISECONDS_PER_MINUTE = 60000;
-  const MINUTES_PER_HOUR = 60;
+  const FIVE_MINUTES_INTERVALL = 12;
   const HOURS_PER_DAY = 24;
   const DAYS_PER_WEEK = 7;
 
@@ -39,7 +39,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const calculateStartRow = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
     const startMinutes = new Date(activity.start).getMinutes();
-    const startRow = startHour * MINUTES_PER_HOUR + Math.floor(startMinutes);
+    const startRow = startHour * FIVE_MINUTES_INTERVALL + Math.floor(startMinutes / 5);
     return Math.ceil(startRow);
   };
   // Calculate the end row of the activity
@@ -50,31 +50,32 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     }
 
     const endMinutes = new Date(activity.end).getMinutes();
-    const endRow = endHour * MINUTES_PER_HOUR + Math.floor(endMinutes);
+    const endRow = endHour * FIVE_MINUTES_INTERVALL + Math.floor(endMinutes / 5);
     if (activity.start.getDay() !== activity.end.getDay()) {
-      return Math.ceil(endRow) + HOURS_PER_DAY * MINUTES_PER_HOUR;
+      return Math.ceil(endRow) + HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
     }
     return Math.ceil(endRow);
   };
 
-  // // Check if the activity overlaps with any other activity
-  // const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
-  //   return activities.some(
-  //     (otherActivity) =>
-  //       otherActivity !== activity &&
-  //       otherActivity.start.getTime() < activity.end.getTime() &&
-  //       otherActivity.end.getTime() > activity.start.getTime(),
-  //   );
-  // };
+  // Check if the activity overlaps with any other activity
+  const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
+    return activities.some(
+      (otherActivity) =>
+        otherActivity !== activity &&
+        otherActivity.start.getTime() < activity.end.getTime() &&
+        otherActivity.end.getTime() > activity.start.getTime() &&
+        otherActivity.start.getDay() === activity.start.getDay() &&
+        otherActivity.end.getDay() === activity.end.getDay(),
+    );
+  };
 
-  const hasThreeOngoingActivities = (activity: ActivityType, activities: ActivityType[]) => {
+  const getNumberOfOverlappingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
-    let returnValue = 0;
+    let overlappingActivities = new Set();
 
     // Iterate over each minute in the duration of the activity
     for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE) {
-      let overlappingActivities = 0;
       // Check if there are three or more activities that overlap with the current time
       for (let otherActivity of activities) {
         if (otherActivity !== activity) {
@@ -82,21 +83,24 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           const otherEnd = otherActivity.end.getTime();
 
           if (otherStart < time && otherEnd > time) {
-            overlappingActivities++;
+            overlappingActivities.add(otherActivity);
+
             if (
-              otherActivity.start.getDay() !== activity.start.getDay() &&
-              otherActivity.start.getDay() !== activity.end.getDay()
+              otherActivity.start.getDay() !== activity.start.getDay() ||
+              otherActivity.end.getDay() !== activity.end.getDay()
             ) {
-              overlappingActivities--;
+              overlappingActivities.delete(otherActivity);
             }
           }
         }
       }
-      returnValue = overlappingActivities;
     }
-    console.log('overlappingActivities', activity.title, returnValue);
-    return returnValue;
+    console.log(activity.title, 'overlappingActivities', overlappingActivities.size);
+    return overlappingActivities.size;
   };
+
+  // TODO: Den senare aktiviteten vid överlappning får span 6 columns
+  // denna körs två gånger för varje överlappning, en gång för varje aktivitet som överlappar
 
   const getGridLayout = (activity: ActivityType, filterdActivities: ActivityType[]) => {
     let gridRowStart = calculateStartRow(activity) + 1;
@@ -114,22 +118,22 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     const diffDays = currentActivityDate - firstActivityDate;
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * HOURS_PER_DAY * MINUTES_PER_HOUR + 1;
-    gridRowEnd += diffDays * HOURS_PER_DAY * MINUTES_PER_HOUR + 1; // TODO: Check if this is correct
+    gridRowStart += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL + 1;
+    gridRowEnd += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL + 1; // TODO: Check if this is correct
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of weeks difference
     if (currentActivityWeek > startWeek) {
       gridRowStart +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
+        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
       gridRowEnd +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
+        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
     }
     // Change the layout based on the number of parallell activities
-    if (hasThreeOngoingActivities(activity, filterdActivities) === 2) {
+    if (getNumberOfOverlappingActivities(activity, filterdActivities) === 2) {
       columnSpan = 2;
       detailsSlice = 50;
       numberOfParallellActivities = 3;
-    } else if (hasThreeOngoingActivities(activity, filterdActivities) === 1) {
+    } else if (hasOverlappingActivity(activity, filterdActivities)) {
       columnSpan = 3;
       detailsSlice = 100;
       numberOfParallellActivities = 2;
