@@ -57,24 +57,24 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     return Math.ceil(endRow);
   };
 
-  // Check if the activity overlaps with any other activity
-  const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
-    return activities.some(
-      (otherActivity) =>
-        otherActivity !== activity &&
-        otherActivity.start.getTime() < activity.end.getTime() &&
-        otherActivity.end.getTime() > activity.start.getTime(),
-    );
-  };
+  // // Check if the activity overlaps with any other activity
+  // const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
+  //   return activities.some(
+  //     (otherActivity) =>
+  //       otherActivity !== activity &&
+  //       otherActivity.start.getTime() < activity.end.getTime() &&
+  //       otherActivity.end.getTime() > activity.start.getTime(),
+  //   );
+  // };
 
   const hasThreeOngoingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
+    let returnValue = 0;
 
     // Iterate over each minute in the duration of the activity
     for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE) {
       let overlappingActivities = 0;
-
       // Check if there are three or more activities that overlap with the current time
       for (let otherActivity of activities) {
         if (otherActivity !== activity) {
@@ -83,18 +83,19 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
           if (otherStart < time && otherEnd > time) {
             overlappingActivities++;
-          }
-          if (activity.start.getDay() !== activity.end.getDay()) {
-            overlappingActivities--;
-          }
-          if (overlappingActivities >= 2) {
-            return true;
+            if (
+              otherActivity.start.getDay() !== activity.start.getDay() &&
+              otherActivity.start.getDay() !== activity.end.getDay()
+            ) {
+              overlappingActivities--;
+            }
           }
         }
       }
+      returnValue = overlappingActivities;
     }
-
-    return false;
+    console.log('overlappingActivities', activity.title, returnValue);
+    return returnValue;
   };
 
   const getGridLayout = (activity: ActivityType, filterdActivities: ActivityType[]) => {
@@ -124,11 +125,11 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
         (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
     }
     // Change the layout based on the number of parallell activities
-    if (hasThreeOngoingActivities(activity, filterdActivities)) {
+    if (hasThreeOngoingActivities(activity, filterdActivities) === 2) {
       columnSpan = 2;
       detailsSlice = 50;
       numberOfParallellActivities = 3;
-    } else if (hasOverlappingActivity(activity, filterdActivities)) {
+    } else if (hasThreeOngoingActivities(activity, filterdActivities) === 1) {
       columnSpan = 3;
       detailsSlice = 100;
       numberOfParallellActivities = 2;
