@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
@@ -33,12 +33,23 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   showTimeDuration,
 }) => {
   const [error, setError] = React.useState<string>('');
+  const [placeholder, setPlaceholder] = useState<string>('');
+  useEffect(() => {
+    const calculatedDuration = convertShowDurationToHoursAndMinutes(showTimeDuration);
+    setPlaceholder(calculatedDuration);
+    if (showTimeDuration === 0){
+      setError('');
+      setIsEndFilled(true);
+    }
+  }, [showTimeDuration]);
 
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
     const formattedDate = dayjs(date).format('YYYY-MM-DDTHH:mm');
     setEditActivity({ ...editActivity, [name]: formattedDate });
-
+    setIsEndFilled(false);
+    setError('Fyll i längd');
+    setPlaceholder('Längd (HH:mm)');
     if (name === 'start') {
       setIsStartFilled(!!date);
       // Calculate end time when start time changes
@@ -64,8 +75,6 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
     const paddedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
     return `${paddedHours}:${paddedMinutes}`;
   };
-
-  const calculatedDuration = convertShowDurationToHoursAndMinutes(showTimeDuration);
 
   // Function to handle the duration change
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +159,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
             sx={{ ...sxDateTimePickerStyles }}
             name='duration'
             value={editActivity.duration}
-            placeholder={calculatedDuration}
+            placeholder={placeholder}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             inputProps={{
@@ -175,6 +184,18 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
         <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize: '13px' }}>
           {error}
         </ErrorStyled>
+      )}
+      {error === 'Fyll i längd' && (
+        <ErrorStyled
+        style={{
+          height: '2px',
+          margin: '5px 0 7px 47%',
+          fontSize: '13px',
+          color: `${Colors.attentionColor}`,
+        }}
+      >
+        {error}
+      </ErrorStyled>
       )}
     </div>
   );

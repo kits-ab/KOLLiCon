@@ -171,6 +171,7 @@ const EditActivity: React.FC<EditActivityProps> = ({
       start: dayjs(activityProp.start),
       end: dayjs(activityProp.end),
     } as unknown as RegisterActivity);
+    setShowTimeDuration(0);
   };
 
   return (
