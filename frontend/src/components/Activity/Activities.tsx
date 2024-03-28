@@ -6,7 +6,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
-import { format, getWeek } from 'date-fns';
+import { format, getWeek, setDate, setDay, setHours } from 'date-fns';
 import 'react-multi-carousel/lib/styles.css';
 import { sv } from 'date-fns/locale/sv';
 
@@ -39,19 +39,24 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const calculateStartRow = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
     const startMinutes = new Date(activity.start).getMinutes();
-    const startQuarter = startHour * MINUTES_PER_HOUR + Math.floor(startMinutes);
-    return Math.ceil(startQuarter);
+    const startRow = startHour * MINUTES_PER_HOUR + Math.floor(startMinutes);
+    return Math.ceil(startRow);
   };
   // Calculate the end row of the activity
   const calculateEndRow = (activity: ActivityType) => {
-    const endHour = new Date(activity.end).getHours();
-    const endMinutes = new Date(activity.end).getMinutes();
-    const endQuarter = endHour * MINUTES_PER_HOUR + Math.floor(endMinutes);
+    let endHour = new Date(activity.end).getHours();
     if (activity.start.getDay() !== activity.end.getDay()) {
-      return Math.ceil(endQuarter) + HOURS_PER_DAY * MINUTES_PER_HOUR;
+      endHour = setDay(new Date(activity.start).getDay(), 23).getHours();
     }
-    return Math.ceil(endQuarter);
+
+    const endMinutes = new Date(activity.end).getMinutes();
+    const endRow = endHour * MINUTES_PER_HOUR + Math.floor(endMinutes);
+    if (activity.start.getDay() !== activity.end.getDay()) {
+      return Math.ceil(endRow) + HOURS_PER_DAY * MINUTES_PER_HOUR;
+    }
+    return Math.ceil(endRow);
   };
+
   // Check if the activity overlaps with any other activity
   const hasOverlappingActivity = (activity: ActivityType, activities: ActivityType[]) => {
     return activities.some(
@@ -79,7 +84,9 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           if (otherStart < time && otherEnd > time) {
             overlappingActivities++;
           }
-
+          if (activity.start.getDay() !== activity.end.getDay()) {
+            overlappingActivities--;
+          }
           if (overlappingActivities >= 2) {
             return true;
           }
@@ -175,7 +182,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
             return (
               <React.Fragment key={activity.id}>
-                {isFirstActivityOfDay && !hasOverlappingActivity(activity, filterdActivities) ? ( // Det här kommer inte fungera, vad händer om en dag startar med en parallell aktivitet?
+                {isFirstActivityOfDay ? (
                   <DateText gridrowStart={gridRowStart}>
                     {format(new Date(activity.start), 'iiii', { locale: sv })
                       .charAt(0)
