@@ -12,13 +12,13 @@ import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 import axios from 'axios';
-import { RegisterActivity } from '@/types/Activities';
+import { RegisterActivity, RegisterPerson } from '@/types/Activities';
 import Box from '@mui/material/Box';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
 type PresenterProps = {
-  presenter: { name: string; avatarSrc: string };
+  presenter: RegisterPerson;
   suggestions:  { title: string }[];
   presenterError: string;
   handlePresenterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,7 +27,7 @@ type PresenterProps = {
   setEditActivity: React.Dispatch<React.SetStateAction<RegisterActivity>>;
   addPresenter: () => Promise<RegisterActivity['presenter'][number] | undefined>;
   setIsPresenterFilled: React.Dispatch<React.SetStateAction<boolean>>;
-  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string }>>;
+  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string, email: string }>>;
 };
 
 const EditPresenterComponent: React.FC<PresenterProps> = ({
@@ -78,6 +78,7 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
       setPresenter({
         name: '',
         avatarSrc: '',
+        email: '',
       });
     }
   };
