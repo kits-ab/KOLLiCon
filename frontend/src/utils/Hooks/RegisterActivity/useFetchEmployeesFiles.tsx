@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 export function useFetchFiles() {
@@ -44,9 +44,9 @@ export function useFetchFiles() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   fetchFiles();
-  // }, [fetchFiles]);
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
 
   return { EmployeesFiles, fetchFiles };
 }

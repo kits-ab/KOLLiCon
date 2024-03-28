@@ -3,11 +3,9 @@ import { useQuery } from 'react-query';
 import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
-import { useFetchFiles } from './RegisterActivity/useFetchEmployeesFiles';
 
 function useSchedule(): [[], Date] {
   const [scheduleTime, setScheduleTime] = useState<Date>(new Date());
-  const {fetchFiles} = useFetchFiles(); 
   const backendIP = import.meta.env.VITE_API_URL;
 
   const fetchData = async (): Promise<Schedule> => {
@@ -22,7 +20,6 @@ function useSchedule(): [[], Date] {
         activity.location.coordinates = coorNumberArray;
         return activity as ActivityType;
       });
-      fetchFiles();
       setScheduleTime(response.data.end);
       setActivitiesData(response.data.activityId);
       return response.data as Schedule;
