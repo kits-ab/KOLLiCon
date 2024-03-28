@@ -9,6 +9,7 @@ import { Text } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
 import { Global } from '@emotion/react';
+import UserProfile from '../Dashboard/UserProfile';
 
 import {
   LogoutChildPart,
@@ -31,6 +32,7 @@ function MenuDrawer(props: Props) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
+  const [displayUserProfile, setDisplayUserProfile] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -45,11 +47,16 @@ function MenuDrawer(props: Props) {
     SetDisplay(true);
   };
 
+  const openUserrProfile = () => {
+    setDisplayUserProfile(true);
+  };
+
   const handleMenuItemClick = (label: string) => {
     switch (label) {
       case 'Schema':
         break;
       case 'Min profil':
+        openUserrProfile();
         break;
       case 'Tidigare KitsCons':
         break;
@@ -64,6 +71,7 @@ function MenuDrawer(props: Props) {
   return (
     <>
       {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
+      {displayUserProfile && <UserProfile setDisplayUserProfile={setDisplayUserProfile} setOpen />}
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {

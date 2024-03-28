@@ -145,10 +145,11 @@ function ExportFileUI({ onClose }: { onClose: any }) {
         </div>
 
         <DialogActions style={{ marginRight: 'auto', marginTop: '20px' }}>
-          <CancelButton style={{ left: '70%' }} autoFocus onClick={onClose}>
+          <CancelButton style={{ left: '115%' }} autoFocus onClick={onClose}>
             Close
           </CancelButton>
           <SaveButton
+            style={{ left: '10%' }}
             onClick={() => {
               onClose();
               createYamlobjects();
