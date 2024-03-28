@@ -77,8 +77,8 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
           >
             <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
           </IconButton>
+          
           {/** Edit button */}
-
           {isAdmin || isUserPresenter || isUserGranted  ? (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
