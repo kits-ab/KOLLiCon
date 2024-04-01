@@ -29,7 +29,7 @@ const MenuDiv = styled('div')(() => ({
 }));
 
 const menuItems = [
-  { label: 'Schema' },
+  { label: 'Skapa Schema' },
   { label: 'Min profil' },
   { label: 'Tidigare KitsCons' },
   { label: 'Exportera Markdownfil' },

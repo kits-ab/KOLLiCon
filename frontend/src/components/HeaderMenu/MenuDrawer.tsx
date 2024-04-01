@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Beer from '@/assets/BearWithMe.png';
@@ -19,6 +19,7 @@ import {
   drawerBleeding,
 } from '@/styles/MenuStyles/StylesForMenu';
 import { Colors } from '@/styles/Common/colors';
+import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
 
 interface Props {
   window?: () => Window;
@@ -31,6 +32,7 @@ function MenuDrawer(props: Props) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
+  const [openScheduleModal, setOpenScheduleModal] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -45,9 +47,15 @@ function MenuDrawer(props: Props) {
     SetDisplay(true);
   };
 
+  const openModal = () => {
+    SetDisplay(false);
+    setOpenScheduleModal(true);
+  };
+
   const handleMenuItemClick = (label: string) => {
     switch (label) {
-      case 'Schema':
+      case 'Skapa Schema':
+        openModal();
         break;
       case 'Min profil':
         break;
@@ -63,6 +71,7 @@ function MenuDrawer(props: Props) {
 
   return (
     <>
+      {/** Export Modal */}
       {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
       <Global
         styles={{
@@ -116,8 +125,8 @@ function MenuDrawer(props: Props) {
               </MenuItem>
             ))}
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
-              <div
-                style={{
+              <Box
+                sx={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -139,7 +148,7 @@ function MenuDrawer(props: Props) {
                 <MenuItem style={{ fontSize: '1.1rem', color: `${Colors.primaryText}` }}>
                   BeerWithMe
                 </MenuItem>
-              </div>
+              </Box>
             </Link>
           </Text>
         </MenuDiv>
@@ -163,6 +172,13 @@ function MenuDrawer(props: Props) {
           </Typography>
         </LogoutChildPart>
       </SwipeableDrawer>
+
+      {/** Schedule Modal */}
+      <ScheduleComponent
+        onClose={() => setOpenScheduleModal(false)}
+        onOpen={openModal}
+        openScheduleModal={openScheduleModal}
+      />
     </>
   );
 }
