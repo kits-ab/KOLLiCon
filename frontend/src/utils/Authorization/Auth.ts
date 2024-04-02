@@ -27,7 +27,8 @@ export const useUser = () => {
         'alireza.h.khan@hotmail.com',
         'magnusolsson1994@hotmail.se',
         'Chris.wall@live.com',
-        'johan_bengtsson89@outlook.com'
+        'johan_bengtsson89@outlook.com',
+        // 'emir.zivcic@kits.se'
       ];
 
       try {

@@ -28,26 +28,31 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
   const data = useExpandInfo({ activityProp, scheduleProp });
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [openEditModal, setOpenEditModal] = useState(false);
-  const { isAdmin, email} = useUser();
-  const [isUserPresenter, setGrantedUser] = useState(false);
+  const { isAdmin, email } = useUser();
+  const [isUserPresenter, setUserPresenter] = useState(false);
   const [isUserGranted, setUserGrandted] = useState(false);
 
   useEffect(() => {
-    if (isAdmin) {
-      setGrantedUser(true);
-    } else if (activityProp) {
-      if (activityProp.type === 'presentation' && activityProp.presenter) {
-        const presenterEmails = activityProp.presenter.map((presenter: { email: string; }) => presenter.email);
-        if (presenterEmails.includes(email)) {
-          setGrantedUser(true);
+    // Check if the user is a presenter
+    if (email) {
+      if (activityProp) {
+        if (activityProp.type === 'presentation' && activityProp.presenter) {
+          const presenterEmails = activityProp.presenter.map(
+            (presenter: { email: string }) => presenter.email,
+          );
+          if (presenterEmails.includes(email)) {
+            setUserPresenter(true);
+          }
         }
-      } else if (activityProp.userId === email) {
+      }
+      // Check if the user is granted
+      if (activityProp.userId === email) {
         setUserGrandted(true);
       } else {
         setUserGrandted(false);
       }
     }
-  }, [isAdmin, activityProp, email]);
+  }, [isAdmin, data, email]);
 
   return (
     <div>
@@ -77,9 +82,9 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
           >
             <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
           </IconButton>
-          
+
           {/** Edit button */}
-          {isAdmin || isUserPresenter || isUserGranted  ? (
+          {isAdmin || isUserPresenter || isUserGranted ? (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 style={{
@@ -99,7 +104,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
             </Box>
           ) : null}
         </Box>
-        
+
         <DialogContent sx={{ padding: '0' }}>
           <StyledTimeslot>
             <Timeslot
