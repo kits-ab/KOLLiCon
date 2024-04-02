@@ -6,7 +6,7 @@ import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
-import { format, getWeek, setDate, setDay, setHours } from 'date-fns';
+import { format, getWeek, setDay } from 'date-fns';
 import 'react-multi-carousel/lib/styles.css';
 import { sv } from 'date-fns/locale/sv';
 
@@ -48,7 +48,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     if (activity.start.getDay() !== activity.end.getDay()) {
       endHour = setDay(new Date(activity.start).getDay(), 23).getHours();
     }
-
     const endMinutes = new Date(activity.end).getMinutes();
     const endRow = endHour * FIVE_MINUTES_INTERVALL + Math.floor(endMinutes / 5);
     if (activity.start.getDay() !== activity.end.getDay()) {
@@ -72,10 +71,11 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const getNumberOfOverlappingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
-    let overlappingActivities = new Set();
+    // let overlappingActivities = new Set();
 
     // Iterate over each minute in the duration of the activity
     for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE) {
+      let overlappingActivities = 0;
       // Check if there are three or more activities that overlap with the current time
       for (let otherActivity of activities) {
         if (otherActivity !== activity) {
@@ -83,20 +83,23 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           const otherEnd = otherActivity.end.getTime();
 
           if (otherStart < time && otherEnd > time) {
-            overlappingActivities.add(otherActivity);
+            overlappingActivities++;
 
             if (
               otherActivity.start.getDay() !== activity.start.getDay() ||
               otherActivity.end.getDay() !== activity.end.getDay()
             ) {
-              overlappingActivities.delete(otherActivity);
+              overlappingActivities--;
             }
           }
         }
+        if (overlappingActivities >= 2) {
+          return true;
+        }
       }
     }
-    console.log(activity.title, 'overlappingActivities', overlappingActivities.size);
-    return overlappingActivities.size;
+
+    return false;
   };
 
   // TODO: Den senare aktiviteten vid överlappning får span 6 columns
@@ -129,7 +132,8 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
         (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
     }
     // Change the layout based on the number of parallell activities
-    if (getNumberOfOverlappingActivities(activity, filterdActivities) === 2) {
+    if (getNumberOfOverlappingActivities(activity, filterdActivities)) {
+      // TODO: Det här fungerar inte när en aktivitet överlappar med fler än en men inte samtidigt
       columnSpan = 2;
       detailsSlice = 50;
       numberOfParallellActivities = 3;
