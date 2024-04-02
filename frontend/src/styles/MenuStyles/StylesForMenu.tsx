@@ -28,12 +28,6 @@ const MenuDiv = styled('div')(() => ({
   marginTop: '20px',
 }));
 
-const menuItems = [
-  { label: 'Skapa Schema' },
-  { label: 'Min profil' },
-  { label: 'Tidigare KitsCons' },
-  { label: 'Exportera Markdownfil' },
-];
 const MenuItem = styled('p')(() => ({
   textAlign: 'center',
   fontSize: '1.1rem',
@@ -64,7 +58,6 @@ export {
   LogoutChildPart,
   Root,
   MenuDiv,
-  menuItems,
   MenuItem,
   FixedMenuIcon,
   drawerBleeding,
