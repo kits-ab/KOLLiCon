@@ -3,17 +3,22 @@ import { useProfilePictureExists } from '@/utils/Helpers/RegisterActivity/CheckP
 import { useProfilePictureUrl } from '@/utils/Helpers/RegisterActivity/GetProfilePicture';
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 
+type EmployeesFiles = {
+  title: string;
+  email: string | any;
+};
 export const usePresenter = () => {
   const [presenter, setPresenter] = useState({
     name: '',
     avatarSrc: '',
+    email: '',
   });
   const [presenterError, setError] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<EmployeesFiles[]>([]);
 
   const getProfilePictureUrl = useProfilePictureUrl();
   const profilePictureExists = useProfilePictureExists();
-  const { EmployeesFiles } = useFetchFiles();
+  const { EmployeesFiles }: {EmployeesFiles: EmployeesFiles[]} = useFetchFiles();
 
   //Function to handle the presenter change
   const handlePresenterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -24,6 +29,7 @@ export const usePresenter = () => {
       const filteredTitles = EmployeesFiles.filter((file: { title: string }) =>
         file.title.toLowerCase().startsWith(value.toLowerCase()),
       );
+      console.log(EmployeesFiles)
       // Update suggestions state with filtered titles
       setSuggestions(filteredTitles);
     } else {
@@ -39,6 +45,7 @@ export const usePresenter = () => {
       ...presenter,
       name: selectedTitle,
       avatarSrc: getProfilePictureUrl(selectedTitle),
+      email: EmployeesFiles.find((file: { title: string }) => file.title === selectedTitle)?.email
     });
     // Clear suggestions
     setSuggestions([]);

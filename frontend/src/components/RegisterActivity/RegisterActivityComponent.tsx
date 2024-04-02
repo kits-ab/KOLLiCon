@@ -7,6 +7,7 @@ import TypeComponent from './KitsConTypeComponent';
 import DateTimePickerComponent from './DatetimePickerComponent';
 import InputComponent from './InputComponent';
 import { useActivityInput } from '../../utils/Hooks/RegisterActivity/useActivityInput';
+import { useUser } from '@/utils/Authorization/Auth';
 import {
   sxDateTimePickerStyles,
   DateTimePropsStyles,
@@ -36,6 +37,7 @@ import {
 const backendIP = import.meta.env.VITE_API_URL;
 
 function Activity({ onClose }: any) {
+  const {email} = useUser();
   const [isStartFilled, setIsStartFilled] = useFormField(false);
   const [isEndFilled, setIsEndFilled] = useFormField(false);
   const [isTitleFilled, setIsTitleFilled] = useFormField(false);
@@ -92,7 +94,7 @@ function Activity({ onClose }: any) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const activityData = { ...activity, location: location };
+      const activityData = { ...activity, location: location, userId: email };
 
       await axios.post(`${backendIP}/api/activity`, activityData);
       window.location.reload();

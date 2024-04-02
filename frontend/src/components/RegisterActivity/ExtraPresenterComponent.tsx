@@ -17,7 +17,7 @@ type ExtraPresenterProps = {
   setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
   setIsExternalPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
   addExternalPresenter:   () => void;
-  setExternalPresenter: React.Dispatch<React.SetStateAction<{name: string; avatarSrc:string}>>;
+  setExternalPresenter: React.Dispatch<React.SetStateAction<RegisterPerson>>;
 };
 
 const ExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
