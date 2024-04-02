@@ -58,4 +58,5 @@ export type RegisterPerson = {
   avatarSrcSet?: string;
   href?: string;
   tags?: string[];
+  email?: string;
 };
