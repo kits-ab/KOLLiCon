@@ -7,7 +7,6 @@ import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
 import { format, getWeek, setDay } from 'date-fns';
-import 'react-multi-carousel/lib/styles.css';
 import { sv } from 'date-fns/locale/sv';
 
 interface ActivitiesProps {
@@ -22,7 +21,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
 
   const MILLISECONDS_PER_MINUTE = 60000;
-  const FIVE_MINUTES_INTERVALL = 12;
+  const FIVE_MINUTES_INTERVAL = 12;
   const HOURS_PER_DAY = 24;
   const DAYS_PER_WEEK = 7;
 
@@ -39,7 +38,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const calculateStartRow = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
     const startMinutes = new Date(activity.start).getMinutes();
-    const startRow = startHour * FIVE_MINUTES_INTERVALL + Math.floor(startMinutes / 5);
+    const startRow = startHour * FIVE_MINUTES_INTERVAL + Math.floor(startMinutes / 5);
     return Math.ceil(startRow);
   };
   // Calculate the end row of the activity
@@ -49,9 +48,9 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
       endHour = setDay(new Date(activity.start).getDay(), 23).getHours();
     }
     const endMinutes = new Date(activity.end).getMinutes();
-    const endRow = endHour * FIVE_MINUTES_INTERVALL + Math.floor(endMinutes / 5);
+    const endRow = endHour * FIVE_MINUTES_INTERVAL + Math.floor(endMinutes / 5);
     if (activity.start.getDay() !== activity.end.getDay()) {
-      return Math.ceil(endRow) + HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
+      return Math.ceil(endRow) + HOURS_PER_DAY * FIVE_MINUTES_INTERVAL;
     }
     return Math.ceil(endRow);
   };
@@ -68,7 +67,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     );
   };
 
-  const getNumberOfOverlappingActivities = (activity: ActivityType, activities: ActivityType[]) => {
+  const hasThreeOverLappingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
     // let overlappingActivities = new Set();
@@ -121,18 +120,18 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     const diffDays = currentActivityDate - firstActivityDate;
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL + 1;
-    gridRowEnd += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL + 1; // TODO: Check if this is correct
+    gridRowStart += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL + 1;
+    gridRowEnd += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL + 1; // TODO: Check if this is correct
 
     // Adjust the gridRowStart and gridRowEnd values based on the number of weeks difference
     if (currentActivityWeek > startWeek) {
       gridRowStart +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
+        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL;
       gridRowEnd +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVALL;
+        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL;
     }
     // Change the layout based on the number of parallell activities
-    if (getNumberOfOverlappingActivities(activity, filterdActivities)) {
+    if (hasThreeOverLappingActivities(activity, filterdActivities)) {
       // TODO: Det här fungerar inte när en aktivitet överlappar med fler än en men inte samtidigt
       columnSpan = 2;
       detailsSlice = 50;
