@@ -1,37 +1,26 @@
 import React from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
-import { Logotype, Contact, Avatar, types, Image } from '@kokitotsos/react-components';
-
+import { Logotype, Contact, types, Image } from '@kokitotsos/react-components';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Typography from '@mui/material/Typography';
+import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
-import { useProfilePictureUrl } from '@/utils/Helpers/RegisterActivity/GetProfilePicture';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
   const [open, setOpen] = React.useState(false);
   const { EmployeesFiles } = useFetchFiles();
-  const { email, name, signOut } = useUser();
-  const randomName = 'philip.lu@kits.se';
+  const { email, signOut } = useUser();
+  const randomName = email;
   const [profileName, setProfileName] = React.useState<string>('Default name');
   const [profilePhoneNumber, setProfilePhoneNumber] = React.useState<string>('1111111111');
   const [profileEmail, setProfileEmail] = React.useState<string>('Default');
   const [profilePicture, setProfilePicture] = React.useState<string>('img.jpg');
 
-  //const { getProfilePictureUrl } = useProfilePictureUrl();
-
   const closeUserProfile = () => {
     setDisplayUserProfile(false);
-  };
-
-  const show = () => {
-    console.log('Login data');
-    console.log(email, name);
-
-    console.log('Fetched data from EmployeesFiles');
-    console.log(profileName);
-    console.log(profileEmail);
-    console.log(profilePhoneNumber);
-    console.log(profilePicture);
   };
 
   React.useEffect(() => {
@@ -67,17 +56,24 @@ function UserProfile(props: any) {
         variant='temporary'
         sx={{ width: '100%' }}
       >
-        <button onClick={closeUserProfile}>close</button>
+        <ArrowBackIosIcon
+          sx={{ color: '#DBDBD8', position: 'relative', bottom: 1 }}
+          onClick={closeUserProfile}
+        ></ArrowBackIosIcon>
         <div
           style={{
-            backgroundColor: 'green',
+            backgroundColor: '#596B4D',
             width: '100%',
             height: '170px',
             position: 'absolute',
             top: 60,
             left: -1,
           }}
-        ></div>
+        >
+          <div style={{ position: 'relative', left: 250, top: 35 }}>
+            <Logotype color='#E3E3E3' width={130} />
+          </div>
+        </div>
         <Image
           href='#'
           src={profilePicture}
@@ -98,14 +94,25 @@ function UserProfile(props: any) {
             type={0}
           />
         </div>
-        <button
-          onClick={() => {
-            signOut();
-          }}
+        <LogoutChildPart
+          style={{ position: 'fixed', height: '100px', width: '100%', bottom: 0, right: 0 }}
         >
-          Ut me mig
-        </button>
-        <button onClick={() => show()}>what the fuck</button>
+          <ExitToAppIcon
+            cursor='pointer'
+            onClick={() => {
+              signOut();
+            }}
+          />
+          <Typography
+            component='div'
+            style={{ padding: '20px 0 20px 0' }}
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Logout
+          </Typography>
+        </LogoutChildPart>
       </SwipeableDrawer>
     </>
   );
