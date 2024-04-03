@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Beer from '@/assets/BearWithMe.png';
 import Typography from '@mui/material/Typography';
-import { signOut } from '@/utils/Authorization/Auth';
+import { signOut, useUser } from '@/utils/Authorization/Auth';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Text } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
@@ -13,12 +13,12 @@ import { Global } from '@emotion/react';
 import {
   LogoutChildPart,
   MenuDiv,
-  menuItems,
   MenuItem,
   FixedMenuIcon,
   drawerBleeding,
 } from '@/styles/MenuStyles/StylesForMenu';
 import { Colors } from '@/styles/Common/colors';
+import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
 
 interface Props {
   window?: () => Window;
@@ -31,6 +31,12 @@ function MenuDrawer(props: Props) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
+  const [openScheduleModal, setOpenScheduleModal] = useState(false);
+  const { isAdmin } = useUser();
+
+  const menuItems = isAdmin
+    ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
+    : ['Min profil', 'Tidigare KitsCons',];
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -45,9 +51,15 @@ function MenuDrawer(props: Props) {
     SetDisplay(true);
   };
 
+  const openModal = () => {
+    SetDisplay(false);
+    setOpenScheduleModal(true);
+  };
+
   const handleMenuItemClick = (label: string) => {
     switch (label) {
-      case 'Schema':
+      case 'Skapa Schema':
+        openModal();
         break;
       case 'Min profil':
         break;
@@ -63,6 +75,7 @@ function MenuDrawer(props: Props) {
 
   return (
     <>
+      {/** Export Modal */}
       {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
       <Global
         styles={{
@@ -100,24 +113,24 @@ function MenuDrawer(props: Props) {
       >
         <MenuDiv>
           <Text>
-            {menuItems.map((menuItem, index) => (
+            {menuItems.map((menuItem) => (
               <MenuItem
-                key={index}
-                onClick={() => handleMenuItemClick(menuItem.label)}
+                key={menuItem}
+                onClick={() => handleMenuItemClick(menuItem)}
                 style={{
                   textAlign: 'center',
                   fontSize: '1.1rem',
-                  margin: '13px 0 13px 0',
+                  margin: '13px 0',
                   cursor: 'pointer',
                   color: `${Colors.primaryText}`,
                 }}
               >
-                {menuItem.label}
+                {menuItem}
               </MenuItem>
             ))}
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
-              <div
-                style={{
+              <Box
+                sx={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -139,7 +152,7 @@ function MenuDrawer(props: Props) {
                 <MenuItem style={{ fontSize: '1.1rem', color: `${Colors.primaryText}` }}>
                   BeerWithMe
                 </MenuItem>
-              </div>
+              </Box>
             </Link>
           </Text>
         </MenuDiv>
@@ -163,6 +176,13 @@ function MenuDrawer(props: Props) {
           </Typography>
         </LogoutChildPart>
       </SwipeableDrawer>
+
+      {/** Schedule Modal */}
+      <ScheduleComponent
+        onClose={() => setOpenScheduleModal(false)}
+        onOpen={openModal}
+        openScheduleModal={openScheduleModal}
+      />
     </>
   );
 }

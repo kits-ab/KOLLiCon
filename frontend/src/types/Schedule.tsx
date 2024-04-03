@@ -13,3 +13,15 @@ export type Schedule = {
   end: Date;
   active: boolean;
 };
+export type CreateSchedule = {
+  userId: string;
+  title: string;
+  type: string;
+  tagLine: string;
+  description: string;
+  imageURL: string;
+  location: string;
+  active: boolean;
+  start: string;
+  end: string;
+};
