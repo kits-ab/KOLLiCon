@@ -16,6 +16,8 @@ import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { useUser } from '@/utils/Authorization/Auth';
+import PostReview from '@/utils/Hooks/useReview';
+import Activity from '../RegisterActivity/RegisterActivityComponent';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -131,6 +133,9 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
               </div>
             )}
           </StyledTimeslot>
+          {data.type === 'presentation' && (
+            <PostReview activityId={activityProp.id} comment='Halloj' rating={3} userId='5' />
+          )}
         </DialogContent>
       </Drawer>
       {/** Edit mode drawer */}
