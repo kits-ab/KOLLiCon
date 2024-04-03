@@ -51,7 +51,7 @@ export const useUser = () => {
     };
     fetchUser();
   }, []);
-  return { isAdmin, email, name };
+  return { isAdmin, email, name, signOut };
 };
 
 export const signinRedirect = () => userManager.signinRedirect();
