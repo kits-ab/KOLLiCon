@@ -14,12 +14,6 @@ export function useProfilePictureUrl() {
     },
     [replaceSpecialCharacters],
   );
-  const sayHello = () => {
-    console.log('HELLO FROM GETPROFILEPICTUREW!');
-  };
-  const AddTen = (value: any) => {
-    return value + 10;
-  };
 
-  return { getProfilePictureUrl, replaceSpecialCharacters, sayHello, AddTen };
+  return { getProfilePictureUrl, replaceSpecialCharacters };
 }
