@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import { Logotype, Contact, Avatar, types, Image } from '@kokitotsos/react-components';
-import axios from 'axios';
 
 import { useUser } from '@/utils/Authorization/Auth';
 
@@ -11,7 +10,7 @@ import { useProfilePictureUrl } from '@/utils/Helpers/RegisterActivity/GetProfil
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
   const [open, setOpen] = React.useState(false);
-  // const { EmployeesFiles } = useFetchFiles(); // Calling useFetchFiles function to get EmployeesFiles
+  const { EmployeesFiles } = useFetchFiles(); // Calling useFetchFiles function to get EmployeesFiles
   const { email, name, signOut } = useUser();
   const randomName = 'philip.lu@kits.se';
   const [profileName, setProfileName] = React.useState<string>('Default name');
@@ -19,46 +18,34 @@ function UserProfile(props: any) {
   const [profileEmail, setProfileEmail] = React.useState<string>('Default');
   const [profilePicture, setProfilePicture] = React.useState<string>('img.jpg');
 
-  //const { replaceSpecialCharacters, getProfilePictureUrl } = useProfilePictureUrl();
+  const { replaceSpecialCharacters, getProfilePictureUrl } = useProfilePictureUrl();
 
   const closeUserProfile = () => {
     setDisplayUserProfile(false);
   };
 
-  const show = async () => {
-    //console.log('Login data');
-    //console.log(email, name);
+  const show = () => {
+    console.log('Login data');
+    console.log(email, name);
 
-    //console.log('Fetched data from EmployeesFiles');
-    //console.log(profileName);
-    //console.log(profileEmail);
-    //console.log(profilePhoneNumber);
-    //console.log(profilePicture);
-
-    //console.log('fetched data');
-    const response = axios.get(
-      `https://api.github.com/repos/kits-ab/kits/contents/content/medarbetare`,
-    );
-    const user = (await response).data;
-    const userData = await axios.get(user[2].download_url);
-    const userName = userData.data;
-    const userPhone = userData.data;
-    const userEmail = userData.data;
-    const titleMatch = userName.match(/^title: (.*)$/m);
-    const actualTitle = titleMatch ? titleMatch[1] : 'Untitled';
-    // const title = titleMatch ? titleMatch[1] : 'Untitled';
-    const titleWithCorrectFormat = actualTitle.toLowerCase().replace(/\s/g, '');
-    console.log(titleWithCorrectFormat);
-    const theUrl = `https://raw.githubusercontent.com/kits-ab/kits/master/static/assets/medarbetare_${titleWithCorrectFormat}-avatar.jpg`;
-    setProfilePicture(theUrl);
-    setProfileName('Anders thorsten');
-    setProfileEmail('Anderd@gmail.com');
-    setProfilePhoneNumber('5555555555');
+    console.log('Fetched data from EmployeesFiles');
+    console.log(profileName);
+    console.log(profileEmail);
+    console.log(profilePhoneNumber);
+    console.log(profilePicture);
   };
 
   React.useEffect(() => {
     setOpen(true);
-  });
+    for (let i = 0; i < EmployeesFiles.length; i++) {
+      if (EmployeesFiles[i].email === randomName) {
+        setProfileName(EmployeesFiles[i].title);
+        setProfilePhoneNumber(EmployeesFiles[i].phone.replace(/[-\u2013\u2212]/g, ''));
+        setProfileEmail(EmployeesFiles[i].email);
+        setProfilePicture(getProfilePictureUrl(replaceSpecialCharacters(profileName)));
+      }
+    }
+  }, [EmployeesFiles]);
 
   return (
     <>
