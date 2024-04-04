@@ -73,11 +73,12 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     <>
       {separatedActivities &&
         Object.keys(separatedActivities).map((date) => {
-          {
-            console.log('I was here', date, separatedActivities[date]);
-          }
           return (
-            <GridLayout activitiesData={separatedActivities[date]} scheduleTime={scheduleTime} />
+            <GridLayout
+              activitiesData={separatedActivities[date]}
+              date={date}
+              scheduleTime={scheduleTime}
+            />
           );
         })}
     </>

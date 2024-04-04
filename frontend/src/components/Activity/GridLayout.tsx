@@ -14,11 +14,13 @@ interface ActivitiesProps {
   // selectedActivityId: number | null;
   // setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
+  date: string;
 }
 
 export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
-  const { activitiesData, scheduleTime } = props;
+  const { activitiesData, date, scheduleTime } = props;
+  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
 
   const MILLISECONDS_PER_MINUTE = 60000;
   const FIVE_MINUTES_INTERVAL = 12;
@@ -83,7 +85,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     // let overlappingActivities = new Set();
 
     // Iterate over each minute in the duration of the activity
-    for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE) {
+    for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE * 12) {
       let overlappingActivities = 0;
       // Check if there are three or more activities that overlap with the current time
       for (let otherActivity of activities) {
@@ -180,7 +182,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   return (
     <>
       <GridWrapper>
-        {activitiesData.map((activity: ActivityType) => {
+        {activitiesData.map((activity: ActivityType, index) => {
           const {
             gridRowStart,
             gridRowEnd,
@@ -216,12 +218,11 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                   gridColumnStart: `auto`,
                   gridColumnEnd: `span ${columnSpan}`,
                 }}
-                // onClick={() => {
-                //   setSelectedActivityId(activity.id);
-                //   expandInfo();
-                // }}
+                onClick={() => {
+                  setSelectedActivityId(activity.id);
+                  expandInfo();
+                }}
               >
-                {/* {index === 0 ? <DateText>{date}</DateText> : null} */}
                 <TimeSlotWrapper
                   activityType={activity.type}
                   numberOfParallellActivities={numberOfParallellActivities}
