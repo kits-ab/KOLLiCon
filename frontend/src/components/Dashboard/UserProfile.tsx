@@ -1,23 +1,18 @@
 import React from 'react';
 import Drawer from '@mui/material/Drawer';
-import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import { Logotype, Contact, types, Image } from '@kokitotsos/react-components';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useUserProfile } from '@/utils/Hooks/useUserProfile';
 
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
   const [open, setOpen] = React.useState(false);
-  const { EmployeesFiles } = useFetchFiles();
-  const { email, signOut } = useUser();
-  const randomName = 'anders.thoresson@kits.se';
-  const [profileName, setProfileName] = React.useState<string>('Default name');
-  const [profilePhoneNumber, setProfilePhoneNumber] = React.useState<string>('1111111111');
-  const [profileEmail, setProfileEmail] = React.useState<string>('Default');
-  const [profilePicture, setProfilePicture] = React.useState<string>('img.jpg');
+  const { signOut } = useUser();
+  const { name, email, phoneNumber, picture } = useUserProfile();
 
   const closeUserProfile = () => {
     setDisplayUserProfile(false);
@@ -25,19 +20,7 @@ function UserProfile(props: any) {
 
   React.useEffect(() => {
     setOpen(true);
-    for (let i = 0; i < EmployeesFiles.length; i++) {
-      if (EmployeesFiles[i].email === randomName) {
-        setProfileName(EmployeesFiles[i].title);
-        setProfilePhoneNumber(EmployeesFiles[i].phone.replace(/[-\u2013\u2212]/g, ''));
-        setProfileEmail(EmployeesFiles[i].email);
-
-        const formattedTitle = EmployeesFiles[i].title.toLowerCase().replace(/\s/g, '');
-        setProfilePicture(
-          `https://raw.githubusercontent.com/kits-ab/kits/master/static/assets/medarbetare_${formattedTitle}-avatar.jpg`,
-        );
-      }
-    }
-  }, [EmployeesFiles]);
+  }, []);
 
   return (
     <>
@@ -76,20 +59,16 @@ function UserProfile(props: any) {
         </div>
         <Image
           href='#'
-          src={profilePicture}
+          src={picture}
           style={{ marginTop: '50px', marginLeft: '20px', height: '200px', width: '150px' }}
         />
         <div style={{ marginTop: '30px' }}>
-          <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>
-            {profileName}
-          </div>
-          <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>
-            {profileEmail}
-          </div>
+          <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>{name}</div>
+          <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>{email}</div>
           <Contact
             style={{ marginLeft: '20px', color: '#6F6F70' }}
             info={{
-              phone: new types.PhoneNumber(profilePhoneNumber),
+              phone: new types.PhoneNumber(phoneNumber),
             }}
             type={0}
           />
