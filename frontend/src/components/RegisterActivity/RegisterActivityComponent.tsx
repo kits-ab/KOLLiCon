@@ -33,10 +33,18 @@ import {
   BoxWrapper1,
   HeaderStyled,
 } from '../../styles/RegisterActivity/StyledActivity';
+import { Colors } from '@/styles/Common/colors';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
-function Activity({ onClose }: any) {
+interface ActivityProps {
+  onClose: () => void;
+  onOpen: () => void;
+  open: boolean;
+}
+
+const Activity: React.FC<ActivityProps> = ({ onClose, onOpen, open }) => {
   const {email} = useUser();
   const [isStartFilled, setIsStartFilled] = useFormField(false);
   const [isEndFilled, setIsEndFilled] = useFormField(false);
@@ -111,6 +119,20 @@ function Activity({ onClose }: any) {
 
   return (
     <>
+    <SwipeableDrawer
+    anchor='bottom'
+    open={open}
+    onClose={onClose}
+    onOpen={onOpen}
+    PaperProps={{
+      style: {
+        height: '100%',
+        overflow: 'scroll',
+        backgroundColor: `${Colors.primaryBackground}`,
+        borderRadius: '0',
+      },
+    }}
+    >
       <GlobalBox>
         <img src='' alt='' />
         <GlobalStyles />
@@ -190,6 +212,7 @@ function Activity({ onClose }: any) {
         </EventsWrapper>
         </Text>
       </GlobalBox>
+      </SwipeableDrawer>
     </>
   );
 }
