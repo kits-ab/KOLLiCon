@@ -1,7 +1,5 @@
 import React from 'react';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Drawer from '@mui/material/Drawer';
-
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import { Logotype, Contact, types, Image } from '@kokitotsos/react-components';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -9,14 +7,13 @@ import Typography from '@mui/material/Typography';
 import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import zIndex from '@mui/material/styles/zIndex';
 
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
   const [open, setOpen] = React.useState(false);
   const { EmployeesFiles } = useFetchFiles();
   const { email, signOut } = useUser();
-  const randomName = email;
+  const randomName = 'anders.thoresson@kits.se';
   const [profileName, setProfileName] = React.useState<string>('Default name');
   const [profilePhoneNumber, setProfilePhoneNumber] = React.useState<string>('1111111111');
   const [profileEmail, setProfileEmail] = React.useState<string>('Default');
