@@ -11,7 +11,7 @@ import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
-import { Activities } from '@/components/Activity/Activities';
+import { Activities } from '@/components/Activity/OldActivity/Activities';
 
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();

@@ -11,14 +11,14 @@ import { sv } from 'date-fns/locale/sv';
 
 interface ActivitiesProps {
   activitiesData: ActivityType[];
-  selectedActivityId: number | null;
-  setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
+  // selectedActivityId: number | null;
+  // setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
 }
 
-export const Activities: React.FC<ActivitiesProps> = (props) => {
+export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   const [expandInfoOpen, setExpandInfoOpen] = useState(false);
-  const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
+  const { activitiesData, scheduleTime } = props;
 
   const MILLISECONDS_PER_MINUTE = 60000;
   const FIVE_MINUTES_INTERVAL = 12;
@@ -29,11 +29,23 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     setExpandInfoOpen(!expandInfoOpen);
   };
 
-  const sortedActivitesByDate = useMemo(() => {
-    return activitiesData.sort(
-      (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
-    );
-  }, [activitiesData]);
+  // const sortedActivitesByDate = useMemo(() => {
+  //   return activitiesData.sort(
+  //     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
+  //   );
+  // }, [activitiesData]);
+
+  // const activitiesByDay = useMemo(() => {
+  //   const groups: { [key: string]: ActivityType[] } = {};
+  //   sortedActivitesByDate.forEach((activity) => {
+  //     const day = activity.start.toISOString().split('T')[0]; // Get the day as a string
+  //     if (!groups[day]) {
+  //       groups[day] = [];
+  //     }
+  //     groups[day].push(activity);
+  //   });
+  //   return groups;
+  // }, [sortedActivitesByDate]);
   // Calculate the start row of the activity
   const calculateStartRow = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
@@ -61,9 +73,7 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
       (otherActivity) =>
         otherActivity !== activity &&
         otherActivity.start.getTime() < activity.end.getTime() &&
-        otherActivity.end.getTime() > activity.start.getTime() &&
-        otherActivity.start.getDay() === activity.start.getDay() &&
-        otherActivity.end.getDay() === activity.end.getDay(),
+        otherActivity.end.getTime() > activity.start.getTime(),
     );
   };
 
@@ -84,12 +94,12 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
           if (otherStart < time && otherEnd > time) {
             overlappingActivities++;
 
-            if (
-              otherActivity.start.getDay() !== activity.start.getDay() ||
-              otherActivity.end.getDay() !== activity.end.getDay()
-            ) {
-              overlappingActivities--;
-            }
+            // if (
+            //   otherActivity.start.getDay() !== activity.start.getDay() ||
+            //   otherActivity.end.getDay() !== activity.end.getDay()
+            // ) {
+            //   overlappingActivities--;
+            // }
           }
         }
         if (overlappingActivities >= 2) {
@@ -156,99 +166,99 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   let lastRenderedDay = 0;
 
   // Filter out passed activities
-  const filterdActivities = sortedActivitesByDate.filter((activity) => {
-    const today = new Date();
-    const scheduleEndTime = new Date(scheduleTime);
-    if (today > scheduleEndTime) {
-      return true;
-    } else {
-      return today <= activity.end;
-    }
-  });
+  // const filterdActivities = sortedActivitesByDate.filter((activity) => {
+  //   const today = new Date();
+  //   const scheduleEndTime = new Date(scheduleTime);
+  //   if (today > scheduleEndTime) {
+  //     return true;
+  //   } else {
+  //     return today <= activity.end;
+  //   }
+  // });
 
+  console.log('Activities fom gridlayout', activitiesData);
   return (
     <>
       <GridWrapper>
-        {filterdActivities &&
-          filterdActivities.map((activity: ActivityType) => {
-            const {
-              gridRowStart,
-              gridRowEnd,
-              columnSpan,
-              detailsSlice,
-              numberOfParallellActivities,
-            } = getGridLayout(activity, filterdActivities);
+        {activitiesData.map((activity: ActivityType) => {
+          const {
+            gridRowStart,
+            gridRowEnd,
+            columnSpan,
+            detailsSlice,
+            numberOfParallellActivities,
+          } = getGridLayout(activity, activitiesData);
 
-            // Get the day of the current activity
-            const currentDay = new Date(activity.start).getDate();
+          // Get the day of the current activity
+          const currentDay = new Date(activity.start).getDate();
 
-            // Check if the current day is different from the last rendered day
-            const isFirstActivityOfDay = currentDay !== lastRenderedDay;
+          // Check if the current day is different from the last rendered day
+          const isFirstActivityOfDay = currentDay !== lastRenderedDay;
 
-            // Update the last rendered day
-            lastRenderedDay = currentDay;
+          // Update the last rendered day
+          lastRenderedDay = currentDay;
 
-            return (
-              <React.Fragment key={activity.id}>
-                {isFirstActivityOfDay ? (
-                  <DateText gridrowStart={gridRowStart}>
-                    {format(new Date(activity.start), 'iiii', { locale: sv })
-                      .charAt(0)
-                      .toUpperCase() +
-                      format(new Date(activity.start), 'iiii', { locale: sv }).slice(1)}
-                  </DateText>
-                ) : null}
-                <a
-                  style={{
-                    cursor: 'pointer',
-                    gridRowStart,
-                    gridRowEnd,
-                    gridColumnStart: `auto`,
-                    gridColumnEnd: `span ${columnSpan}`,
-                  }}
-                  onClick={() => {
-                    setSelectedActivityId(activity.id);
-                    expandInfo();
-                  }}
+          return (
+            <React.Fragment key={activity.id}>
+              {isFirstActivityOfDay ? (
+                <DateText gridrowStart={gridRowStart}>
+                  {format(new Date(activity.start), 'iiii', { locale: sv })
+                    .charAt(0)
+                    .toUpperCase() +
+                    format(new Date(activity.start), 'iiii', { locale: sv }).slice(1)}
+                </DateText>
+              ) : null}
+              <a
+                style={{
+                  cursor: 'pointer',
+                  gridRowStart,
+                  gridRowEnd,
+                  gridColumnStart: `auto`,
+                  gridColumnEnd: `span ${columnSpan}`,
+                }}
+                // onClick={() => {
+                //   setSelectedActivityId(activity.id);
+                //   expandInfo();
+                // }}
+              >
+                {/* {index === 0 ? <DateText>{date}</DateText> : null} */}
+                <TimeSlotWrapper
+                  activityType={activity.type}
+                  numberOfParallellActivities={numberOfParallellActivities}
                 >
-                  <TimeSlotWrapper
-                    activityType={activity.type}
-                    numberOfParallellActivities={numberOfParallellActivities}
+                  <Timeslot
+                    style={{ height: '100%' }}
+                    presenters={getPresenter(activity)}
+                    endTime={activity.end}
+                    heading={activity.title}
+                    startTime={activity.start}
+                    type={activity.type}
+                    showEndTime={true}
+                    {...(activity.location.coordinates[0] !== 0
+                      ? {
+                          location: {
+                            coordinates: activity.location.coordinates,
+                            title: (activity.location.title as string) || 'Location',
+                            subtitle: activity.location.subtitle,
+                          },
+                        }
+                      : {})}
                   >
-                    <Timeslot
-                      style={{ height: '100%' }}
-                      presenters={getPresenter(activity)}
-                      endTime={activity.end}
-                      heading={activity.title}
-                      startTime={activity.start}
-                      type={activity.type}
-                      showEndTime={true}
-                      {...(activity.location.coordinates[0] !== 0
-                        ? {
-                            location: {
-                              coordinates: activity.location.coordinates,
-                              title: (activity.location.title as string) || 'Location',
-                              subtitle: activity.location.subtitle,
-                            },
-                          }
-                        : {})}
-                    >
-                      <p style={{ wordBreak: 'break-word' }}>
-                        {activity.details.slice(0, detailsSlice)}
-                      </p>
-                    </Timeslot>
-                  </TimeSlotWrapper>
-                  {selectedActivityId === activity.id && (
-                    <ExpandInfo
-                      activityProp={activity}
-                      open={expandInfoOpen}
-                      setOpen={setExpandInfoOpen}
-                    />
-                  )}
-                </a>
-              </React.Fragment>
-            );
-          })}
+                    <p style={{ wordBreak: 'break-word' }}>
+                      {activity.details.slice(0, detailsSlice)}
+                    </p>
+                  </Timeslot>
+                </TimeSlotWrapper>
+
+                <ExpandInfo
+                  activityProp={activity}
+                  open={expandInfoOpen}
+                  setOpen={setExpandInfoOpen}
+                />
+              </a>
+            </React.Fragment>
+          );
+        })}
       </GridWrapper>
     </>
   );
