@@ -1,5 +1,7 @@
 import React from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import Drawer from '@mui/material/Drawer';
+
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import { Logotype, Contact, types, Image } from '@kokitotsos/react-components';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -7,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import zIndex from '@mui/material/styles/zIndex';
 
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
@@ -41,7 +44,7 @@ function UserProfile(props: any) {
 
   return (
     <>
-      <SwipeableDrawer
+      <Drawer
         PaperProps={{
           sx: {
             width: '100%',
@@ -53,7 +56,7 @@ function UserProfile(props: any) {
         open={open}
         onClose={closeUserProfile}
         onOpen={closeUserProfile}
-        variant='temporary'
+        variant='permanent'
         sx={{ width: '100%' }}
       >
         <ArrowBackIosIcon
@@ -113,7 +116,7 @@ function UserProfile(props: any) {
             Logout
           </Typography>
         </LogoutChildPart>
-      </SwipeableDrawer>
+      </Drawer>
     </>
   );
 }
