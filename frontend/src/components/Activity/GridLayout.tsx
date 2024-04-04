@@ -31,23 +31,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     setExpandInfoOpen(!expandInfoOpen);
   };
 
-  // const sortedActivitesByDate = useMemo(() => {
-  //   return activitiesData.sort(
-  //     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
-  //   );
-  // }, [activitiesData]);
-
-  // const activitiesByDay = useMemo(() => {
-  //   const groups: { [key: string]: ActivityType[] } = {};
-  //   sortedActivitesByDate.forEach((activity) => {
-  //     const day = activity.start.toISOString().split('T')[0]; // Get the day as a string
-  //     if (!groups[day]) {
-  //       groups[day] = [];
-  //     }
-  //     groups[day].push(activity);
-  //   });
-  //   return groups;
-  // }, [sortedActivitesByDate]);
   // Calculate the start row of the activity
   const calculateStartRow = (activity: ActivityType) => {
     const startHour = new Date(activity.start).getHours();
@@ -82,11 +65,15 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   const hasThreeOverLappingActivities = (activity: ActivityType, activities: ActivityType[]) => {
     const activityStart = activity.start.getTime();
     const activityEnd = activity.end.getTime();
-    // let overlappingActivities = new Set();
 
     // Iterate over each minute in the duration of the activity
-    for (let time = activityStart; time < activityEnd; time += MILLISECONDS_PER_MINUTE * 12) {
+    for (
+      let time = activityStart;
+      time < activityEnd;
+      time += MILLISECONDS_PER_MINUTE * FIVE_MINUTES_INTERVAL
+    ) {
       let overlappingActivities = 0;
+
       // Check if there are three or more activities that overlap with the current time
       for (let otherActivity of activities) {
         if (otherActivity !== activity) {
@@ -95,13 +82,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
 
           if (otherStart < time && otherEnd > time) {
             overlappingActivities++;
-
-            // if (
-            //   otherActivity.start.getDay() !== activity.start.getDay() ||
-            //   otherActivity.end.getDay() !== activity.end.getDay()
-            // ) {
-            //   overlappingActivities--;
-            // }
           }
         }
         if (overlappingActivities >= 2) {
@@ -112,9 +92,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
 
     return false;
   };
-
-  // TODO: Den senare aktiviteten vid överlappning får span 6 columns
-  // denna körs två gånger för varje överlappning, en gång för varje aktivitet som överlappar
 
   const getGridLayout = (activity: ActivityType, filterdActivities: ActivityType[]) => {
     let gridRowStart = calculateStartRow(activity) + 1;
@@ -144,7 +121,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     }
     // Change the layout based on the number of parallell activities
     if (hasThreeOverLappingActivities(activity, filterdActivities)) {
-      // TODO: Det här fungerar inte när en aktivitet överlappar med fler än en men inte samtidigt
       columnSpan = 2;
       detailsSlice = 50;
       numberOfParallellActivities = 3;
@@ -167,18 +143,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   // Keep track of the last rendered day to display the weekday of first activity of each day
   let lastRenderedDay = 0;
 
-  // Filter out passed activities
-  // const filterdActivities = sortedActivitesByDate.filter((activity) => {
-  //   const today = new Date();
-  //   const scheduleEndTime = new Date(scheduleTime);
-  //   if (today > scheduleEndTime) {
-  //     return true;
-  //   } else {
-  //     return today <= activity.end;
-  //   }
-  // });
-
-  console.log('Activities fom gridlayout', activitiesData);
   return (
     <>
       <GridWrapper>
@@ -202,14 +166,15 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
 
           return (
             <React.Fragment key={activity.id}>
-              {isFirstActivityOfDay ? (
+              {index === 0 && <DateText gridrowStart={gridRowStart}>{date}</DateText>}
+              {/* {isFirstActivityOfDay ? (
                 <DateText gridrowStart={gridRowStart}>
                   {format(new Date(activity.start), 'iiii', { locale: sv })
                     .charAt(0)
                     .toUpperCase() +
                     format(new Date(activity.start), 'iiii', { locale: sv }).slice(1)}
                 </DateText>
-              ) : null}
+              ) : null} */}
               <a
                 style={{
                   cursor: 'pointer',
@@ -250,12 +215,13 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                     </p>
                   </Timeslot>
                 </TimeSlotWrapper>
-
-                <ExpandInfo
-                  activityProp={activity}
-                  open={expandInfoOpen}
-                  setOpen={setExpandInfoOpen}
-                />
+                {selectedActivityId === activity.id && (
+                  <ExpandInfo
+                    activityProp={activity}
+                    open={expandInfoOpen}
+                    setOpen={setExpandInfoOpen}
+                  />
+                )}
               </a>
             </React.Fragment>
           );

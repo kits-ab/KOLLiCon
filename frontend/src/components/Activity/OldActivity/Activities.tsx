@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 // import { SingleActivity } from '@/components/Activity/OldActivity/SingleActivity';
 import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import { GridLayout } from '../GridLayout';
+import { getWeek } from 'date-fns';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -35,28 +36,32 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
       const today = new Date();
 
+      const weekNumber = getWeek(activity.start);
+
+      const key = `${date} week ${weekNumber}`;
+
       if (activity.presenter === null) {
         activity.presenter = [];
       }
       if (activity.review_id === null) {
         activity.review_id = [];
       }
-      if (!separatedActivities[date]) {
-        separatedActivities[date] = [];
+      if (!separatedActivities[key]) {
+        separatedActivities[key] = [];
       }
 
       const scheduleEndTime = new Date(scheduleTime);
       if (today > scheduleEndTime) {
-        separatedActivities[date].push(activity);
+        separatedActivities[key].push(activity);
       } else {
         if (today <= activity.end) {
-          separatedActivities[date].push(activity);
+          separatedActivities[key].push(activity);
         }
       }
     });
 
-    Object.keys(separatedActivities).map((date) => {
-      separatedActivities[date].sort(
+    Object.keys(separatedActivities).map((key) => {
+      separatedActivities[key].sort(
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
@@ -67,16 +72,15 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const separatedActivities = separateActivitiesByDate(activitiesSortedByDate);
   const skipIndices = new Set<number>();
 
-  console.log('separated activities: ', separatedActivities);
-
   return (
     <>
       {separatedActivities &&
-        Object.keys(separatedActivities).map((date) => {
+        Object.keys(separatedActivities).map((key) => {
           return (
             <GridLayout
-              activitiesData={separatedActivities[date]}
-              date={date}
+              key={key}
+              activitiesData={separatedActivities[key]}
+              date={key.slice(0, key.indexOf('week'))}
               scheduleTime={scheduleTime}
             />
           );
