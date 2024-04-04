@@ -1,4 +1,6 @@
 import { Colors } from '../colors';
+import styled from '@emotion/styled';
+import Box from '@mui/material/Box';
 export const sxDateTimePickerStyles = {
   width: '41.5%',
   '& .MuiInputBase-root': {
@@ -42,3 +44,11 @@ export const DateTimePropsStyles: DateTimePickerSlotsComponentsProps<any> = {
   toolbar: { sx: { backgroundColor: '#b2b2b2' } },
   textField: { size: 'small' },
 };
+
+export const DatePickerWrapper = styled(Box)`
+  margin: 0 7% 0 7%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2%;
+`;

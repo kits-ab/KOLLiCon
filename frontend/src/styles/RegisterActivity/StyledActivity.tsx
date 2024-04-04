@@ -4,7 +4,6 @@ import Input from '@mui/material/Input';
 import TextArea from '@mui/joy/Textarea';
 import Button from '../Common/Button/Button';
 import { Colors } from '../Common/colors';
-import IconButton from '@mui/material/IconButton';
 
 export const EventsWrapper = styled(Box)`
   margin-left: auto;
