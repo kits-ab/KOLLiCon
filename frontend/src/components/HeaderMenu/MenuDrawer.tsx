@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
 import { Global } from '@emotion/react';
 import UserProfile from '../Dashboard/UserProfile';
-
 import {
   LogoutChildPart,
   MenuDiv,
@@ -20,51 +19,45 @@ import {
 } from '@/styles/MenuStyles/StylesForMenu';
 import { Colors } from '@/styles/Common/colors';
 import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
-
 interface Props {
   window?: () => Window;
 }
-
 function MenuDrawer(props: Props) {
   const { window } = props;
   const container = window !== undefined ? () => window().document.body : undefined;
-
   const [open, setOpen] = React.useState(false);
   const [display, SetDisplay] = React.useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
   const { isAdmin } = useUser();
   const [displayUserProfile, setDisplayUserProfile] = React.useState(false);
-
   const menuItems = isAdmin
     ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
     : ['Min profil', 'Tidigare KitsCons'];
-
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
-
   const openUI = () => {
     setOpen(false);
     SetDisplay(true);
   };
-
   const openModal = () => {
     SetDisplay(false);
     setOpenScheduleModal(true);
   };
-
-  const openUserrProfile = () => {
+  const openUserProfile = () => {
     setDisplayUserProfile(true);
     setOpen(false);
   };
-
+  const closeUserProfile = () => {
+    setDisplayUserProfile(false);
+  };
   const handleMenuItemClick = (label: string) => {
     switch (label) {
       case 'Skapa Schema':
         openModal();
         break;
       case 'Min profil':
-        openUserrProfile();
+        openUserProfile();
         break;
       case 'Tidigare KitsCons':
         break;
@@ -75,12 +68,8 @@ function MenuDrawer(props: Props) {
         break;
     }
   };
-
   return (
     <>
-      {/** Export Modal */}
-      {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
-      {displayUserProfile && <UserProfile setDisplayUserProfile={setDisplayUserProfile} setOpen />}
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
@@ -178,7 +167,10 @@ function MenuDrawer(props: Props) {
           </Typography>
         </LogoutChildPart>
       </SwipeableDrawer>
-
+      {/** Export Modal */}
+      {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
+      {/** User Profile Modal */}
+      <UserProfile onOpen={openUserProfile} onClose={closeUserProfile} open={displayUserProfile} />
       {/** Schedule Modal */}
       <ScheduleComponent
         onClose={() => setOpenScheduleModal(false)}
@@ -188,5 +180,4 @@ function MenuDrawer(props: Props) {
     </>
   );
 }
-
 export default MenuDrawer;
