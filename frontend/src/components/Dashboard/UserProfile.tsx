@@ -7,12 +7,14 @@ import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useUserProfile } from '@/utils/Hooks/useUserProfile';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function UserProfile(props: any) {
   const { setDisplayUserProfile } = props;
   const [open, setOpen] = React.useState(false);
   const { signOut } = useUser();
   const { name, email, phoneNumber, picture } = useUserProfile();
+  const isDesktop = useMediaQuery('(min-width:600px)');
 
   const closeUserProfile = () => {
     setDisplayUserProfile(false);
@@ -27,9 +29,9 @@ function UserProfile(props: any) {
       <Drawer
         PaperProps={{
           sx: {
-            width: '100%',
             height: '100%',
             padding: '20px',
+            width: isDesktop ? '50%' : '100%',
           },
         }}
         anchor={'right'}
@@ -74,7 +76,13 @@ function UserProfile(props: any) {
           />
         </div>
         <LogoutChildPart
-          style={{ position: 'fixed', height: '100px', width: '100%', bottom: 0, right: 0 }}
+          style={{
+            position: 'fixed',
+            height: '100px',
+            width: isDesktop ? '50%' : '100%',
+            bottom: 0,
+            right: 0,
+          }}
         >
           <ExitToAppIcon
             cursor='pointer'
