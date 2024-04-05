@@ -31,6 +31,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
   const { isAdmin, email } = useUser();
   const [isUserPresenter, setUserPresenter] = useState(false);
   const [isUserGranted, setUserGrandted] = useState(false);
+  const [renderDrawer, setRenderDrawer] = useState(true);
 
   useEffect(() => {
     // Check if the user is a presenter
@@ -54,85 +55,93 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
     }
   }, [isAdmin, data, email]);
 
+  // useEffect(() => {
+  //   setRenderDrawer(true);
+  // }, []);
+
   return (
     <div>
       {/** Expanded Timeslot */}
-      <Drawer
-        PaperProps={{
-          overflow: 'hidden',
-          sx: {
-            width: isDesktop ? '50%' : '100%',
-            padding: '20px',
-          },
-        }}
-        variant='persistent'
-        anchor='right'
-        open={open}
-        onClick={(event) => event.stopPropagation()}
-        hideBackdrop={false}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignContent: 'flex-start' }}>
-          {/** Back button */}
-          <IconButton
-            sx={{ justifyContent: 'start', maxWidth: '30px' }}
-            onClick={(event) => {
-              event.stopPropagation();
-              setOpen(false);
-            }}
+      {renderDrawer && (
+        <Drawer
+          PaperProps={{
+            overflow: 'hidden',
+            sx: {
+              width: isDesktop ? '50%' : '100%',
+              padding: '20px',
+            },
+          }}
+          variant='persistent'
+          anchor='right'
+          open={open}
+          onClick={(event) => event.stopPropagation()}
+          hideBackdrop={false}
+        >
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignContent: 'flex-start' }}
           >
-            <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
-          </IconButton>
+            {/** Back button */}
+            <IconButton
+              sx={{ justifyContent: 'start', maxWidth: '30px' }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpen(false);
+              }}
+            >
+              <ArrowBackIosIcon sx={{ color: '#DBDBD8' }} />
+            </IconButton>
 
-          {/** Edit button */}
-          {isAdmin || isUserPresenter || isUserGranted ? (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton
-                style={{
-                  color: '#DBDBD8',
-                  maxWidth: '30px',
-                  justifyContent: 'end',
-                  marginRight: '3px',
-                  padding: '0',
-                }}
-                onClick={() => setOpenEditModal(true)}
-              >
-                <EditIcon style={{ marginTop: '10px' }} />
-                <Text>
-                  <h3 style={{ color: '#DBDBD8' }}>Redigera</h3>
-                </Text>
-              </IconButton>
-            </Box>
-          ) : null}
-        </Box>
+            {/** Edit button */}
+            {isAdmin || isUserPresenter || isUserGranted ? (
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <IconButton
+                  style={{
+                    color: '#DBDBD8',
+                    maxWidth: '30px',
+                    justifyContent: 'end',
+                    marginRight: '3px',
+                    padding: '0',
+                  }}
+                  onClick={() => setOpenEditModal(true)}
+                >
+                  <EditIcon style={{ marginTop: '10px' }} />
+                  <Text>
+                    <h3 style={{ color: '#DBDBD8' }}>Redigera</h3>
+                  </Text>
+                </IconButton>
+              </Box>
+            ) : null}
+          </Box>
 
-        <DialogContent sx={{ padding: '0' }}>
-          <StyledTimeslot>
-            <Timeslot
-              heading={data.generalInfo.title}
-              startTime={data.generalInfo.start}
-              endTime={data.generalInfo.end}
-              presenters={data.presenters}
-              type={data.type}
-              showEndTime={data.generalInfo.showEndTime}
-            ></Timeslot>
-            <Text style={{ margin: '20px 0px 20px 0px' }}>
-              <p>{data.generalInfo.details}</p>
-            </Text>
-            {data.location.coordinates.length === 2 && (
-              <div
-                onClick={() => window.open(getMapLink(data.location.coordinates), '_blank')}
-                style={{ cursor: 'pointer' }}
-              >
-                <Location
-                  coordinates={[data.location.coordinates[0], data.location.coordinates[1]]}
-                  title={data.location.title ? data.location.title : 'Location'}
-                  subtitle={data.location.subtitle ? data.location.subtitle : ''}
-                />
-              </div>
-            )}
-          </StyledTimeslot>
-        </DialogContent>
-      </Drawer>
+          <DialogContent sx={{ padding: '0' }}>
+            <StyledTimeslot>
+              <Timeslot
+                heading={data.generalInfo.title}
+                startTime={data.generalInfo.start}
+                endTime={data.generalInfo.end}
+                presenters={data.presenters}
+                type={data.type}
+                showEndTime={data.generalInfo.showEndTime}
+              ></Timeslot>
+              <Text style={{ margin: '20px 0px 20px 0px' }}>
+                <p>{data.generalInfo.details}</p>
+              </Text>
+              {data.location.coordinates.length === 2 && (
+                <div
+                  onClick={() => window.open(getMapLink(data.location.coordinates), '_blank')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Location
+                    coordinates={[data.location.coordinates[0], data.location.coordinates[1]]}
+                    title={data.location.title ? data.location.title : 'Location'}
+                    subtitle={data.location.subtitle ? data.location.subtitle : ''}
+                  />
+                </div>
+              )}
+            </StyledTimeslot>
+          </DialogContent>
+        </Drawer>
+      )}
       {/** Edit mode drawer */}
       <SwipeableDrawer
         anchor='bottom'

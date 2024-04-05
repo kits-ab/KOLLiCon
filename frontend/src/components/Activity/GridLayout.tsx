@@ -170,13 +170,11 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                     </p>
                   </Timeslot>
                 </TimeSlotWrapper>
-                {selectedActivityId === activity.id && (
-                  <ExpandInfo
-                    activityProp={activity}
-                    open={expandInfoOpen}
-                    setOpen={setExpandInfoOpen}
-                  />
-                )}
+                <ExpandInfo
+                  activityProp={activity}
+                  open={selectedActivityId === activity.id && expandInfoOpen}
+                  setOpen={setExpandInfoOpen}
+                />
               </a>
             </React.Fragment>
           );
