@@ -13,12 +13,9 @@ export const NotificationEventsWrapper = styled(EventsWrapper)`
 `;
 
 export const NotificationWrapper = styled(Box)`
-  text-align: start;
   margin: 10px 0 0 0;
   @media (max-width: 650px) {
     margin:  10px 0 0 0;
-    text-align: start;
-
 `;
 export const NotificationHeader = styled(ScheduleHeaderStyled)`
   display: flex;
