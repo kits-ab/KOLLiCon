@@ -51,9 +51,6 @@ ${({ numberOfParallellActivities, activityType }) => {
             width: 100%;
             margin-left: 0;
         }
-        .Timeslot-heading {
-            font-size: 15px;
-        }
         .Timeslot-times {
             display: flex;
             flex-direction: column;
@@ -75,7 +72,10 @@ ${({ numberOfParallellActivities, activityType }) => {
             width: 100%;
             flex-wrap: wrap;
         }
-    }
+         .Timeslot-presenter > div > h3 {
+            font-size: 20px;
+        }
+    }         
    `
   } else if (numberOfParallellActivities === 2 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
         return `
@@ -104,17 +104,9 @@ ${({ numberOfParallellActivities, activityType }) => {
 
   export const GridWrapper = styled.div`
   display: grid;
-//   align-items: stretch;
   justify-content: center;
   grid-template-columns: repeat(6, 1fr);
   column-gap: 2%;
-  // overflow: auto;
-  // grid-auto-rows: 1fr;
-  // grid-template-rows: repeat(192, 1fr);
-  // row-gap: 30px;
-  // justify-items: center;
-  // & > h1 {
-  //   align-self: center;
-  // }
+
 `;
 
