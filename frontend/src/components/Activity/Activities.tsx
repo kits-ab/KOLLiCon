@@ -1,6 +1,6 @@
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
-import { GridLayout } from '../GridLayout';
+import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
 
 interface ActivitiesProps {

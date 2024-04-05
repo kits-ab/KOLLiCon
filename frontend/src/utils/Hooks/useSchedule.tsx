@@ -10,7 +10,7 @@ function useSchedule(): [[], Date] {
 
   const fetchData = async (): Promise<Schedule> => {
     try {
-      const response = await axios.get(`${backendIP}/api/schedule/get/7`);
+      const response = await axios.get(`${backendIP}/api/schedule/get/1`);
       response.data.activityId.map((activity: any) => {
         const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
         const start = new Date(activity.start);
