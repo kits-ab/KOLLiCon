@@ -14,8 +14,6 @@ export function useUserProfile() {
   });
 
   useEffect(() => {
-    //  const randomName = 'philip.lu@kits.se';
-    console.log('here i am');
     for (let i = 0; i < EmployeesFiles.length; i++) {
       if (EmployeesFiles[i].email === email) {
         const formattedTitle = EmployeesFiles[i].title.toLowerCase().replace(/\s/g, '');
