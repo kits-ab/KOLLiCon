@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Beer from '@/assets/BearWithMe.png';
 import Typography from '@mui/material/Typography';
@@ -30,7 +30,6 @@ function MenuDrawer(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
   const { isAdmin } = useUser();
@@ -42,10 +41,6 @@ function MenuDrawer(props: Props) {
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
-  };
-
-  const logoutPage = () => {
-    navigate('/login');
   };
 
   const openUI = () => {
@@ -170,7 +165,6 @@ function MenuDrawer(props: Props) {
             cursor='pointer'
             onClick={() => {
               signOut();
-              logoutPage();
             }}
           />
           <Typography
@@ -178,7 +172,6 @@ function MenuDrawer(props: Props) {
             style={{ padding: '20px 0 20px 0' }}
             onClick={() => {
               signOut();
-              logoutPage();
             }}
           >
             Logout

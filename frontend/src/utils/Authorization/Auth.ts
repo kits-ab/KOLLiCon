@@ -6,10 +6,21 @@ const userManagerConfig = {
   client_id: '2vbat83e7ac8cubv23cbgq6ufe',
   redirect_uri: 'http://localhost:5173/handlelogin',
   response_type: 'code',
-  scope: 'openid email profile',
-  loadUserInfo: true,
+  scope: 'openid email profile', // Unnecessary?
+  loadUserInfo: true, // Unnecessary?
   automaticSilentRenew: true,
   extraQueryParams: { identity_provider: 'AzureServerlessTest' },
+
+  /*
+   * Necessary for correct revoke response:
+   * https://github.com/authts/oidc-client-ts/issues/262
+   * https://docs.aws.amazon.com/cognito/latest/developerguide/revocation-endpoint.html#revocation-request-parameters-body
+   * oidc-client-ts includes a "token_type_hint" in the request parameters when revoking, Cognito returns HTTP 400 if
+   * revokeTokenTypes is not set to "refresh_token". Cognito expects the refresh_token at the revoke endpoint, which it
+   * will invalidate along with any access tokens derived from it.
+   */
+  revokeTokensOnSignout: true,
+  revokeTokenTypes: ['refresh_token'] as ('refresh_token' | 'access_token')[],
 };
 
 const userManager = new UserManager(userManagerConfig);
@@ -51,11 +62,19 @@ export const useUser = () => {
     };
     fetchUser();
   }, []);
-  return { isAdmin, email, name, signOut  };
+  return { isAdmin, email, name, signOut };
 };
 
 export const signinRedirect = () => userManager.signinRedirect();
+export const signOut = () =>
+  userManager.signoutRedirect({
+    // Cognito-specific parameters, necessary because oidc-client-ts default signout params are not recognized by Cognito.
+    // https://docs.aws.amazon.com/cognito/latest/developerguide/logout-endpoint.html#get-logout-request-sample
+    extraQueryParams: {
+      client_id: userManagerConfig.client_id,
+      logout_uri: 'http://localhost:5173/login',
+    },
+  });
 export const signinCallback = () => userManager.signinCallback();
-export const signOut = () => userManager.signoutRedirect();
 export const getUserAccessToken = async () => (await userManager.getUser())?.access_token;
 export default userManager;
