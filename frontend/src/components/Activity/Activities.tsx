@@ -1,27 +1,20 @@
-import { ParallelActivities } from '@/components/Activity/ParallelActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
-import { SingleActivity } from '@/components/Activity/SingleActivity';
-import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
+import { GridLayout } from './GridLayout';
+import { getWeek } from 'date-fns';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
-  selectedActivityId: number | null;
-  setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
-  const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const { activitiesData, scheduleTime } = props;
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
-  const expandInfo = () => {
-    setExpandInfoOpen(!expandInfoOpen);
-  };
   const separateActivitiesByDate = (
     activitiesSortedByDate: [],
   ): { [key: string]: ActivityType[] } => {
@@ -34,28 +27,32 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
       const today = new Date();
 
+      const weekNumber = getWeek(activity.start);
+
+      const key = `${date} week ${weekNumber}`;
+
       if (activity.presenter === null) {
         activity.presenter = [];
       }
       if (activity.review_id === null) {
         activity.review_id = [];
       }
-      if (!separatedActivities[date]) {
-        separatedActivities[date] = [];
+      if (!separatedActivities[key]) {
+        separatedActivities[key] = [];
       }
 
       const scheduleEndTime = new Date(scheduleTime);
       if (today > scheduleEndTime) {
-        separatedActivities[date].push(activity);
+        separatedActivities[key].push(activity);
       } else {
         if (today <= activity.end) {
-          separatedActivities[date].push(activity);
+          separatedActivities[key].push(activity);
         }
       }
     });
 
-    Object.keys(separatedActivities).map((date) => {
-      separatedActivities[date].sort(
+    Object.keys(separatedActivities).map((key) => {
+      separatedActivities[key].sort(
         (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
     });
@@ -64,47 +61,19 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   if (!activitiesSortedByDate) return null;
   const separatedActivities = separateActivitiesByDate(activitiesSortedByDate);
-  const skipIndices = new Set<number>();
 
   return (
     <>
       {separatedActivities &&
-        Object.keys(separatedActivities).map((date) => {
-          return separatedActivities[date].map((activity: ActivityType, index: number) => {
-            const nextActivity = separatedActivities[date][index + 1];
-            if (skipIndices.has(index)) {
-              return null;
-            }
-            if (nextActivity && activity.end.getTime() > nextActivity.start.getTime()) {
-              skipIndices.add(index + 1);
-              return (
-                <ParallelActivities
-                  date={date}
-                  activity={activity}
-                  nextActivity={nextActivity}
-                  skipIndices={skipIndices}
-                  index={index}
-                  setSelectedActivityId={setSelectedActivityId}
-                  expandInfo={expandInfo}
-                  expandInfoOpen={expandInfoOpen}
-                  setExpandInfoOpen={setExpandInfoOpen}
-                  selectedActivityId={selectedActivityId}
-                />
-              );
-            }
-            return (
-              <SingleActivity
-                date={date}
-                activity={activity}
-                index={index}
-                setSelectedActivityId={setSelectedActivityId}
-                expandInfo={expandInfo}
-                expandInfoOpen={expandInfoOpen}
-                setExpandInfoOpen={setExpandInfoOpen}
-                selectedActivityId={selectedActivityId}
-              />
-            );
-          });
+        Object.keys(separatedActivities).map((key) => {
+          return (
+            <GridLayout
+              key={key}
+              activitiesData={separatedActivities[key]}
+              date={key.slice(0, key.indexOf('week'))}
+              scheduleTime={scheduleTime}
+            />
+          );
         })}
     </>
   );

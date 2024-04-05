@@ -6,11 +6,11 @@ import AddIcon from '@mui/icons-material/Add';
 import KolliconFooter from '../components/Footer/KolliconFooter';
 import Activity from '../components/RegisterActivity/RegisterActivityComponent';
 import FloatingButton from '../components/Common/FloatingAddButton';
-import { Activities } from '@/components/Activity/Activities.tsx';
 import useSchedule from '@/utils/Hooks/useSchedule';
 import MenuDrawer from '@/components/HeaderMenu/MenuDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { AddAcitivityStyling } from '@/styles/HomePage/StyledHomePage';
+import { Activities } from '@/components/Activity/Activities';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
@@ -20,7 +20,6 @@ export const Home = () => {
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
 
   const activateDrawer = () => {
     setOpen(true);
@@ -52,14 +51,7 @@ export const Home = () => {
       <ActivitiesWrapper>
         {/* Menu drawer */}
         <MenuDrawer />
-        {/* Activities */}
-        <Activities
-          activitiesData={activitiesData}
-          selectedActivityId={selectedActivityId}
-          setSelectedActivityId={setSelectedActivityId}
-          scheduleTime={scheduleTime}
-        />
-        {/* Floating button */}
+        <Activities activitiesData={activitiesData} scheduleTime={scheduleTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>
