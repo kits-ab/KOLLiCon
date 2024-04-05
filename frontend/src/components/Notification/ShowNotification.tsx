@@ -21,7 +21,6 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import SendNotificationForm from './SendNotificationForm';
 import { useUser } from '@/utils/Authorization/Auth';
-// import { useUser } from '@/utils/Authorization/Auth';
 
 interface Message {
   id: number;
@@ -55,8 +54,8 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
   const [openSendNotification, setOpenSendNotification] = useState(false);
   const [expandedNotification, setExpandedNotification] = useState<Notification | null>(null);
   const { isAdmin } = useUser();
-  // const { email } = useUser();
-  const email = 'isac.olofsson@kits.se'; // Hardcoded for demonstration
+  const { email } = useUser();
+  // const email = 'tobias.lans@kits.se'; // Hardcoded for demonstration
 
   const markNotificationAsRead = async (notificationId: number) => {
     try {
