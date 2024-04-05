@@ -55,10 +55,6 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
     }
   }, [isAdmin, data, email]);
 
-  // useEffect(() => {
-  //   setRenderDrawer(true);
-  // }, []);
-
   return (
     <div>
       {/** Expanded Timeslot */}
