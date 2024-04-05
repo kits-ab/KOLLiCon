@@ -16,7 +16,6 @@ import { Activities } from '@/components/Activity/OldActivity/Activities';
 export const Home = () => {
   const [activitiesData, scheduleTime] = useSchedule();
   const [open, setOpen] = useState(false);
-  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(null);
 
   const activities = activitiesData;
 
@@ -33,12 +32,7 @@ export const Home = () => {
       <GlobalStyles />
       <ActivitiesWrapper>
         <MenuDrawer />
-        <Activities
-          activitiesData={activities}
-          selectedActivityId={selectedActivityId}
-          setSelectedActivityId={setSelectedActivityId}
-          scheduleTime={scheduleTime}
-        />
+        <Activities activitiesData={activities} scheduleTime={scheduleTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         <AddAcitivityStyling>
           <AddIcon style={{ fontSize: '60px', cursor: 'pointer' }} onClick={activateDrawer} />

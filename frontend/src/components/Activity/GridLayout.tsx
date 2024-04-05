@@ -1,13 +1,11 @@
 import { ActivityType } from '@/types/Activities';
 import { Timeslot } from '@kokitotsos/react-components';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 import ExpandInfo from '../ExpandInfo/ExpandInfoComponent';
 import { GridWrapper, TimeSlotWrapper } from '@/styles/Timeslot/StyledTimeslot';
 import DateText from '@/styles/DateText';
 import React from 'react';
-import { format, getWeek, setDay } from 'date-fns';
-import { sv } from 'date-fns/locale/sv';
 
 interface ActivitiesProps {
   activitiesData: ActivityType[];
@@ -25,7 +23,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   const MILLISECONDS_PER_MINUTE = 60000;
   const FIVE_MINUTES_INTERVAL = 12;
   const HOURS_PER_DAY = 24;
-  const DAYS_PER_WEEK = 7;
 
   const expandInfo = () => {
     setExpandInfoOpen(!expandInfoOpen);
@@ -41,9 +38,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
   // Calculate the end row of the activity
   const calculateEndRow = (activity: ActivityType) => {
     let endHour = new Date(activity.end).getHours();
-    if (activity.start.getDay() !== activity.end.getDay()) {
-      endHour = setDay(new Date(activity.start).getDay(), 23).getHours();
-    }
     const endMinutes = new Date(activity.end).getMinutes();
     const endRow = endHour * FIVE_MINUTES_INTERVAL + Math.floor(endMinutes / 5);
     if (activity.start.getDay() !== activity.end.getDay()) {
@@ -74,7 +68,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     ) {
       let overlappingActivities = 0;
 
-      // Check if there are three or more activities that overlap with the current time
+      // Check if there are two or more activities that overlap with the current time
       for (let otherActivity of activities) {
         if (otherActivity !== activity) {
           const otherStart = otherActivity.start.getTime();
@@ -100,25 +94,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     let detailsSlice = 200;
     let numberOfParallellActivities = 1;
 
-    const startWeek = getWeek(filterdActivities[0].start);
-    const currentActivityWeek = getWeek(activity.start);
-
-    // Calculate the number of days between the first activity and the current activity
-    const firstActivityDate = new Date(filterdActivities[0].start).getDay();
-    const currentActivityDate = new Date(activity.start).getDay();
-    const diffDays = currentActivityDate - firstActivityDate;
-
-    // Adjust the gridRowStart and gridRowEnd values based on the number of days difference
-    gridRowStart += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL + 1;
-    gridRowEnd += diffDays * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL + 1; // TODO: Check if this is correct
-
-    // Adjust the gridRowStart and gridRowEnd values based on the number of weeks difference
-    if (currentActivityWeek > startWeek) {
-      gridRowStart +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL;
-      gridRowEnd +=
-        (currentActivityWeek - startWeek) * DAYS_PER_WEEK * HOURS_PER_DAY * FIVE_MINUTES_INTERVAL;
-    }
     // Change the layout based on the number of parallell activities
     if (hasThreeOverLappingActivities(activity, filterdActivities)) {
       columnSpan = 2;
@@ -140,9 +115,6 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     };
   };
 
-  // Keep track of the last rendered day to display the weekday of first activity of each day
-  let lastRenderedDay = 0;
-
   return (
     <>
       <GridWrapper>
@@ -155,26 +127,9 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
             numberOfParallellActivities,
           } = getGridLayout(activity, activitiesData);
 
-          // Get the day of the current activity
-          const currentDay = new Date(activity.start).getDate();
-
-          // Check if the current day is different from the last rendered day
-          const isFirstActivityOfDay = currentDay !== lastRenderedDay;
-
-          // Update the last rendered day
-          lastRenderedDay = currentDay;
-
           return (
             <React.Fragment key={activity.id}>
               {index === 0 && <DateText gridrowStart={gridRowStart}>{date}</DateText>}
-              {/* {isFirstActivityOfDay ? (
-                <DateText gridrowStart={gridRowStart}>
-                  {format(new Date(activity.start), 'iiii', { locale: sv })
-                    .charAt(0)
-                    .toUpperCase() +
-                    format(new Date(activity.start), 'iiii', { locale: sv }).slice(1)}
-                </DateText>
-              ) : null} */}
               <a
                 style={{
                   cursor: 'pointer',

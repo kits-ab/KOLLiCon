@@ -1,29 +1,20 @@
-// import { ParallelActivities } from '@/components/Activity/OldActivity/ParallelActivities';
 import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
-// import { SingleActivity } from '@/components/Activity/OldActivity/SingleActivity';
-import { StyledTimeslot } from '@/styles/Timeslot/StyledTimeslot';
 import { GridLayout } from '../GridLayout';
 import { getWeek } from 'date-fns';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
-  selectedActivityId: number | null;
-  setSelectedActivityId: React.Dispatch<React.SetStateAction<number | null>>;
   scheduleTime: Date;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, setSelectedActivityId, selectedActivityId, scheduleTime } = props;
-  const [expandInfoOpen, setExpandInfoOpen] = useState(false);
+  const { activitiesData, scheduleTime } = props;
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
-  const expandInfo = () => {
-    setExpandInfoOpen(!expandInfoOpen);
-  };
   const separateActivitiesByDate = (
     activitiesSortedByDate: [],
   ): { [key: string]: ActivityType[] } => {
@@ -70,7 +61,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   if (!activitiesSortedByDate) return null;
   const separatedActivities = separateActivitiesByDate(activitiesSortedByDate);
-  const skipIndices = new Set<number>();
 
   return (
     <>
