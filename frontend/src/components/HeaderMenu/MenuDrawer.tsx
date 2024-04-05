@@ -9,6 +9,7 @@ import { Text } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
 import { Global } from '@emotion/react';
+import UserProfile from '../Dashboard/UserProfile';
 
 import {
   LogoutChildPart,
@@ -33,10 +34,11 @@ function MenuDrawer(props: Props) {
   const [display, SetDisplay] = React.useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
   const { isAdmin } = useUser();
+  const [displayUserProfile, setDisplayUserProfile] = React.useState(false);
 
   const menuItems = isAdmin
     ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
-    : ['Min profil', 'Tidigare KitsCons',];
+    : ['Min profil', 'Tidigare KitsCons'];
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -56,12 +58,18 @@ function MenuDrawer(props: Props) {
     setOpenScheduleModal(true);
   };
 
+  const openUserrProfile = () => {
+    setDisplayUserProfile(true);
+    setOpen(false);
+  };
+
   const handleMenuItemClick = (label: string) => {
     switch (label) {
       case 'Skapa Schema':
         openModal();
         break;
       case 'Min profil':
+        openUserrProfile();
         break;
       case 'Tidigare KitsCons':
         break;
@@ -77,6 +85,7 @@ function MenuDrawer(props: Props) {
     <>
       {/** Export Modal */}
       {display && <ExportFileUI onClose={() => SetDisplay(false)} />}
+      {displayUserProfile && <UserProfile setDisplayUserProfile={setDisplayUserProfile} setOpen />}
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
