@@ -1,5 +1,4 @@
 import React from 'react';
-import Drawer from '@mui/material/Drawer';
 import { Logotype, Contact, types, Image } from '@kokitotsos/react-components';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
@@ -8,42 +7,37 @@ import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useUserProfile } from '@/utils/Hooks/useUserProfile';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-function UserProfile(props: any) {
-  const { setDisplayUserProfile } = props;
-  const [open, setOpen] = React.useState(false);
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { Colors } from '@/styles/Common/colors';
+interface Props {
+  onOpen: () => void;
+  onClose: () => void;
+  open: boolean;
+}
+const UserProfile: React.FC<Props> = ({ onClose, open }) => {
   const { signOut } = useUser();
   const { name, email, phoneNumber, picture } = useUserProfile();
   const isDesktop = useMediaQuery('(min-width:600px)');
-
-  const closeUserProfile = () => {
-    setDisplayUserProfile(false);
-  };
-
-  React.useEffect(() => {
-    setOpen(true);
-  }, []);
-
   return (
     <>
-      <Drawer
+      <SwipeableDrawer
+        anchor={'right'}
+        open={open}
+        onClose={onClose}
+        onOpen={() => {}}
         PaperProps={{
           sx: {
             height: '100%',
             padding: '20px',
             width: isDesktop ? '50%' : '100%',
+            backgroundColor: `${Colors.primaryBackground}`,
           },
         }}
-        anchor={'right'}
-        open={open}
-        onClose={closeUserProfile}
-        onOpen={closeUserProfile}
-        variant='permanent'
         sx={{ width: '100%' }}
       >
         <ArrowBackIosIcon
-          sx={{ color: '#DBDBD8', position: 'relative', bottom: 1, cursor: 'pointer'}}
-          onClick={closeUserProfile}
+          sx={{ color: '#DBDBD8', position: 'relative', bottom: 1, cursor: 'pointer' }}
+          onClick={onClose}
         ></ArrowBackIosIcon>
         <div
           style={{
@@ -100,9 +94,8 @@ function UserProfile(props: any) {
             Logout
           </Typography>
         </LogoutChildPart>
-      </Drawer>
+      </SwipeableDrawer>
     </>
   );
-}
-
+};
 export default UserProfile;
