@@ -42,7 +42,7 @@ function UserProfile(props: any) {
         sx={{ width: '100%' }}
       >
         <ArrowBackIosIcon
-          sx={{ color: '#DBDBD8', position: 'relative', bottom: 1 }}
+          sx={{ color: '#DBDBD8', position: 'relative', bottom: 1, cursor: 'pointer'}}
           onClick={closeUserProfile}
         ></ArrowBackIosIcon>
         <div

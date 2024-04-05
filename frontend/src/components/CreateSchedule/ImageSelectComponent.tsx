@@ -8,23 +8,23 @@ import { TypeFormStyled, TypeSelectStyled } from '@/styles/RegisterActivity/Styl
 import { CreateSchedule } from '@/types/Schedule';
 
 type ImageSelectProps = {
-    schedule: CreateSchedule;
-    setSchedule: React.Dispatch<React.SetStateAction<CreateSchedule>> | any;
+  schedule: CreateSchedule;
+  setSchedule: React.Dispatch<React.SetStateAction<CreateSchedule>> | any;
 };
 
-const ImageSelect: React.FC<ImageSelectProps> = (
-  {
-    schedule,
-    setSchedule,
-  },
-) => {
+const ImageSelect: React.FC<ImageSelectProps> = ({ schedule, setSchedule }) => {
   const [selectedName, setSelectedName] = useState<string>('');
   const [names, setNames] = useState<string[]>([]);
   const [imageList, setImageList] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch images from the kits repository
-    fetch('https://api.github.com/repos/kits-ab/kits/contents/static/assets')
+
+    fetch('https://api.github.com/repos/kits-ab/kits/contents/static/assets', {
+      headers: {
+        Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         // Filter images that start with 'kitscon_'

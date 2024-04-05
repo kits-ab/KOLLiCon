@@ -23,12 +23,11 @@ export const useUser = () => {
     const fetchUser = async () => {
       const adminEmails = [
         'patrik.nilsson@kits.se',
-        'gustav.hjelm@kits.se',
+        'tobias.lans@kits.se',
         'alireza.h.khan@hotmail.com',
         'magnusolsson1994@hotmail.se',
         'Chris.wall@live.com',
         'johan_bengtsson89@outlook.com',
-        // 'emir.zivcic@kits.se'
       ];
 
       try {
