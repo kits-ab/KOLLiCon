@@ -60,6 +60,7 @@ function MenuDrawer(props: Props) {
 
   const openUserrProfile = () => {
     setDisplayUserProfile(true);
+    setOpen(false);
   };
 
   const handleMenuItemClick = (label: string) => {
