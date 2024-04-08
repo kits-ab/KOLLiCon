@@ -3,10 +3,12 @@ import useSchedule from '@/utils/Hooks/useSchedule';
 import { Colors } from '@/styles/Common/colors';
 import { useState } from 'react';
 import { ExpandSchedule } from './ExpandSchedule';
+import Placeholder from '@/assets/placeholder.jpg';
 
 export const RenderSchedules = () => {
-  const [_, __, schedulesData, scheduleImages] = useSchedule();
+  const [_, __, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
 
   const setScheduleOpen = () => {
     setOpen(!open);
@@ -30,20 +32,34 @@ export const RenderSchedules = () => {
             />
           ) : (
             <img
-              src={scheduleImages[0]}
+              src={Placeholder}
               alt='Placeholder Image'
               style={{ maxWidth: '20%', maxHeight: '100%' }}
             />
           )}
           {/* </div> */}
-          <div style={{ paddingLeft: '15px' }}>
-            <div style={{ color: Colors.presentersGreen }}>{schedule.title}</div>
-            <div>{schedule.location}</div>
-            <p>
-              {`${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
-            </p>
-          </div>
-          <ExpandSchedule schedule={schedule} open={open} setOpen={setScheduleOpen} />
+          <a
+            key={schedule.id}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setSelectedScheduleId(schedule.id);
+              setOpen();
+            }}
+          >
+            <div style={{ paddingLeft: '15px' }}>
+              <div style={{ color: Colors.presentersGreen }}>{schedule.title}</div>
+              <div>{schedule.location}</div>
+              <p>
+                {`${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
+              </p>
+            </div>
+            <ExpandSchedule
+              schedule={schedule}
+              open={open}
+              setOpen={setScheduleOpen}
+              selectedScheduleId={selectedScheduleId}
+            />
+          </a>
         </div>
       ))}
     </div>
