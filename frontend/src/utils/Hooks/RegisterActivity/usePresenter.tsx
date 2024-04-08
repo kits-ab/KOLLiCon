@@ -29,7 +29,6 @@ export const usePresenter = () => {
       const filteredTitles = EmployeesFiles.filter((file: { title: string }) =>
         file.title.toLowerCase().startsWith(value.toLowerCase()),
       );
-      console.log(EmployeesFiles)
       // Update suggestions state with filtered titles
       setSuggestions(filteredTitles);
     } else {
