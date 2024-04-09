@@ -69,7 +69,6 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
           return notification;
         }),
       );
-      // setExpandedNotification(null);
       handleNotificationExpand(
         notifications.find((notification) => notification.id === notificationId) as Notification,
       );
@@ -122,7 +121,6 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
     setOpenSendNotification(true);
   };
 
-  console.log(notifications);
   return (
     <>
       <SwipeableDrawer

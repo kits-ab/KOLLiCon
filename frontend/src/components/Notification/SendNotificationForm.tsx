@@ -21,6 +21,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { NotificationHeaderStyled } from '@/styles/Notification/StyledNotification';
+import { ErrorStyled } from '@/styles/RegisterActivity/StyledActivity';
 
 interface EmployeeFile {
   email: string;
@@ -48,6 +49,7 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [userEmails, setUserEmails] = useState<string[]>([]);
+  const [error, setError] = useState<string>('');
 
   const { EmployeesFiles } = useFetchFiles();
 
@@ -59,17 +61,28 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const messageData: MessageData = { title, text, userEmails};
+    const messageData: MessageData = { title, text, userEmails };
     try {
-      await axios.post(`${backendIP}/api/messages/send`, messageData);
-      // alert('Message sent successfully');
-      setTitle('');
-      setText('');
-      window.location.reload();
+      if (userEmails.length !== 0) {
+        await axios.post(`${backendIP}/api/messages/send`, messageData);
+        setTitle('');
+        setText('');
+        window.location.reload();
+      } else {
+        setError('Inga användare att skicka till!');
+        clearError();
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('Failed to send message');
+      setError('Misslyckades att skicka meddelande!');
+      clearError();
     }
+  };
+
+  const clearError = () => {
+    setTimeout(() => {
+      setError('');
+    }, 5000);
   };
 
   return (
@@ -138,6 +151,7 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
                     Skicka
                   </SaveButton>
                 </BoxWrapper1>
+                {error && <ErrorStyled>{error}</ErrorStyled>}
               </StyledDiv>
             </form>
           </EventsWrapper>

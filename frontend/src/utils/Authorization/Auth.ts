@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { User, UserManager } from 'oidc-client-ts';
+import axios from 'axios';
+const backendIP = import.meta.env.VITE_API_URL;
 
 const userManagerConfig = {
   authority: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_KNn5zQbLW',
@@ -32,15 +34,6 @@ export const useUser = () => {
   useEffect(() => {
     // Fetch the user and check if the user is an admin
     const fetchUser = async () => {
-      const adminEmails = [
-        'patrik.nilsson@kits.se',
-        'tobias.lans@kits.se',
-        'alireza.h.khan@hotmail.com',
-        'magnusolsson1994@hotmail.se',
-        'Chris.wall@live.com',
-        'johan_bengtsson89@outlook.com',
-      ];
-
       try {
         // Get the user from the user manager
         const user: User | null = await userManager.getUser();
@@ -49,12 +42,6 @@ export const useUser = () => {
           const name = user.profile.name ?? '';
           setEmail(email);
           setName(name);
-          // Check if the user is an admin
-          if (adminEmails.includes(email)) {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
         }
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -62,6 +49,24 @@ export const useUser = () => {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    // Check if the user is an admin
+    if (email !== '') {
+      (async (email: string) => {
+        try {
+          const response = await axios.get(`${backendIP}/api/admin/email/${email}`);
+          setIsAdmin(response.data);
+        } catch (error) {
+          console.error('Error checking admin email:', error);
+          setIsAdmin(false);
+        }
+      })(email);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [email]);
+
   return { isAdmin, email, name, signOut };
 };
 

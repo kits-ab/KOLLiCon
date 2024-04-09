@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { LogoutChildPart } from '@/styles/MenuStyles/StylesForMenu';
 import { useUser } from '@/utils/Authorization/Auth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useUserProfile } from '@/utils/Hooks/useUserProfile';
+import { useUserProfile } from '@/utils/Hooks/Dashboard/useUserProfile';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';

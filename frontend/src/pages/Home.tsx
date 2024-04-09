@@ -31,7 +31,6 @@ export const Home = () => {
 
   const handleNotificationClick = () => {
     setOpenNotification(true);
-    console.log('Notification clicked');
   };
 
   return (

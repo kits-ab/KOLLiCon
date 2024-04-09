@@ -5,6 +5,7 @@ import { useUser } from '@/utils/Authorization/Auth';
 export function useUserProfile() {
   const { EmployeesFiles } = useFetchFiles();
   const { email } = useUser();
+  // const email = 'patrik.nilsson@kits.se';
 
   const [profileData, setProfileData] = useState({
     name: 'Default name',
