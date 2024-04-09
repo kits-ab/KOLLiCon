@@ -39,7 +39,15 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
       const coordinates = Array.isArray(activityProp.location.coordinates)
         ? activityProp.location.coordinates
         : [];
-
+      // Get the presenter data and add a link to the presenter's page
+      const presenterData = getPresenter(activityProp) || [];
+      const presentersWithLinks = presenterData.map((presenter) => {
+        const presenterNameForURL = presenter.name.split(' ').join('').toLowerCase();
+        return {
+          ...presenter,
+          href: `https://kits.se/om/${presenterNameForURL}`,
+        };
+      });
       setGeneralInfo({
         title: activityProp.title,
         details: activityProp.details,
@@ -53,7 +61,7 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
         subtitle: activityProp.location.subtitle,
         coordinates: coordinates,
       });
-      setPresenters(getPresenter(activityProp) || []);
+      setPresenters(presentersWithLinks);
     } else if (scheduleProp) {
       setGeneralInfo({
         title: scheduleProp.title,
