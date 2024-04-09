@@ -1,7 +1,7 @@
 import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 import { Person } from '@kokitotsos/react-components/dist/types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { types } from '@kokitotsos/react-components';
 import { getPresenter } from '@/utils/Helpers/getPresenter';
 
@@ -33,6 +33,13 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
   });
   const [type, setType] = useState<types.TimeslotType>(types.TimeslotType.Presentation);
   const [presenters, setPresenters] = useState<Person[]>([]);
+  
+  // method to replace special characters and spaces with empty string
+  const replaceSpecialCharacters = useCallback((url: string) => {
+    let normalized = url.normalize('NFD');
+    let withoutDiacritics = normalized.replace(/[\u0300-\u036f]/g, '');
+    return withoutDiacritics.replace(/[\s-]/g, '').toLowerCase();
+  }, []);
 
   useEffect(() => {
     if (activityProp) {
@@ -42,7 +49,8 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
       // Get the presenter data and add a link to the presenter's page
       const presenterData = getPresenter(activityProp) || [];
       const presentersWithLinks = presenterData.map((presenter) => {
-        const presenterNameForURL = presenter.name.split(' ').join('').toLowerCase();
+        // const presenterNameForURL = presenter.name.replace(/[\s-]/g, '').toLowerCase();
+        const presenterNameForURL = replaceSpecialCharacters(presenter.name);
         return {
           ...presenter,
           href: `https://kits.se/om/${presenterNameForURL}`,
