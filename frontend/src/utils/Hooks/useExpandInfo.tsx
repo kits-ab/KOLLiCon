@@ -33,7 +33,7 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
   });
   const [type, setType] = useState<types.TimeslotType>(types.TimeslotType.Presentation);
   const [presenters, setPresenters] = useState<Person[]>([]);
-  
+
   // method to replace special characters and spaces with empty string
   const replaceSpecialCharacters = useCallback((url: string) => {
     let normalized = url.normalize('NFD');
@@ -49,11 +49,18 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
       // Get the presenter data and add a link to the presenter's page
       const presenterData = getPresenter(activityProp) || [];
       const presentersWithLinks = presenterData.map((presenter) => {
-        // const presenterNameForURL = presenter.name.replace(/[\s-]/g, '').toLowerCase();
         const presenterNameForURL = replaceSpecialCharacters(presenter.name);
+        const presenterURL = `https://kits.se/om/${presenterNameForURL}`;
+
+        const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+          e.preventDefault();
+          window.open(presenterURL, '_blank');
+        };
+
         return {
           ...presenter,
           href: `https://kits.se/om/${presenterNameForURL}`,
+          onClick: handleClick,
         };
       });
       setGeneralInfo({
