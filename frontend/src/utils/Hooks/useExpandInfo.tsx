@@ -59,7 +59,7 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
 
         return {
           ...presenter,
-          href: `https://kits.se/om/${presenterNameForURL}`,
+          presenterURL,
           onClick: handleClick,
         };
       });
