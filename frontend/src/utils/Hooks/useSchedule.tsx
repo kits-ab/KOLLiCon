@@ -4,7 +4,7 @@ import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
 
-function useSchedule(): [[], Date] {
+function useSchedule(): [ActivityType[], Date, boolean] {
   const [scheduleTime, setScheduleTime] = useState<Date>(new Date());
   const backendIP = import.meta.env.VITE_API_URL;
 
@@ -30,10 +30,10 @@ function useSchedule(): [[], Date] {
     }
   };
 
-  const { data } = useQuery<Schedule>('scheduleData', fetchData);
-  const [activitiesData, setActivitiesData] = useState<[]>(data?.activityId || []);
+  const { data, isLoading } = useQuery<Schedule>('scheduleData', fetchData);
+  const [activitiesData, setActivitiesData] = useState<ActivityType[]>(data?.activityId || []);
 
-  return [activitiesData, scheduleTime];
+  return [activitiesData, scheduleTime, isLoading];
 }
 
 export default useSchedule;

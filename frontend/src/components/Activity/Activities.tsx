@@ -2,14 +2,26 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
   scheduleTime: Date;
+  isLoading: boolean;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, scheduleTime } = props;
+  const { activitiesData, scheduleTime, isLoading } = props;
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '53vh' }}>
+        <CircularProgress color="success" />
+      </Box>
+    );
+  }
+
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),

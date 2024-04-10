@@ -14,9 +14,13 @@ export function useUserProfile() {
     picture: 'img.jpg',
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    let isDataFound = false;
     for (let i = 0; i < EmployeesFiles.length; i++) {
       if (EmployeesFiles[i].email === email) {
+        isDataFound = true;
         const formattedTitle = EmployeesFiles[i].title.toLowerCase().replace(/\s/g, '');
         setProfileData({
           name: EmployeesFiles[i].title,
@@ -27,7 +31,8 @@ export function useUserProfile() {
         break;
       }
     }
+    setIsLoading(!isDataFound);
   }, [EmployeesFiles]);
 
-  return profileData;
+  return { profileData, isLoading };
 }

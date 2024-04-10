@@ -16,7 +16,7 @@ import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime] = useSchedule();
+  const [activitiesData, scheduleTime, isLoading] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
@@ -50,7 +50,7 @@ export const Home = () => {
       <ActivitiesWrapper>
         {/* Menu drawer */}
         <MenuDrawer />
-        <Activities activitiesData={activitiesData} scheduleTime={scheduleTime} />
+        <Activities activitiesData={activitiesData} scheduleTime={scheduleTime} isLoading={isLoading} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>
