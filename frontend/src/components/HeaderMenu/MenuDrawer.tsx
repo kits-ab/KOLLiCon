@@ -29,7 +29,6 @@ function MenuDrawer(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
-  const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
   const { isAdmin } = useUser();
@@ -43,10 +42,6 @@ function MenuDrawer(props: Props) {
 
   const toggleDrawerSchedules = (newOpen: boolean) => () => {
     setOpenSchedule(!newOpen);
-  };
-
-  const logoutPage = () => {
-    navigate('/login');
   };
 
   const openUI = () => {
@@ -125,7 +120,7 @@ function MenuDrawer(props: Props) {
               {menuItems.map((menuItem, index) => (
                 <MenuItem
                   key={index}
-                  onClick={() => handleMenuItemClick(menuItem.label)}
+                  onClick={() => handleMenuItemClick(menuItem)}
                   style={{
                     textAlign: 'center',
                     fontSize: '1.1rem',
@@ -134,7 +129,7 @@ function MenuDrawer(props: Props) {
                     color: `${Colors.primaryText}`,
                   }}
                 >
-                  {menuItem.label}
+                  {menuItem}
                 </MenuItem>
               ))}
             </Box>
