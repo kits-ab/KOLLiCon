@@ -88,9 +88,8 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
               </div>
               <ExpandSchedule
                 schedule={schedule}
-                open={open}
+                open={selectedScheduleId === schedule.id && open}
                 setOpen={setScheduleOpen}
-                selectedScheduleId={selectedScheduleId}
               />
             </a>
           </div>
