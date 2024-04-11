@@ -9,7 +9,6 @@ import { Text } from '@kokitotsos/react-components';
 import Box from '@mui/material/Box';
 import ExportFileUI from '../ExportSchedule/ExportFileUI';
 import { Global } from '@emotion/react';
-
 import {
   LogoutChildPart,
   MenuDiv,
@@ -19,6 +18,8 @@ import {
   drawerBleeding,
 } from '@/styles/MenuStyles/StylesForMenu';
 import { Colors } from '@/styles/Common/colors';
+import { RenderSchedules } from '../Schedule/RenderSchedules';
+import Drawer from '@mui/material/Drawer';
 
 interface Props {
   window?: () => Window;
@@ -29,11 +30,16 @@ function MenuDrawer(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   const [open, setOpen] = React.useState(false);
+  const [openSchedule, setOpenSchedule] = React.useState(false);
   const navigate = useNavigate();
   const [display, SetDisplay] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const toggleDrawerSchedules = (newOpen: boolean) => () => {
+    setOpenSchedule(!newOpen);
   };
 
   const logoutPage = () => {
@@ -52,6 +58,7 @@ function MenuDrawer(props: Props) {
       case 'Min profil':
         break;
       case 'Tidigare KitsCons':
+        setOpenSchedule(true);
         break;
       case 'Exportera Markdownfil':
         openUI();
@@ -69,6 +76,7 @@ function MenuDrawer(props: Props) {
           '.MuiDrawer-root > .MuiPaper-root': {
             overflow: 'visible',
             backgroundColor: `${Colors.primaryBackground}`,
+            color: `${Colors.primaryText}`,
             borderRadius: '20px 20px 0px 0px',
           },
         }}
@@ -100,21 +108,29 @@ function MenuDrawer(props: Props) {
       >
         <MenuDiv>
           <Text>
-            {menuItems.map((menuItem, index) => (
-              <MenuItem
-                key={index}
-                onClick={() => handleMenuItemClick(menuItem.label)}
-                style={{
-                  textAlign: 'center',
-                  fontSize: '1.1rem',
-                  margin: '13px 0 13px 0',
-                  cursor: 'pointer',
-                  color: `${Colors.primaryText}`,
-                }}
-              >
-                {menuItem.label}
-              </MenuItem>
-            ))}
+            <Box display={'flex'} flexDirection={'column'}>
+              {menuItems.map((menuItem, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={() => handleMenuItemClick(menuItem.label)}
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '1.1rem',
+                    margin: '13px 0 13px 0',
+                    cursor: 'pointer',
+                    color: `${Colors.primaryText}`,
+                  }}
+                >
+                  {menuItem.label}
+                </MenuItem>
+              ))}
+            </Box>
+            <Drawer open={openSchedule} onClose={toggleDrawerSchedules(false)}>
+              <RenderSchedules
+                openSchedule={openSchedule}
+                setOpenSchedule={toggleDrawerSchedules(openSchedule)}
+              />
+            </Drawer>
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
               <div
                 style={{
