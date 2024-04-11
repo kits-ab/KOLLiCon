@@ -16,7 +16,7 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
   const { openSchedule, setOpenSchedule } = props;
   const [_, __, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
-  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number>(0);
 
   const setScheduleOpen = () => {
     setOpen(!open);
@@ -55,12 +55,12 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
               flexDirection: 'row',
               display: 'flex',
               padding: '15px 15px',
-              alignContent: 'center',
+              alignItems: 'center',
             }}
           >
-            {schedule.imageUrl ? (
+            {schedule.imageURL ? (
               <img
-                src={schedule.imageUrl}
+                src={schedule.imageURL}
                 alt='Schedule Image'
                 style={{ maxWidth: '20%', maxHeight: '100%' }}
               />
@@ -79,21 +79,19 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
                 setScheduleOpen();
               }}
             >
-              <div style={{ paddingLeft: '15px' }}>
+              <div style={{ paddingLeft: '15px', alignItems: 'center' }}>
                 <div style={{ color: Colors.presentersGreen }}>{schedule.title}</div>
                 <div>
                   {schedule.location},
                   {` ${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
                 </div>
               </div>
-              {selectedScheduleId === schedule.id && (
-                <ExpandSchedule
-                  schedule={schedule}
-                  open={open}
-                  setOpen={setScheduleOpen}
-                  selectedScheduleId={selectedScheduleId}
-                />
-              )}
+              <ExpandSchedule
+                schedule={schedule}
+                open={open}
+                setOpen={setScheduleOpen}
+                selectedScheduleId={selectedScheduleId}
+              />
             </a>
           </div>
         ))}

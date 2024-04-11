@@ -71,9 +71,9 @@ export const ExpandSchedule = (props: ScheduleProps) => {
               alignItems: 'center',
             }}
           >
-            {schedule.imageUrl ? (
+            {schedule.imageURL ? (
               <img
-                src={schedule.imageUrl}
+                src={schedule.imageURL}
                 alt='Schedule Image'
                 style={{ maxWidth: '20%', maxHeight: '100%' }}
               />

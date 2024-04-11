@@ -4,7 +4,7 @@ export type Schedule = {
   id: number;
   userId: string;
   activityId?: ActivityType;
-  imageUrl?: string;
+  imageURL?: string;
   type: string;
   title: string;
   tagLine: string;
