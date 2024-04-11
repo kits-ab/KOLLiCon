@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLatLike } from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@/styles/MapBox/MapBox.css';
@@ -9,15 +9,16 @@ import { Colors } from '../../styles/Common/colors';
 const MapBox = ({
   onCoordinatesChange,
   resetLocation,
+  storedCoords
 }: {
   onCoordinatesChange: (coords: number[]) => void;
   resetLocation: () => void;
+  storedCoords: number[];
 }) => {
-  const [coordinates, setCoordinates] = useState(null);
-  // const [switchedCoordinates, setSwitchedCoordinates] = useState(null);
-  const geocoderRef = useRef(null);
-  const mapRef = useRef('');
-  const [marker, setMarker] = useState(null);
+  const [coordinates, setCoordinates] = useState<LngLatLike | null>(null);
+  const geocoderRef = useRef<MapboxGeocoder | null>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [marker, setMarker] = useState<mapboxgl.Marker | null>(null);
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1Ijoia29raXRvdHNvcyIsImEiOiJjaXk0d3R5bjEwMDJsMnlscWhtOGlydDl3In0.Xfr-Sr_D4JJVK2kVNsm4vA';
@@ -25,9 +26,9 @@ const MapBox = ({
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v10',
-      center: [11.967017, 57.707233],
-      zoom: 11,
-    });
+      center: storedCoords.length >= 1 ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+      zoom: 12,
+    } as mapboxgl.MapboxOptions);
     // Update the type of mapRef.current
     mapRef.current = map;
 
@@ -104,10 +105,11 @@ const MapBox = ({
         // Cast mapRef.current to mapboxgl.Map
         (mapRef.current as mapboxgl.Map).flyTo({
           // Convert initialCenter to LngLatLike
-          center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+          center: storedCoords.length >= 1 ? [storedCoords[1], storedCoords[0]]: [11.967017, 57.707233] as mapboxgl.LngLatLike,
+          // center: [11.967017, 57.707233] as mapboxgl.LngLatLike,
           essential: true,
           animate: true,
-          zoom: 11,
+          zoom: 12,
           duration: 1500,
         });
       }
@@ -138,7 +140,6 @@ const MapBox = ({
       >
         Rensa
       </DeleteButton>
-      {/* <StyledLine style={{ marginBottom: '-6%' }} /> */}
     </div>
   );
 };

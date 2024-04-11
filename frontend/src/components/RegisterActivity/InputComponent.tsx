@@ -1,13 +1,14 @@
 import {  InputStyled, TextAreaStyled} from '@/styles/RegisterActivity/StyledActivity';
 import {ErrorStyled} from '../../styles/RegisterActivity/StyledActivity';
+import { RegisterActivity } from '@/types/Activities';
 
 type InputComponentProps = {
-    activity: any;
-    error: any;
-    setIsTitleFilled: any;
-    setIsDetailsFilled: any;
-    setTextError: any;
-    setActivity: any;
+    activity:   RegisterActivity;
+    error:  boolean | any;
+    setIsTitleFilled:   React.Dispatch<React.SetStateAction<boolean>> | any;
+    setIsDetailsFilled:   React.Dispatch<React.SetStateAction<boolean>> | any;
+    setTextError: React.Dispatch<React.SetStateAction<boolean>> | any;
+    setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>> | any;
 }
 
 const InputComponent: React.FC<InputComponentProps> = ({

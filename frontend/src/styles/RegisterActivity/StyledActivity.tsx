@@ -33,12 +33,22 @@ export const TitleStyled = styled.div`
 export const HeaderStyled = styled.div`
   font-weight: lighter;
   color: ${Colors.buttonText};
-  margin: 2% 0 2% 28%;
+  margin: 2% 10% 10px 29%;
   text-align: initial;
-  font-size: 27px;
+  font-size: 20px;
   fontfamily: segueUI;
   @media (max-width: 650px) {
-    margin: 2% 7% 1% 11%;
+    margin: 10px 28% 1% 12%;
+  }
+`;
+
+export const HeaderEditStyled = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1% 29% -10px 28%;
+  @media (max-width: 650px) {
+    margin: 1% 12% -10px 11%;
   }
 `;
 
@@ -50,6 +60,8 @@ export const BoxWrapper = styled(Box)`
 export const BoxWrapper1 = styled(BoxWrapper)`
   flex-direction: row;
   margin-top: 2%;
+  justify-content: end;
+  margin-right: 7%;
 `;
 
 export const StyledDiv = styled.div`
@@ -95,12 +107,12 @@ export const SubmitButton = styled(Button)({
 });
 
 export const CancelButton = styled(Button)({
-  width: '20%',
+  width: '40px',
   position: 'relative',
-  left: '40%',
   height: '30px',
   border: '1px solid gray',
   backgroundColor: 'transparent',
+  right: '10px',
   '&:hover': {
     backgroundColor: `${Colors.hoverCancelButton}`,
   },
@@ -113,10 +125,8 @@ export const ErrorStyled = styled.div`
 `;
 
 export const SaveButton = styled(Button)({
-  width: '20%',
+  width: '90px',
   position: 'relative',
-  left: '72.5%',
-  marginRight: '-10%',
   height: '30px',
 });
 
@@ -124,16 +134,17 @@ export const AddButton = styled(Button)({
   cursor: 'pointer',
   padding: '1px',
   borderRadius: '6px',
-  marginTop: '4%',
-  maxWidth: '20%',
-  marginLeft: '41%',
-  marginBottom: '4%',
+  marginTop: '2%',
+  width: '90px',
+  marginBottom: '5%',
   color: `${Colors.buttonText}`,
-  fontSize: '11px',
+  fontSize: '13px',
 });
 
 export const DeleteButton = styled(Button)({
-  fontSize: '11px',
+  margin:'2px',
+  width: '60px',
+  fontSize: '13px',
   backgroundColor: `${Colors.primaryDeleteButton}`,
   cursor: 'pointer',
   padding: '0.5px',
@@ -184,7 +195,6 @@ export const TypeFormStyled = {
   },
   '& .MuiInputLabel-root.Mui-focused': {
     color: `${Colors.primaryAddButton}`,
-
   },
   '& .MuiOutlinedInput-root': {
     height: '50px',
@@ -234,7 +244,7 @@ export const InputStyled = styled(Input)`
   margin: 10px 7% 0 7%;
   padding: 0 0 0 12px;
   background-color: ${Colors.primaryBackground};
-  color: ${Colors.secondaryPlaceholder};
+  color: ${Colors.primaryPlaceholder};
   border: 1px solid ${Colors.primaryBorder};
   border-radius: 4px;
   &.MuiInput-underline:after {
@@ -248,6 +258,7 @@ export const InputStyled = styled(Input)`
 export const LengthStyled = styled(InputStyled)`
   margin: 0% 6.5% 0 7%;
   padding: 0 0 0 12px;
+  color: ${Colors.othercolor};
 
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {

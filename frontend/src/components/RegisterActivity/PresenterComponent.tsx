@@ -11,18 +11,20 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
+import { RegisterActivity, RegisterPerson } from '@/types/Activities';
+import Box from '@mui/material/Box';
 
 type PresenterProps = {
-  presenter: any;
-  suggestions: any;
-  presenterError: any;
-  handlePresenterChange: any;
-  handleSuggestionClick: any;
-  activity: any;
-  setActivity: any;
-  addPresenter: any;
-  setIsPresenterFilled: any;
-  setPresenter: any;
+  presenter:  RegisterPerson;
+  suggestions:  { title: string }[];
+  presenterError:   string;
+  handlePresenterChange:  (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSuggestionClick:  (title: string) => void;
+  activity:   RegisterActivity;
+  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  addPresenter:   () => Promise<RegisterActivity['presenter'][number] | undefined>;
+  setIsPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
+  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string, email: string }>>;
 };
 
 const PresenterComponent: React.FC<PresenterProps> = ({
@@ -65,6 +67,7 @@ const PresenterComponent: React.FC<PresenterProps> = ({
       setPresenter({
         name: '',
         avatarSrc: '',
+        email: '',
       });
     }
   };
@@ -100,10 +103,11 @@ const PresenterComponent: React.FC<PresenterProps> = ({
             </SuggestionBoxStyled>
           </SuggestionBoxWrapper>
         )}
-
+        <Box sx={{display:'flex', justifyContent:'center'}}>
         <AddButton type='button' onClick={handleAddPresenter} disabled={isInputEmpty}>
           Lägg till
         </AddButton>
+        </Box>
         {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
 
         {/* List added presenters */}

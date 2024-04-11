@@ -9,14 +9,15 @@ import {
 } from '@/styles/RegisterActivity/StyledActivity';
 import dayjs from 'dayjs';
 import { Colors } from '../../styles/Common/colors';
+import { RegisterActivity } from '@/types/Activities';
 
 type DateTimePickerProps = {
   sxDateTimePickerStyles: any;
   DateTimePropsStyles: any;
-  activity: any;
-  setActivity: any;
-  setIsStartFilled: any;
-  setIsEndFilled: any;
+  activity: RegisterActivity;
+  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  setIsStartFilled: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsEndFilled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({

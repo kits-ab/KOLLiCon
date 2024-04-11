@@ -22,8 +22,10 @@ public class PresenterModel {
     private String AvatarSrc;
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     @JsonIdentityReference(alwaysAsId = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private ActivityModel activity;
+    @Column(name = "email")
+    private String email;
 
     public PresenterModel() {
     }
@@ -40,19 +42,22 @@ public class PresenterModel {
     public void setName(String name) {
         this.name = name;
     }
-
     public String getAvatarSrc() {
         return AvatarSrc;
     }
-
     public void setAvatarSrc(String avatarSrc) {
         AvatarSrc = avatarSrc;
     }
-
     public ActivityModel getActivity() {
         return activity;
     }
     public void setActivity(ActivityModel activity) {
         this.activity = activity;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
