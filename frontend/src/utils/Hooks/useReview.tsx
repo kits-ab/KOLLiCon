@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import Rating from '@mui/material/Rating';
 import axios from 'axios';
-import {
-  TextAreaStyled,
-  SubmitButton,
-  ErrorStyled,
-} from '@/styles/RegisterActivity/StyledActivity';
-import styled from '@emotion/styled';
-import { Colors } from '@/styles/Common/colors';
-import { Button } from '@kokitotsos/react-components';
+import { ErrorStyled, TextAreaStyled } from '@/styles/RegisterActivity/StyledActivity';
+import { StyledRating, StyledSubmitButton, SuccessMessage } from '@/styles/Review/StyledReview';
 
 interface Props {
   userId: string;
-  activity: { id: number };
+  activity: {};
   rate?: number;
   review?: string;
+  renderDrawer: boolean;
 }
 
 const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
@@ -24,126 +18,105 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
   const [successSubmit, setSuccessSubmit] = useState<boolean>(false);
   const backendIP = import.meta.env.VITE_API_URL;
 
-  const reviewForm = () => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      watch,
-      reset,
-    } = useForm<Props>({
-      mode: 'onChange',
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm<Props>({
+    mode: 'onChange',
+  });
 
-    //Function to clear error after 10 seconds
-    const clearError = () => {
-      setTimeout(() => {
-        setSuccessSubmit(false);
-      }, 5000);
-    };
+  const review = watch('review', '');
 
-    const review = watch('review');
-
-    const postReview = async (data: Props) => {
-      try {
-        const response = await axios.post(`${backendIP}/api/review/create`, data);
-        console.log(response);
-
-        reset({
-          userId: '',
-          activity: { id: 0 },
-          rate: 0,
-          review: '',
-        });
-        setRateValue(null);
-        setSuccessSubmit(true);
-        clearError();
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const onSubmit: SubmitHandler<Props> = (data) => {
-      data.rate = rateValue || 0;
-      data.userId = props.userId;
-      data.activity = { id: props.activity };
-      postReview(data);
-    };
-
-    useEffect(() => {
-      if (rateValue === null || review === '') {
-        setButtonDisabled(true);
-      } else {
-        setButtonDisabled(false);
-      }
-
-      // handleButton();
-    }, [rateValue, review]);
-
-    const StyledRating = styled(Rating)`
-      width: 60%;
-      max-width: 200px;
-      margin-bottom: 15px;
-      justify-content: space-between;
-      .MuiRating-iconEmpty {
-        color: gray;
-      }
-      .MuiRating-icon {
-        font-size: 30px;
-    `;
-
-    const SuccessMessage = styled(ErrorStyled)`
-      color: ${Colors.primaryAddButton};
-      display: flex;
-      justify-content: center;
-    `;
-
-    const StyledSubmitButton = styled(SubmitButton)`
-      margin: 30px 0px 0px 0px;
-      margin-right: 0px;
-      width: 150px;
-    `;
-
-    return (
-      <>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-          >
-            <StyledRating
-              name='simple-controlled'
-              value={rateValue}
-              onChange={(event, newValue) => {
-                setRateValue(newValue);
-              }}
-            />
-
-            <TextAreaStyled
-              maxRows={3}
-              style={{ margin: '0px', width: '100%', height: '150px' }}
-              placeholder='Ge feedback'
-              {...register('review', { required: true })}
-            />
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <StyledSubmitButton disabled={buttonDisabled} type='submit'>
-                Skicka
-              </StyledSubmitButton>
-              {successSubmit && <SuccessMessage>Tack för din feedback</SuccessMessage>}
-            </div>
-          </form>
-        </div>
-      </>
-    );
+  // Function to clear error after 10 seconds
+  const clearSuccessMessage = () => {
+    setTimeout(() => {
+      setSuccessSubmit(false);
+    }, 5000);
   };
 
-  return reviewForm();
+  const postReview = async (data: Props) => {
+    try {
+      const response = await axios.post(`${backendIP}/api/review/create`, data);
+      console.log(response);
+
+      reset({
+        userId: '',
+        activity: { id: 0 },
+        rate: 0,
+        review: '',
+      });
+      setRateValue(null);
+      setSuccessSubmit(true);
+      clearSuccessMessage();
+    } catch (error) {
+      console.error(error);
+      alert('Något gick fel, försök igen');
+    }
+  };
+
+  const onSubmit: SubmitHandler<Props> = (data) => {
+    data.rate = rateValue || 0;
+    data.userId = props.userId;
+    data.activity = { id: props.activity };
+    data.review = review;
+    postReview(data);
+  };
+
+  useEffect(() => {
+    if (rateValue === null || review === '') {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
+    }
+  }, [rateValue, review]);
+
+  useEffect(() => {
+    if (!props.renderDrawer) {
+      setRateValue(null);
+      reset({ review: '' });
+    }
+  }, [props.renderDrawer]);
+
+  return (
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <StyledRating
+          name='simple-controlled'
+          value={rateValue}
+          onChange={(event, newValue) => {
+            setRateValue(newValue);
+          }}
+        />
+        <TextAreaStyled
+          maxRows={3}
+          style={{ margin: '0px', width: '100%', height: '150px' }}
+          placeholder='Ge feedback'
+          {...register('review', { required: true, maxLength: 500 })}
+        />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <StyledSubmitButton disabled={buttonDisabled} type='submit'>
+            Skicka
+          </StyledSubmitButton>
+          {successSubmit && <SuccessMessage>Tack för din feedback</SuccessMessage>}
+          {errors.review?.type === 'maxLength' && (
+            <ErrorStyled>Får inte vara längre än 500 tecken</ErrorStyled>
+          )}
+          {errors.review?.type === 'required' && (
+            <ErrorStyled>Fältet får inte vara tomt</ErrorStyled>
+          )}
+        </div>
+      </form>
+    </>
+  );
 };
 
 export default PostReviewComponent;
