@@ -23,9 +23,9 @@ import Drawer from '@mui/material/Drawer';
 import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
 interface Props {
   window?: () => Window;
+  handleScheduleId: (number: number) => void;
 }
-function MenuDrawer(props: Props) {
-  const { window } = props;
+const MenuDrawer: React.FC<Props> = ({ window, handleScheduleId }) => {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
@@ -137,6 +137,7 @@ function MenuDrawer(props: Props) {
               <RenderSchedules
                 openSchedule={openSchedule}
                 setOpenSchedule={toggleDrawerSchedules(openSchedule)}
+                handleScheduleId={handleScheduleId}
               />
             </Drawer>
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
@@ -197,5 +198,5 @@ function MenuDrawer(props: Props) {
       />
     </>
   );
-}
+};
 export default MenuDrawer;

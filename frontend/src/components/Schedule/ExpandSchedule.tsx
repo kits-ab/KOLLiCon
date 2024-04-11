@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { Colors } from '@/styles/Common/colors';
 import { Schedule } from '@/types/Schedule';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -12,11 +12,11 @@ interface ScheduleProps {
   schedule: Schedule;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedScheduleId: number;
+  handleScheduleId: any;
 }
 
 export const ExpandSchedule = (props: ScheduleProps) => {
-  const { schedule, open, setOpen } = props;
+  const { schedule, open, setOpen, handleScheduleId } = props;
   const isDesktop = useMediaQuery('(min-width:600px)');
 
   console.log('Schedule: ', schedule);
@@ -91,6 +91,9 @@ export const ExpandSchedule = (props: ScheduleProps) => {
                 {` ${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
               </div>
             </div>
+            <button onClick={handleScheduleId(() => handleScheduleId(schedule.id))}>
+              Aktivera
+            </button>
           </div>
         </div>
 

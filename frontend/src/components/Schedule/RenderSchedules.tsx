@@ -10,10 +10,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 interface RenderSchedulesProps {
   setOpenSchedule: React.Dispatch<React.SetStateAction<boolean>>;
   openSchedule: boolean;
+  handleScheduleId: any;
 }
 
 export const RenderSchedules = (props: RenderSchedulesProps) => {
-  const { openSchedule, setOpenSchedule } = props;
+  const { openSchedule, setOpenSchedule, handleScheduleId } = props;
   const [_, __, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number>(0);
@@ -88,9 +89,9 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
               </div>
               <ExpandSchedule
                 schedule={schedule}
-                open={open}
+                open={selectedScheduleId === schedule.id && open}
                 setOpen={setScheduleOpen}
-                selectedScheduleId={selectedScheduleId}
+                handleScheduleId={handleScheduleId}
               />
             </a>
           </div>

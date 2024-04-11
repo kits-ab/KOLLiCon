@@ -14,14 +14,25 @@ import { Activities } from '@/components/Activity/Activities';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
+import { ActivityType } from '@/types/Activities';
+import { Schedule } from '@/types/Schedule';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime, schedulesData] = useSchedule();
+  const [
+    activitiesData,
+    scheduleTime,
+    schedulesData,
+    handleScheduleId,
+    activeSchedule,
+    activeActivities,
+  ] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
 
-  console.log('SchedulesData', schedulesData);
+  console.log('schedulesData Data: ', schedulesData);
+
+  console.log('Active Activities: ', activeActivities);
 
   const activateDrawer = () => {
     setOpen(true);
@@ -51,8 +62,8 @@ export const Home = () => {
       )}
       <ActivitiesWrapper>
         {/* Menu drawer */}
-        <MenuDrawer />
-        <Activities activitiesData={activitiesData} scheduleTime={scheduleTime} />
+        <MenuDrawer handleScheduleId={handleScheduleId} />
+        <Activities activeActivities={activeActivities} scheduleTime={scheduleTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>

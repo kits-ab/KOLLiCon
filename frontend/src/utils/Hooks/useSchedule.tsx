@@ -4,16 +4,24 @@ import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
 
-function useSchedule(): [ActivityType[], Date, Schedule[]] {
+function useSchedule(): [
+  ActivityType[],
+  Date,
+  Schedule[],
+  (scheduleId: number) => void,
+  ActivityType,
+  ActivityType[],
+] {
   const [scheduleTime, setScheduleTime] = useState<Date>(new Date());
   const backendIP = import.meta.env.VITE_API_URL;
 
-  const fetchSchedules = async (): Promise<Schedule[]> => {
+  const fetchSchedules = async (): Promise<[Schedule[], Schedule]> => {
     try {
       const response = await axios.get(`${backendIP}/api/allschedule`);
-
+      const activeSchedule = response.data.find((schedule: Schedule) => schedule.id === 1);
       setSchedulesData(response.data);
-      return response.data as Schedule[];
+      const allSchedules: Schedule[] = response.data;
+      return [allSchedules, activeSchedule as Schedule];
     } catch (error) {
       console.error(error);
       throw error;
@@ -42,14 +50,39 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
     }
   };
 
+  const [activeScheduleId, setActiveScheduleId] = useState<number>(1);
+
+  const handleScheduleId = (scheduleId: number) => {
+    setActiveScheduleId(scheduleId);
+    handleActiveActivities(
+      activitiesData.filter((activity: any) => activity.scheduleId === activeScheduleId),
+    );
+  };
+  const handleActiveActivities = (activities: any) => {
+    setActiveActivities(activities);
+  };
+
   const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchData);
-  const { data: schedules } = useQuery<Schedule[]>('schedules', fetchSchedules);
+  const { data } = useQuery<Schedule[], Schedule>('schedules', fetchSchedules);
+  const allSchedules = data ? data[0] : [];
+  const activeSchedule = data ? data[1] : null;
   const [activitiesData, setActivitiesData] = useState<ActivityType[]>(
     scheduleData?.activityId ? [scheduleData.activityId] : [],
   );
-  const [schedulesData, setSchedulesData] = useState<Schedule[]>(schedules || []);
+  const [schedulesData, setSchedulesData] = useState<Schedule[]>(allSchedules || []);
 
-  return [activitiesData, scheduleTime, schedulesData];
+  const [activeActivities, setActiveActivities] = useState<ActivityType[]>(
+    schedulesData.find((schedule: Schedule) => schedule.id === 1)?.activityId || [],
+  );
+
+  return [
+    activitiesData,
+    scheduleTime,
+    schedulesData,
+    handleScheduleId,
+    activeSchedule,
+    activeActivities,
+  ];
 }
 
 export default useSchedule;

@@ -4,14 +4,14 @@ import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
 
 interface ActivitiesProps {
-  activitiesData: [] | any;
+  activeActivities: ActivityType[] | any;
   scheduleTime: Date;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, scheduleTime } = props;
+  const { activeActivities, scheduleTime } = props;
 
-  const activitiesSortedByDate = activitiesData.sort(
+  const activitiesSortedByDate = activeActivities.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
