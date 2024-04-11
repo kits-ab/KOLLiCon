@@ -12,8 +12,7 @@ interface ScheduleProps {
   schedule: Schedule;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedScheduleId: number;
-}
+  }
 
 export const ExpandSchedule = (props: ScheduleProps) => {
   const { schedule, open, setOpen } = props;
