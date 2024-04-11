@@ -80,7 +80,7 @@ export const useExpandInfo = ({ activityProp, scheduleProp }: ExpandInfoProps) =
     } else if (scheduleProp) {
       setGeneralInfo({
         title: scheduleProp.title,
-        details: scheduleProp.details,
+        details: scheduleProp.description,
         start: new Date(scheduleProp.start),
         end: new Date(scheduleProp.end),
         showEndTime: false,

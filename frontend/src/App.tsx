@@ -7,7 +7,6 @@ import Error from '@/pages/Error';
 import { Home } from './pages/Home';
 import NotFound from '@/pages/NotFound';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
 // Create a client
 const queryClient = new QueryClient();
 
