@@ -138,7 +138,7 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
                 </div>
               )}
             </StyledTimeslot>
-            {data.type === 'presentation' && (
+            {(data.type === 'presentation' || data.type === 'externalpresentation') && (
               <PostReviewComponent activity={activityProp.id} userId={email} />
             )}
           </DialogContent>

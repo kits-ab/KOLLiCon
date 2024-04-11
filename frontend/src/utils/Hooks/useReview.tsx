@@ -9,6 +9,7 @@ import {
 } from '@/styles/RegisterActivity/StyledActivity';
 import styled from '@emotion/styled';
 import { Colors } from '@/styles/Common/colors';
+import { Button } from '@kokitotsos/react-components';
 
 interface Props {
   userId: string;
@@ -34,7 +35,7 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
       mode: 'onChange',
     });
 
-    // Function to clear error after 10 seconds
+    //Function to clear error after 10 seconds
     const clearError = () => {
       setTimeout(() => {
         setSuccessSubmit(false);
@@ -97,10 +98,19 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
       justify-content: center;
     `;
 
+    const StyledSubmitButton = styled(SubmitButton)`
+      margin: 30px 0px 0px 0px;
+      margin-right: 0px;
+      width: 150px;
+    `;
+
     return (
       <>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+          >
             <StyledRating
               name='simple-controlled'
               value={rateValue}
@@ -115,15 +125,18 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
               placeholder='Ge feedback'
               {...register('review', { required: true })}
             />
-
-            <SubmitButton
-              disabled={buttonDisabled}
-              sx={{ width: '150px', height: '30px' }}
-              type='submit'
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
-              Skicka
-            </SubmitButton>
-            {successSubmit && <SuccessMessage>Tack för din feedback</SuccessMessage>}
+              <StyledSubmitButton disabled={buttonDisabled} type='submit'>
+                Skicka
+              </StyledSubmitButton>
+              {successSubmit && <SuccessMessage>Tack för din feedback</SuccessMessage>}
+            </div>
           </form>
         </div>
       </>
