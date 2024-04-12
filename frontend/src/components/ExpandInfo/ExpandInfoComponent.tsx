@@ -16,6 +16,9 @@ import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { useUser } from '@/utils/Authorization/Auth';
+import PostReview from '@/utils/Hooks/useReview';
+import Activity from '../RegisterActivity/RegisterActivityComponent';
+import PostReviewComponent from '@/utils/Hooks/useReview';
 
 interface ExpandInfoProps {
   open: boolean;
@@ -135,6 +138,9 @@ const ExpandInfo: React.FC<ExpandInfoProps> = ({ open, setOpen, activityProp, sc
                 </div>
               )}
             </StyledTimeslot>
+            {(data.type === 'presentation' || data.type === 'externalpresentation') && (
+              <PostReviewComponent activity={activityProp.id} userId={email} open={open} />
+            )}
           </DialogContent>
         </Drawer>
       )}
