@@ -133,7 +133,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
               <a
                 style={{
                   cursor: 'pointer',
-                  gridRowStart,
+                  gridRowStart: index === 0 ? gridRowStart + 1 : gridRowStart,
                   gridRowEnd,
                   gridColumnStart: `auto`,
                   gridColumnEnd: `span ${columnSpan}`,
