@@ -21,7 +21,7 @@ export const Home = () => {
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
 
-  console.log('SchedulesData', schedulesData);
+  // console.log('SchedulesData', schedulesData);
 
   const activateDrawer = () => {
     setOpen(true);
