@@ -19,6 +19,11 @@ public class ReviewController {
         return reviewService.createReview(reviewModel);
     }
 
+    @GetMapping("review")
+    public List<ReviewModel> getReviewForPresenter(@RequestParam String presenterEmail) {
+        return reviewService.getReviewsForPresenter(presenterEmail);
+    }
+
     @GetMapping("review/{id}")
     public ReviewModel getReview(@PathVariable Long id) {
         return reviewService.getReview(id);
@@ -30,11 +35,12 @@ public class ReviewController {
     }
 
     @PutMapping("review/update/{id}")
-    public ReviewModel updateReview( @RequestBody ReviewModel updatedReview, @PathVariable Long id) {
+    public ReviewModel updateReview(@RequestBody ReviewModel updatedReview, @PathVariable Long id) {
         return reviewService.updateReview(updatedReview, id);
     }
+
     @GetMapping("reviews")
-    public List<ReviewModel> getAllReviews () {
+    public List<ReviewModel> getAllReviews() {
         return reviewService.getAllReviews();
     }
 }

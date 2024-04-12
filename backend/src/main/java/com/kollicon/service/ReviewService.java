@@ -43,4 +43,8 @@ public class ReviewService {
     public List<ReviewModel> getAllReviews () {
         return reviewRepository.findAll();
     }
+
+    public List<ReviewModel> getReviewsForPresenter(String presenterEmail){
+        return reviewRepository.getReviewForPresenter(presenterEmail);
+    }
 }
