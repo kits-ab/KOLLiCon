@@ -16,10 +16,12 @@ import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime] = useSchedule();
+  const [activitiesData, scheduleTime, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+
+  console.log('SchedulesData', schedulesData);
 
   const activateDrawer = () => {
     setOpen(true);
