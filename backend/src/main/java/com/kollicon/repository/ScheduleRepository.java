@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ScheduleRepository extends JpaRepository<ScheduleModel, Long> {
     ScheduleModel findById(int i);
 
+    ScheduleModel active(boolean b);
 
 }
