@@ -20,11 +20,11 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
       throw error;
     }
   };
-  
+
   const fetchScheduleData = async (): Promise<Schedule> => {
     try {
       if (!activeSchedule) {
-        throw new Error("Active schedule is not set");
+        throw new Error('Active schedule is not set');
       }
       const activities = Array.isArray(activeSchedule.activityId) ? activeSchedule.activityId : [];
       // Fetch all activities from the active schedule
@@ -45,7 +45,7 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
       throw error;
     }
   };
-  
+
   const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchScheduleData, {
     enabled: !!activeSchedule,
   });
