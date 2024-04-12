@@ -25,7 +25,13 @@ public class ActivityService {
 
 
     public ActivityModel createActivity(ActivityModel activity) {
-        ScheduleModel scheduleModel= scheduleRepository.findById(1);
+        ScheduleModel scheduleModel= scheduleRepository.active(true);
+        if (scheduleModel == null) {
+            throw new EntityNotFoundException("No active schedule found");
+        } else {
+            activity.setSchedule(scheduleModel);
+        }
+
         activity.setSchedule(scheduleModel);
         //Först hämtas presenter från activity och loppar igenom presenters lista sen sätter activity_id på varje enskild presenter.
         List<PresenterModel> presenters = activity.getPresenter();
