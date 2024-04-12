@@ -7,9 +7,14 @@ import { StyledRating, StyledSubmitButton, SuccessMessage } from '@/styles/Revie
 interface Props {
   userId: string;
   activity: {};
-  rate?: number;
-  review?: string;
-  renderDrawer: boolean;
+  open: boolean;
+}
+
+interface FormData {
+  userId: string;
+  activity: {};
+  rate: number;
+  review: string;
 }
 
 const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
@@ -24,20 +29,20 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
     formState: { errors },
     watch,
     reset,
-  } = useForm<Props>({
+  } = useForm<FormData>({
     mode: 'onChange',
   });
 
   const review = watch('review', '');
 
-  // Function to clear error after 10 seconds
+  // Function to clear success message after 10 seconds
   const clearSuccessMessage = () => {
     setTimeout(() => {
       setSuccessSubmit(false);
     }, 5000);
   };
 
-  const postReview = async (data: Props) => {
+  const postReview = async (data: FormData) => {
     try {
       const response = await axios.post(`${backendIP}/api/review/create`, data);
       console.log(response);
@@ -57,7 +62,7 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
     }
   };
 
-  const onSubmit: SubmitHandler<Props> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = (data) => {
     data.rate = rateValue || 0;
     data.userId = props.userId;
     data.activity = { id: props.activity };
@@ -73,12 +78,13 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
     }
   }, [rateValue, review]);
 
+  // Reset form when the modal is closed
   useEffect(() => {
-    if (!props.renderDrawer) {
+    if (!props.open) {
       setRateValue(null);
       reset({ review: '' });
     }
-  }, [props.renderDrawer]);
+  }, [props.open]);
 
   return (
     <>
