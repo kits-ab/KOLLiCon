@@ -46,7 +46,7 @@ public class MessageService {
     // Method to send email
     private void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("KITS"); // Set from address
+        message.setFrom("KITS");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
