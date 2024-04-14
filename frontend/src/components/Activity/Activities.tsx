@@ -2,17 +2,31 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
+import { Schedule } from '@/types/Schedule';
 
 interface ActivitiesProps {
-  activeActivities: ActivityType[] | any;
+  activeActivities: Schedule | [];
   scheduleTime: Date;
 }
 
-export const Activities: React.FC<ActivitiesProps> = (props) => {
+export const Activities: React.FC<ActivitiesProps> = (props: ActivitiesProps) => {
   const { activeActivities, scheduleTime } = props;
 
-  const activitiesSortedByDate = activeActivities.sort(
-    (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
+  {
+    console.log('Active Schedule inne i Activities: ', activeActivities);
+  }
+
+  if (!activeActivities || Array.isArray(activeActivities) || !activeActivities.activityId) {
+    return null;
+  }
+  const activitiesSortedByDate = activeActivities.activityId.sort(
+    (a: ActivityType, b: ActivityType) => {
+      if (a.start && b.start) {
+        return new Date(a.start).getTime() - new Date(b.start).getTime();
+      } else {
+        return 0;
+      }
+    },
   );
 
   const separateActivitiesByDate = (

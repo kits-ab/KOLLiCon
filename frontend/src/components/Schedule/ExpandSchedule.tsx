@@ -12,11 +12,11 @@ interface ScheduleProps {
   schedule: Schedule;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleScheduleId: any;
+  handleActiveSchedule: (scheduleId: number) => void;
 }
 
 export const ExpandSchedule = (props: ScheduleProps) => {
-  const { schedule, open, setOpen, handleScheduleId } = props;
+  const { schedule, open, setOpen, handleActiveSchedule } = props;
   const isDesktop = useMediaQuery('(min-width:600px)');
 
   console.log('Schedule: ', schedule);
@@ -91,9 +91,7 @@ export const ExpandSchedule = (props: ScheduleProps) => {
                 {` ${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
               </div>
             </div>
-            <button onClick={handleScheduleId(() => handleScheduleId(schedule.id))}>
-              Aktivera
-            </button>
+            <button onClick={() => handleActiveSchedule(schedule.id)}>Aktivera</button>
           </div>
         </div>
 

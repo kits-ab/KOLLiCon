@@ -1,5 +1,5 @@
 import { GlobalStyles } from '@kokitotsos/react-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'normalize.css';
 import ActivitiesWrapper from '@/styles/ActivitiesWrapper';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,21 +18,25 @@ import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 
 export const Home = () => {
-  const [
-    activitiesData,
-    scheduleTime,
-    schedulesData,
-    handleScheduleId,
-    activeSchedule,
-    activeActivities,
-  ] = useSchedule();
+  const [schedulesData, scheduleTime] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const [activeSchedule, setActiveSchedule] = useState<Schedule | []>(
+    schedulesData.find((schedule: Schedule) => schedule.active === true) || [],
+  );
 
+  const handleActiveSchedule = (scheduleId: number) => {
+    const activeSchedule = schedulesData.find((schedule: Schedule) => schedule.id === scheduleId);
+    if (activeSchedule) {
+      setActiveSchedule(activeSchedule);
+    }
+  };
+
+  console.log('Active Schedule: ', activeSchedule);
   console.log('schedulesData Data: ', schedulesData);
 
-  console.log('Active Activities: ', activeActivities);
+  // console.log('Active Activities: ', activeActivities);
 
   const activateDrawer = () => {
     setOpen(true);
@@ -46,6 +50,9 @@ export const Home = () => {
     setOpenNotification(true);
   };
 
+  useEffect(() => {
+    setActiveSchedule(schedulesData.find((schedule: Schedule) => schedule.active === true) || []);
+  }, [schedulesData]);
   return (
     <>
       <GlobalStyles />
@@ -62,8 +69,11 @@ export const Home = () => {
       )}
       <ActivitiesWrapper>
         {/* Menu drawer */}
-        <MenuDrawer handleScheduleId={handleScheduleId} />
-        <Activities activeActivities={activeActivities} scheduleTime={scheduleTime} />
+        <MenuDrawer handleActiveSchedule={handleActiveSchedule} />
+        <Activities
+          activeActivities={Array.isArray(activeSchedule) ? [] : activeSchedule}
+          scheduleTime={scheduleTime}
+        />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>
