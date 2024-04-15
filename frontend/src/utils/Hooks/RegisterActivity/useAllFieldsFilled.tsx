@@ -22,7 +22,7 @@ export const useAllFieldsFilled = (
 
   useEffect(() => {
     setIsAllFieldsFilled(
-      (isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && showLocation) ||
+      (isStartFilled && isEndFilled && isTitleFilled && showLocation) ||
         (isStartFilled &&
           isEndFilled &&
           isTitleFilled &&
