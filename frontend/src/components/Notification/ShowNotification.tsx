@@ -21,6 +21,9 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import SendNotificationForm from './SendNotificationForm';
 import { useUser } from '@/utils/Authorization/Auth';
+import { RootState } from '@/utils/Redux/Notification/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSentCheck } from '@/utils/Redux/Notification/sentCheckSlice';
 
 interface Message {
   id: number;
@@ -54,6 +57,8 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
   const [openSendNotification, setOpenSendNotification] = useState(false);
   const [expandedNotification, setExpandedNotification] = useState<Notification | null>(null);
   const { isAdmin } = useUser();
+  const sentCheck = useSelector((state: RootState) => state.sentCheck.value);
+  const dispatch = useDispatch();
   const { email } = useUser();
   // const email = 'tobias.lans@kits.se'; // Hardcoded for demonstration
 
@@ -87,6 +92,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(`${backendIP}/api/notifications/all`);
+        dispatch(setSentCheck(false));
         const allNotifications: Notification[] = response.data;
 
         // Filter notifications by the logged-in user's email
@@ -108,7 +114,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
       }
     };
     fetchNotifications();
-  }, [email, setHasNewNotification]);
+  }, [email, setHasNewNotification, sentCheck]);
 
   // Reset hasNewNotification when the notification drawer is closed
   useEffect(() => {
@@ -179,7 +185,11 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
                     <ul>
                       {notifications.map((notification) => (
                         <NotificationBox
-                          style={{ background: notification.read ? '#262626' : '#343434', cursor: 'pointer'}}
+                          key={notification.id}
+                          style={{
+                            background: notification.read ? '#262626' : '#343434',
+                            cursor: 'pointer',
+                          }}
                           onClick={() => markNotificationAsRead(notification.id)}
                         >
                           {/* Now displaying the message content */}
