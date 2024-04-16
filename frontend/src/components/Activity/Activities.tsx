@@ -2,6 +2,9 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
+import { Button, colors, colorsDark, width } from '@kokitotsos/react-components';
+import UpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -10,6 +13,7 @@ interface ActivitiesProps {
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, scheduleTime } = props;
+  const [showPassedActivities, setShowPassedActivities] = useState(false);
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
@@ -41,14 +45,22 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
         separatedActivities[key] = [];
       }
 
-      const scheduleEndTime = new Date(scheduleTime);
-      if (today > scheduleEndTime) {
+      // Add activity to separatedActivities[key] only if showPassedActivities is true or the activity's start date is in the future
+      if (showPassedActivities || new Date(activity.end) > today) {
         separatedActivities[key].push(activity);
-      } else {
-        if (today <= activity.end) {
-          separatedActivities[key].push(activity);
-        }
       }
+
+      // if (showPassedActivities) {
+      //   // TODO: Just nu laddar den inga activities alls om showPassedActivities är false och passerade aktiviteter visas aldrig
+      //   const scheduleEndTime = new Date(scheduleTime);
+      //   if (today > scheduleEndTime) {
+      //     separatedActivities[key].push(activity);
+      //   } else {
+      //     if (today <= activity.end) {
+      //       separatedActivities[key].push(activity);
+      //     }
+      //   }
+      // }
     });
 
     Object.keys(separatedActivities).map((key) => {
@@ -63,7 +75,27 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const separatedActivities = separateActivitiesByDate(activitiesSortedByDate);
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <button
+        className='showPassedActivities'
+        style={{
+          width: '40px',
+          height: '40px',
+          alignSelf: 'center',
+          backgroundColor: `${colorsDark.background2}`,
+          border: '0px',
+          borderRadius: '100%',
+        }}
+        onClick={() =>
+          showPassedActivities ? setShowPassedActivities(false) : setShowPassedActivities(true)
+        }
+      >
+        {showPassedActivities ? (
+          <DownIcon sx={{ color: 'white' }} />
+        ) : (
+          <UpIcon sx={{ color: 'white' }} />
+        )}
+      </button>
       {separatedActivities &&
         Object.keys(separatedActivities).map((key) => {
           return (
@@ -75,6 +107,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             />
           );
         })}
-    </>
+    </div>
   );
 };
