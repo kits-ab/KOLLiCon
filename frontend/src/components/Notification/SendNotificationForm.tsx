@@ -126,17 +126,26 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
                   required
                 />
                 <StyledLine1 />
-                <BoxWrapper1>
-                  <SaveButton
-                    onClick={handleSendNotificationClick}
-                    type='submit'
-                    id='spara-button'
-                    disabled={title === '' || text === ''}
-                  >
-                    Skicka
-                  </SaveButton>
-                </BoxWrapper1>
+                {loading ? (
+                  <BoxWrapper1>
+                    <SaveButton type='submit' disabled>
+                      <CircularProgress size={24} color='inherit' />
+                    </SaveButton>
+                  </BoxWrapper1>
+                ) : (
+                  <BoxWrapper1>
+                    <SaveButton
+                      onClick={handleSendNotificationClick}
+                      type='submit'
+                      id='spara-button'
+                      disabled={title === '' || text === ''}
+                    >
+                      Skicka
+                    </SaveButton>
+                  </BoxWrapper1>
+                )}
                 {error && <ErrorStyled>{error}</ErrorStyled>}
+                {success && <SuccessMessage>{success}</SuccessMessage>}
               </StyledDiv>
             </form>
           </EventsWrapper>

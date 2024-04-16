@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import { useUser } from '@/utils/Authorization/Auth';
+import noImage from '@/assets/no-image.jpg';
 
 export function useUserProfile() {
   const { EmployeesFiles } = useFetchFiles();
@@ -8,14 +9,20 @@ export function useUserProfile() {
   // const email = 'patrik.nilsson@kits.se';
 
   const [profileData, setProfileData] = useState({
-    name: 'Default name',
-    phoneNumber: '1111111111',
-    email: 'Default',
-    picture: 'img.jpg',
+    name: 'Okänd användare',
+    phoneNumber: '123-456 78 90',
+    email: 'example@example.se',
+    picture: noImage,
   });
 
+    // Initialize isLoading state to true by default
+    const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    let isDataFound = false;
+
     for (let i = 0; i < EmployeesFiles.length; i++) {
+      isDataFound = true;
       if (EmployeesFiles[i].email === email) {
         const formattedTitle = EmployeesFiles[i].title.toLowerCase().replace(/\s/g, '');
         setProfileData({
@@ -27,7 +34,8 @@ export function useUserProfile() {
         break;
       }
     }
+    setIsLoading(!isDataFound);
   }, [EmployeesFiles]);
 
-  return profileData;
+  return { profileData, isLoading };
 }
