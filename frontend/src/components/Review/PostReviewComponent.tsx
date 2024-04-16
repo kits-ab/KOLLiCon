@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
 import { ErrorStyled, TextAreaStyled } from '@/styles/RegisterActivity/StyledActivity';
 import { StyledRating, StyledSubmitButton, SuccessMessage } from '@/styles/Review/StyledReview';
+import { styled } from '@mui/material';
 
 interface Props {
   userId: string;

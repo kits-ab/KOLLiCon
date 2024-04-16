@@ -16,9 +16,9 @@ import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { useUser } from '@/utils/Authorization/Auth';
-import PostReview from '@/utils/Hooks/useReview';
+import PostReview from '@/components/Review/PostReviewComponent';
 import Activity from '../RegisterActivity/RegisterActivityComponent';
-import PostReviewComponent from '@/utils/Hooks/useReview';
+import PostReviewComponent from '@/components/Review/PostReviewComponent';
 
 interface ExpandInfoProps {
   open: boolean;

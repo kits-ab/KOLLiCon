@@ -5,15 +5,16 @@ import { fonts } from '@kokitotsos/react-components';
 import { SubmitButton } from '../RegisterActivity/StyledActivity';
 
 export const StyledRating = styled(Rating)`
-width: 60%;
-max-width: 200px;
-margin-bottom: 15px;
-justify-content: space-between;
-.MuiRating-iconEmpty {
-  color: gray;
-}
-.MuiRating-icon {
-  font-size: 30px;
+  width: 60%;
+  max-width: 200px;
+  margin-bottom: 15px;
+  justify-content: space-between;
+  .MuiRating-iconEmpty {
+    color: gray;
+  }
+  .MuiRating-icon {
+    font-size: 30px;
+  }
 `;
 
 export const SuccessMessage = styled.div`
