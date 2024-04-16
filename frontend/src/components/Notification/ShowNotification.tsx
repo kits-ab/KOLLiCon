@@ -22,7 +22,8 @@ import { Colors } from '@/styles/Common/colors';
 import SendNotificationForm from './SendNotificationForm';
 import { useUser } from '@/utils/Authorization/Auth';
 import { RootState } from '@/utils/Redux/Notification/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSentCheck } from '@/utils/Redux/Notification/sentCheckSlice';
 
 interface Message {
   id: number;
@@ -57,6 +58,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
   const [expandedNotification, setExpandedNotification] = useState<Notification | null>(null);
   const { isAdmin } = useUser();
   const sentCheck = useSelector((state: RootState) => state.sentCheck.value);
+  const dispatch = useDispatch();
   const { email } = useUser();
   // const email = 'tobias.lans@kits.se'; // Hardcoded for demonstration
 
@@ -90,6 +92,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(`${backendIP}/api/notifications/all`);
+        dispatch(setSentCheck(false));
         const allNotifications: Notification[] = response.data;
 
         // Filter notifications by the logged-in user's email
