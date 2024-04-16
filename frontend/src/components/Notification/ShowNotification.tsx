@@ -21,6 +21,8 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import SendNotificationForm from './SendNotificationForm';
 import { useUser } from '@/utils/Authorization/Auth';
+import { RootState } from '@/utils/Redux/Notification/store';
+import { useSelector } from 'react-redux';
 
 interface Message {
   id: number;
@@ -54,6 +56,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
   const [openSendNotification, setOpenSendNotification] = useState(false);
   const [expandedNotification, setExpandedNotification] = useState<Notification | null>(null);
   const { isAdmin } = useUser();
+  const sentCheck = useSelector((state: RootState) => state.sentCheck.value);
   const { email } = useUser();
   // const email = 'tobias.lans@kits.se'; // Hardcoded for demonstration
 
@@ -108,7 +111,7 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
       }
     };
     fetchNotifications();
-  }, [email, setHasNewNotification]);
+  }, [email, setHasNewNotification, sentCheck]);
 
   // Reset hasNewNotification when the notification drawer is closed
   useEffect(() => {
@@ -179,7 +182,11 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
                     <ul>
                       {notifications.map((notification) => (
                         <NotificationBox
-                          style={{ background: notification.read ? '#262626' : '#343434', cursor: 'pointer'}}
+                          key={notification.id}
+                          style={{
+                            background: notification.read ? '#262626' : '#343434',
+                            cursor: 'pointer',
+                          }}
                           onClick={() => markNotificationAsRead(notification.id)}
                         >
                           {/* Now displaying the message content */}
