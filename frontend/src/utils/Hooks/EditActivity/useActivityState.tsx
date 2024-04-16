@@ -14,7 +14,7 @@ export const useActivityState = () => {
     const [showExternalPresenter, setShowExternalPresenter] = useFormField(false);
     const [openApproveModal, setOpenApproveModal] = useFormField(false);
   
-    const isAllFieldsFilled = isStartFilled && isEndFilled && isTitleFilled && isDetailsFilled && isPresenterFilled && isExternalPresenterFilled;
+    const isAllFieldsFilled = isStartFilled && isEndFilled && isTitleFilled && isPresenterFilled && isExternalPresenterFilled;
   
     return {
       isStartFilled,

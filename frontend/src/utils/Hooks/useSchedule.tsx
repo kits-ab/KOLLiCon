@@ -29,7 +29,15 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
       const activities = Array.isArray(activeSchedule.activityId) ? activeSchedule.activityId : [];
       // Fetch all activities from the active schedule
       const processedActivities = activities.map((activity: any) => {
-        const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
+        let coorNumberArray: number[];
+        // Check if coordinates are already in array format or need to be split from string
+        if (Array.isArray(activity.location.coordinates)) {
+          coorNumberArray = activity.location.coordinates.map(Number);
+        } else if (typeof activity.location.coordinates === 'string') {
+          coorNumberArray = activity.location.coordinates.split(',').map(Number);
+        } else {
+          throw new Error('Unexpected type for coordinates');
+        }
         const start = new Date(activity.start);
         const end = new Date(activity.end);
         activity.start = start;
@@ -45,6 +53,7 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
       throw error;
     }
   };
+
 
   const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchScheduleData, {
     enabled: !!activeSchedule,

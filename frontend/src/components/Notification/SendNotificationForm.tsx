@@ -56,7 +56,15 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
   // Extract and set emails from EmployeesFiles when it changes
   useEffect(() => {
     const emails = EmployeesFiles.map((file: EmployeeFile) => file.email);
-    setUserEmails(emails);
+    // setUserEmails(emails);
+
+    //this is a temporary solution
+    setUserEmails([
+      'alireza.h.khan@hotmail.com',
+      'christoffer.wallberg85@gmail.com',
+      'johanbengtsson89@gmail.com',
+      'magnusolsson1994@hotmail.se'
+    ]);
   }, [EmployeesFiles]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {

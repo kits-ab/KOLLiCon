@@ -47,7 +47,7 @@ public class ActivityModel {
     @NotBlank(message = "Title is required")
     @Column(name = "title")
     private String title;
-    @NotBlank(message = "Details is required")
+
     @Column(name = "details", length = 3000)
     private String details;
     @NotNull(message = "Start date is required")
