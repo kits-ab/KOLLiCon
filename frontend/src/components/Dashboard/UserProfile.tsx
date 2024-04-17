@@ -9,6 +9,8 @@ import { useUserProfile } from '@/utils/Hooks/Dashboard/useUserProfile';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 interface Props {
   onOpen: () => void;
   onClose: () => void;
@@ -16,8 +18,9 @@ interface Props {
 }
 const UserProfile: React.FC<Props> = ({ onClose, open }) => {
   const { signOut } = useUser();
-  const { name, email, phoneNumber, picture } = useUserProfile();
+  const { profileData, isLoading } = useUserProfile();
   const isDesktop = useMediaQuery('(min-width:600px)');
+
   return (
     <>
       <SwipeableDrawer
@@ -38,37 +41,46 @@ const UserProfile: React.FC<Props> = ({ onClose, open }) => {
         <ArrowBackIosIcon
           sx={{ color: '#DBDBD8', position: 'relative', bottom: 1, cursor: 'pointer' }}
           onClick={onClose}
-        ></ArrowBackIosIcon>
-        <div
-          style={{
-            backgroundColor: '#596B4D',
-            width: '100%',
-            height: '170px',
-            position: 'absolute',
-            top: 60,
-            left: -1,
-          }}
-        >
-          <div style={{ position: 'relative', left: 250, top: 35 }}>
-            <Logotype color='#E3E3E3' width={130} />
-          </div>
-        </div>
-        <Image
-          href='#'
-          src={picture}
-          style={{ marginTop: '50px', marginLeft: '20px', height: '200px', width: '150px' }}
         />
-        <div style={{ marginTop: '30px' }}>
-          <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>{name}</div>
-          <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>{email}</div>
-          <Contact
-            style={{ marginLeft: '20px', color: '#6F6F70' }}
-            info={{
-              phone: new types.PhoneNumber(phoneNumber),
-            }}
-            type={0}
-          />
-        </div>
+        {/*show buffer loading while catching data*/}
+         {isLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '53vh' }}>
+            <CircularProgress color="success" />
+          </Box>
+        ) : (
+          <>
+            <div
+              style={{
+                backgroundColor: '#596B4D',
+                width: '100%',
+                height: '170px',
+                position: 'absolute',
+                top: 60,
+                left: -1,
+              }}
+            >
+              <div style={{ position: 'relative', left: 250, top: 35 }}>
+                <Logotype color='#E3E3E3' width={130} />
+              </div>
+            </div>
+            <Image
+              href='#'
+              src={profileData.picture}
+              style={{ marginTop: '50px', marginLeft: '20px', height: '200px', width: '150px' }}
+            />
+            <div style={{ marginTop: '30px' }}>
+              <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>{profileData.name}</div>
+              <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>{profileData.email}</div>
+              <Contact
+                style={{ marginLeft: '20px', color: '#6F6F70' }}
+                info={{
+                  phone: new types.PhoneNumber(profileData.phoneNumber),
+                }}
+                type={0}
+              />
+            </div>
+          </>
+        )}
         <LogoutChildPart
           style={{
             position: 'fixed',

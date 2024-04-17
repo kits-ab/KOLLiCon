@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useFetchFiles } from '@/utils/Hooks/RegisterActivity/useFetchEmployeesFiles';
 import {
   BoxWrapper1,
@@ -22,18 +21,13 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import { NotificationHeaderStyled } from '@/styles/Notification/StyledNotification';
 import { ErrorStyled } from '@/styles/RegisterActivity/StyledActivity';
+import { SuccessMessage } from '@/styles/Review/StyledReview';
+import CircularProgress from '@mui/material/CircularProgress';
+import {useHandleSubmit} from '@/utils/Hooks/Notification/notificationUtils';
 
 interface EmployeeFile {
   email: string;
 }
-
-interface MessageData {
-  title: string;
-  text: string;
-  userEmails: string[];
-}
-
-const backendIP = import.meta.env.VITE_API_URL;
 
 interface SendNotificationsProps {
   openSendNotification: boolean;
@@ -49,7 +43,7 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [userEmails, setUserEmails] = useState<string[]>([]);
-  const [error, setError] = useState<string>('');
+  const { handleSubmit, loading, success, error} = useHandleSubmit();
 
   const { EmployeesFiles } = useFetchFiles();
 
@@ -67,30 +61,13 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
     ]);
   }, [EmployeesFiles]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const messageData: MessageData = { title, text, userEmails };
-    try {
-      if (userEmails.length !== 0) {
-        await axios.post(`${backendIP}/api/messages/send`, messageData);
-        setTitle('');
-        setText('');
-        window.location.reload();
-      } else {
-        setError('Inga användare att skicka till!');
-        clearError();
-      }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      setError('Misslyckades att skicka meddelande!');
-      clearError();
-    }
-  };
-
-  const clearError = () => {
-    setTimeout(() => {
-      setError('');
-    }, 5000);
+    handleSubmit(title, text, userEmails, () => {
+      setTitle('');
+      setText('');
+      setOpenSendNotification(false);
+    });
   };
 
   return (
@@ -128,7 +105,7 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
           </NotificationHeaderStyled>
           <StyledLine />
           <EventsWrapper>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleFormSubmit}>
               <StyledDiv>
                 <ScheduleInputStyled
                   sx={{ margin: '0 0 10% 0' }}
@@ -149,17 +126,26 @@ const SendNotificationForm: React.FC<SendNotificationsProps> = ({
                   required
                 />
                 <StyledLine1 />
-                <BoxWrapper1>
-                  <SaveButton
-                    onClick={handleSendNotificationClick}
-                    type='submit'
-                    id='spara-button'
-                    disabled={title === '' || text === ''}
-                  >
-                    Skicka
-                  </SaveButton>
-                </BoxWrapper1>
+                {loading ? (
+                  <BoxWrapper1>
+                    <SaveButton type='submit' disabled>
+                      <CircularProgress size={24} color='inherit' />
+                    </SaveButton>
+                  </BoxWrapper1>
+                ) : (
+                  <BoxWrapper1>
+                    <SaveButton
+                      onClick={handleSendNotificationClick}
+                      type='submit'
+                      id='spara-button'
+                      disabled={title === '' || text === ''}
+                    >
+                      Skicka
+                    </SaveButton>
+                  </BoxWrapper1>
+                )}
                 {error && <ErrorStyled>{error}</ErrorStyled>}
+                {success && <SuccessMessage>{success}</SuccessMessage>}
               </StyledDiv>
             </form>
           </EventsWrapper>
