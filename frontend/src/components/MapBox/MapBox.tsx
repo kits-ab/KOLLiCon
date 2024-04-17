@@ -130,16 +130,16 @@ const MapBox = ({
         <div style={{ maxWidth: '100%' }} id='geocoder-container' className='geocoder'></div>
         <div id='map' style={{ width: '100%', height: '160px' }}></div>
       </div>
-
+      <div style={{display:'flex', justifyContent:'center', marginBottom:'10px'}}>
       <DeleteButton
         style={{
-          margin: '4% 0 -1% 40%',
-          maxWidth: '20%',
+          margin: '10px 0 0 0',
         }}
         onClick={clearSearchBox}
       >
         Rensa
       </DeleteButton>
+      </div>
     </div>
   );
 };
