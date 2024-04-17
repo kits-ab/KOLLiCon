@@ -2,6 +2,9 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
+import { Button, colors, colorsDark, width } from '@kokitotsos/react-components';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -10,11 +13,25 @@ interface ActivitiesProps {
 
 export const Activities: React.FC<ActivitiesProps> = (props) => {
   const { activitiesData, scheduleTime } = props;
+  const [showPassedActivities, setShowPassedActivities] = useState(false);
 
   const activitiesSortedByDate = activitiesData.sort(
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
+  // if the first activity has passed and the schedule end time has not passed, return true to enable the button
+  const enableButtonToShowPassedActivities = () => {
+    const today = new Date();
+    const scheduleEndTime = new Date(scheduleTime);
+    if (activitiesSortedByDate.length > 0) {
+      if (activitiesSortedByDate[0].end < today && today < scheduleEndTime) {
+        return true;
+      }
+      return false;
+    }
+  };
+
+  // Separate activities by date and week
   const separateActivitiesByDate = (
     activitiesSortedByDate: [],
   ): { [key: string]: ActivityType[] } => {
@@ -41,8 +58,9 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
         separatedActivities[key] = [];
       }
 
+      // If the activity is passed and the user wants to see passed activities or the schedule time is passed, show the activity
       const scheduleEndTime = new Date(scheduleTime);
-      if (today > scheduleEndTime) {
+      if (showPassedActivities || today > scheduleEndTime) {
         separatedActivities[key].push(activity);
       } else {
         if (today <= activity.end) {
@@ -63,7 +81,30 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
   const separatedActivities = separateActivitiesByDate(activitiesSortedByDate);
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {enableButtonToShowPassedActivities() && (
+        <button
+          className='showPassedActivities'
+          style={{
+            width: '40px',
+            height: '40px',
+            alignSelf: 'center',
+            backgroundColor: `${colorsDark.background2}`,
+            border: '0px',
+            borderRadius: '100%',
+            marginTop: '-40px',
+          }}
+          onClick={() =>
+            showPassedActivities ? setShowPassedActivities(false) : setShowPassedActivities(true)
+          }
+        >
+          {showPassedActivities ? (
+            <ExpandMoreIcon sx={{ color: 'white' }} />
+          ) : (
+            <ExpandLessIcon sx={{ color: 'white' }} />
+          )}
+        </button>
+      )}
       {separatedActivities &&
         Object.keys(separatedActivities).map((key) => {
           return (
@@ -75,6 +116,6 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
             />
           );
         })}
-    </>
+    </div>
   );
 };
