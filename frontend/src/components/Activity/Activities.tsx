@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
 import { Button, colors, colorsDark, width } from '@kokitotsos/react-components';
-import UpIcon from '@mui/icons-material/KeyboardArrowUp';
-import DownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 interface ActivitiesProps {
   activitiesData: [] | any;
@@ -19,6 +19,19 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
     (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
   );
 
+  // if the first activity has passed and the schedule end time has not passed, return true to enable the button
+  const enableButtonToShowPassedActivities = () => {
+    const today = new Date();
+    const scheduleEndTime = new Date(scheduleTime);
+    if (activitiesSortedByDate.length > 0) {
+      if (activitiesSortedByDate[0].end < today && today < scheduleEndTime) {
+        return true;
+      }
+      return false;
+    }
+  };
+
+  // Separate activities by date and week
   const separateActivitiesByDate = (
     activitiesSortedByDate: [],
   ): { [key: string]: ActivityType[] } => {
@@ -45,22 +58,15 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
         separatedActivities[key] = [];
       }
 
-      // Add activity to separatedActivities[key] only if showPassedActivities is true or the activity's start date is in the future
-      if (showPassedActivities || new Date(activity.end) > today) {
+      // If the activity is passed and the user wants to see passed activities or the schedule time is passed, show the activity
+      const scheduleEndTime = new Date(scheduleTime);
+      if (showPassedActivities || today > scheduleEndTime) {
         separatedActivities[key].push(activity);
+      } else {
+        if (today <= activity.end) {
+          separatedActivities[key].push(activity);
+        }
       }
-
-      // if (showPassedActivities) {
-      //   // TODO: Just nu laddar den inga activities alls om showPassedActivities är false och passerade aktiviteter visas aldrig
-      //   const scheduleEndTime = new Date(scheduleTime);
-      //   if (today > scheduleEndTime) {
-      //     separatedActivities[key].push(activity);
-      //   } else {
-      //     if (today <= activity.end) {
-      //       separatedActivities[key].push(activity);
-      //     }
-      //   }
-      // }
     });
 
     Object.keys(separatedActivities).map((key) => {
@@ -76,26 +82,29 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <button
-        className='showPassedActivities'
-        style={{
-          width: '40px',
-          height: '40px',
-          alignSelf: 'center',
-          backgroundColor: `${colorsDark.background2}`,
-          border: '0px',
-          borderRadius: '100%',
-        }}
-        onClick={() =>
-          showPassedActivities ? setShowPassedActivities(false) : setShowPassedActivities(true)
-        }
-      >
-        {showPassedActivities ? (
-          <DownIcon sx={{ color: 'white' }} />
-        ) : (
-          <UpIcon sx={{ color: 'white' }} />
-        )}
-      </button>
+      {enableButtonToShowPassedActivities() && (
+        <button
+          className='showPassedActivities'
+          style={{
+            width: '40px',
+            height: '40px',
+            alignSelf: 'center',
+            backgroundColor: `${colorsDark.background2}`,
+            border: '0px',
+            borderRadius: '100%',
+            marginTop: '-40px',
+          }}
+          onClick={() =>
+            showPassedActivities ? setShowPassedActivities(false) : setShowPassedActivities(true)
+          }
+        >
+          {showPassedActivities ? (
+            <ExpandMoreIcon sx={{ color: 'white' }} />
+          ) : (
+            <ExpandLessIcon sx={{ color: 'white' }} />
+          )}
+        </button>
+      )}
       {separatedActivities &&
         Object.keys(separatedActivities).map((key) => {
           return (
