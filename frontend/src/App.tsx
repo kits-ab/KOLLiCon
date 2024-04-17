@@ -7,6 +7,7 @@ import Error from '@/pages/Error';
 import { Home } from './pages/Home';
 import NotFound from '@/pages/NotFound';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import ProtectedRoute from './utils/Authorization/ProtectedRoute';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -20,7 +21,14 @@ function App() {
         <Route path='/token' element={<Success />} />
         <Route path='/error' element={<Error />} />
         <Route path='*' element={<NotFound />} />
-        <Route path='/home' element={<Home />} />
+        <Route
+          path='/home'
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </QueryClientProvider>
   );
