@@ -4,8 +4,9 @@ import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
 
-function useSchedule(): [ActivityType[], Date, Schedule[]] {
-  const [scheduleTime, setScheduleTime] = useState<Date>(new Date());
+function useSchedule(): [ActivityType[], Date, Date, Schedule[]] {
+  const [scheduleEndTime, setScheduleEndTime] = useState<Date>(new Date());
+  const [scheduleStartTime, setScheduleStartTime] = useState<Date>(new Date());
   const [activeSchedule, setActiveSchedule] = useState<Schedule>();
   const backendIP = import.meta.env.VITE_API_URL;
   // Fetch all schedules
@@ -45,7 +46,8 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
         activity.location.coordinates = coorNumberArray;
         return activity as ActivityType;
       });
-      setScheduleTime(activeSchedule.end);
+      setScheduleEndTime(activeSchedule.end);
+      setScheduleStartTime(activeSchedule.start);
       setActivitiesData(processedActivities);
       return activeSchedule;
     } catch (error) {
@@ -53,7 +55,6 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
       throw error;
     }
   };
-
 
   const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchScheduleData, {
     enabled: !!activeSchedule,
@@ -77,7 +78,7 @@ function useSchedule(): [ActivityType[], Date, Schedule[]] {
     findActiveSchedule(schedulesData);
   }, [schedulesData]);
 
-  return [activitiesData, scheduleTime, schedulesData];
+  return [activitiesData, scheduleEndTime, scheduleStartTime, schedulesData];
 }
 
 export default useSchedule;
