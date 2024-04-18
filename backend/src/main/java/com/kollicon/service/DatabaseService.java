@@ -66,13 +66,14 @@ public class DatabaseService {
             activityMap.put("winner", model.getWinner());
             activityMap.put("start", model.getStart().format(activityFormat));
             activityMap.put("end", model.getEnd().format(activityFormat));
-            activityMap.put("details", model.getDetails());
+            if(!model.getDetails().isEmpty()) {
+                activityMap.put("details", model.getDetails());
+            }
             activityMap.put("title", model.getTitle());
             activityMap.put("type", model.getType());
 
             // HandleLocation method call.
-            if(!model.getLocation().getCoordinates().isEmpty() && !model.getLocation().getTitle().isEmpty()
-                    && !model.getLocation().getSubtitle().isEmpty())
+            if(!model.getLocation().getCoordinates().isEmpty())
                 activityMap.put("location", handleLocation(model));
 
             // Handlepresenter method call
