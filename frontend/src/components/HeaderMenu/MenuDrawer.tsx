@@ -21,11 +21,13 @@ import { Colors } from '@/styles/Common/colors';
 import { RenderSchedules } from '../Schedule/RenderSchedules';
 import Drawer from '@mui/material/Drawer';
 import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
+import { Schedule } from '@/types/Schedule';
 interface Props {
   window?: () => Window;
   handleActiveSchedule: (scheduleId: number) => void;
+  schedulesData: Schedule[];
 }
-const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule }) => {
+const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule, schedulesData }) => {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
@@ -138,6 +140,7 @@ const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule }) => {
                 openSchedule={openSchedule}
                 setOpenSchedule={toggleDrawerSchedules(openSchedule)}
                 handleActiveSchedule={handleActiveSchedule}
+                schedulesData={schedulesData}
               />
             </Drawer>
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>

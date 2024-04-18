@@ -1,47 +1,45 @@
 import { ActivityType } from '@/types/Activities';
-import React, { useState } from 'react';
+import React from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
 import { Schedule } from '@/types/Schedule';
 
 interface ActivitiesProps {
-  activeActivities: Schedule | [];
+  activeSchedule: Schedule;
   scheduleTime: Date;
 }
 
 export const Activities: React.FC<ActivitiesProps> = (props: ActivitiesProps) => {
-  const { activeActivities, scheduleTime } = props;
+  const { activeSchedule, scheduleTime } = props;
 
-  {
-    console.log('Active Schedule inne i Activities: ', activeActivities);
-  }
-
-  if (!activeActivities || Array.isArray(activeActivities) || !activeActivities.activityId) {
+  if (activeSchedule === undefined || activeSchedule === null) {
     return null;
   }
-  const activitiesSortedByDate = activeActivities.activityId.sort(
-    (a: ActivityType, b: ActivityType) => {
-      if (a.start && b.start) {
-        return new Date(a.start).getTime() - new Date(b.start).getTime();
-      } else {
-        return 0;
-      }
-    },
-  );
+
+  const activitiesSortedByDate = activeSchedule.activityId
+    ? activeSchedule.activityId.sort((a: ActivityType, b: ActivityType) => {
+        if (a.start && b.start) {
+          return new Date(a.start).getTime() - new Date(b.start).getTime();
+        } else {
+          return 0;
+        }
+      })
+    : [];
 
   const separateActivitiesByDate = (
-    activitiesSortedByDate: [],
+    activitiesSortedByDate: ActivityType[],
   ): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
 
-    activitiesSortedByDate?.map((activity: ActivityType) => {
-      let date = activity.start.toLocaleDateString('sv-SE', options);
+    activitiesSortedByDate.map((activity: ActivityType) => {
+      const startDate = new Date(activity.start);
+      let date = startDate.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
       const today = new Date();
 
-      const weekNumber = getWeek(activity.start);
+      const weekNumber = getWeek(startDate);
 
       const key = `${date} week ${weekNumber}`;
 

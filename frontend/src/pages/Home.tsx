@@ -14,7 +14,6 @@ import { Activities } from '@/components/Activity/Activities';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
-import { ActivityType } from '@/types/Activities';
 import { Schedule } from '@/types/Schedule';
 
 export const Home = () => {
@@ -22,18 +21,23 @@ export const Home = () => {
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  const [activeSchedule, setActiveSchedule] = useState<Schedule | []>(
-    schedulesData.find((schedule: Schedule) => schedule.active === true) || [],
-  );
+  const [activeSchedule, setActiveSchedule] = useState<any>();
+
+  useEffect(() => {
+    const findActiveSchedule = schedulesData.find((schedule) => schedule.active);
+    if (findActiveSchedule) {
+      setActiveSchedule(findActiveSchedule);
+    }
+    setActiveSchedule(schedulesData[0]);
+  }, [schedulesData]);
 
   const handleActiveSchedule = (scheduleId: number) => {
-    const activeSchedule = schedulesData.find((schedule: Schedule) => schedule.id === scheduleId);
-    if (activeSchedule) {
-      setActiveSchedule(activeSchedule);
-    }
+    const newActiveSchedule = schedulesData.find((schedule) => schedule.id === scheduleId);
+    setActiveSchedule(newActiveSchedule);
   };
 
   console.log('Active Schedule: ', activeSchedule);
+
   console.log('schedulesData Data: ', schedulesData);
 
   // console.log('Active Activities: ', activeActivities);
@@ -50,9 +54,6 @@ export const Home = () => {
     setOpenNotification(true);
   };
 
-  useEffect(() => {
-    setActiveSchedule(schedulesData.find((schedule: Schedule) => schedule.active === true) || []);
-  }, [schedulesData]);
   return (
     <>
       <GlobalStyles />
@@ -69,11 +70,8 @@ export const Home = () => {
       )}
       <ActivitiesWrapper>
         {/* Menu drawer */}
-        <MenuDrawer handleActiveSchedule={handleActiveSchedule} />
-        <Activities
-          activeActivities={Array.isArray(activeSchedule) ? [] : activeSchedule}
-          scheduleTime={scheduleTime}
-        />
+        <MenuDrawer handleActiveSchedule={handleActiveSchedule} schedulesData={schedulesData} />
+        <Activities activeSchedule={activeSchedule} scheduleTime={scheduleTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>

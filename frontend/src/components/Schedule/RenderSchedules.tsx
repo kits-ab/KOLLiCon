@@ -11,11 +11,11 @@ interface RenderSchedulesProps {
   setOpenSchedule: React.Dispatch<React.SetStateAction<boolean>>;
   openSchedule: boolean;
   handleActiveSchedule: (scheduleId: number) => void;
+  schedulesData: Schedule[];
 }
 
 export const RenderSchedules = (props: RenderSchedulesProps) => {
-  const { openSchedule, setOpenSchedule, handleActiveSchedule } = props;
-  const [schedulesData] = useSchedule();
+  const { openSchedule, setOpenSchedule, handleActiveSchedule, schedulesData } = props;
   const [open, setOpen] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number>(0);
 
