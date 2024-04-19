@@ -22,6 +22,8 @@ import { RenderSchedules } from '../Schedule/RenderSchedules';
 import Drawer from '@mui/material/Drawer';
 import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
 import { Schedule } from '@/types/Schedule';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 interface Props {
   window?: () => Window;
   handleActiveSchedule: (scheduleId: number) => void;
@@ -38,6 +40,8 @@ const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule, schedulesDa
   const menuItems = isAdmin
     ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
     : ['Min profil', 'Tidigare KitsCons'];
+  const isDesktop = useMediaQuery('(min-width:600px)');
+
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -135,7 +139,17 @@ const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule, schedulesDa
                 </MenuItem>
               ))}
             </Box>
-            <Drawer open={openSchedule} onClose={toggleDrawerSchedules(false)}>
+            <Drawer
+              PaperProps={{
+                overflow: 'hidden',
+                sx: {
+                  width: isDesktop ? '50%' : '100%',
+                },
+              }}
+              anchor='right'
+              open={openSchedule}
+              onClose={toggleDrawerSchedules(false)}
+            >
               <RenderSchedules
                 openSchedule={openSchedule}
                 setOpenSchedule={toggleDrawerSchedules(openSchedule)}

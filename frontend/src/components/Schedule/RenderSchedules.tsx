@@ -63,13 +63,13 @@ export const RenderSchedules = (props: RenderSchedulesProps) => {
               <img
                 src={schedule.imageURL}
                 alt='Schedule Image'
-                style={{ maxWidth: '20%', maxHeight: '100%' }}
+                style={{ maxWidth: '100px', maxHeight: '100%' }}
               />
             ) : (
               <img
                 src={Placeholder}
                 alt='Placeholder Image'
-                style={{ maxWidth: '20%', maxHeight: '100%' }}
+                style={{ maxWidth: '100px', maxHeight: '100%' }}
               />
             )}
             <a
