@@ -10,6 +10,30 @@ function useSchedule(): [Schedule[], Date] {
 
   const backendIP = import.meta.env.VITE_API_URL;
 
+  const fetchAllSchedule = async (): Promise<Schedule[]> => {
+    try {
+      const response = await axios.get(`${backendIP}/api/allschedule`);
+      const updatedData: Schedule[] = response.data.map((schedule: Schedule) => {
+        schedule.activityId?.map((activity: any) => {
+          const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
+          const start = new Date(activity.start);
+          const end = new Date(activity.end);
+          activity.start = start;
+          activity.end = end;
+          activity.location.coordinates = coorNumberArray;
+          return activity as ActivityType;
+        });
+        return schedule as Schedule;
+      });
+      console.log('Data: ', updatedData);
+      setSchedulesData(updatedData);
+      return updatedData as Schedule[];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   // const fetchSchedules = async (): Promise<Schedule[]> => {
   //   try {
   //     const response = await axios.get(`${backendIP}/api/allschedule`);
@@ -56,29 +80,6 @@ function useSchedule(): [Schedule[], Date] {
   // );
 
   useEffect(() => {
-    const fetchAllSchedule = async (): Promise<Schedule[]> => {
-      try {
-        const response = await axios.get(`${backendIP}/api/allschedule`);
-        const updatedData: Schedule[] = response.data.map((schedule: Schedule) => {
-          schedule.activityId?.map((activity: any) => {
-            const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
-            const start = new Date(activity.start);
-            const end = new Date(activity.end);
-            activity.start = start;
-            activity.end = end;
-            activity.location.coordinates = coorNumberArray;
-            return activity as ActivityType;
-          });
-          return schedule as Schedule;
-        });
-        console.log('Data: ', updatedData);
-        setSchedulesData(updatedData);
-        return updatedData as Schedule[];
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
-    };
     fetchAllSchedule();
   }, []);
   return [schedulesData, scheduleTime];
