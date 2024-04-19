@@ -5,17 +5,18 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import DialogContent from '@mui/material/DialogContent';
 import Placeholder from '@/assets/placeholder.jpg';
+import Button from '@/styles/Common/Button/Button';
 
 interface ScheduleProps {
   schedule: Schedule;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }
+  handleActiveSchedule: (scheduleId: number) => void;
+}
 
 export const ExpandSchedule = (props: ScheduleProps) => {
-  const { schedule, open, setOpen } = props;
+  const { schedule, open, setOpen, handleActiveSchedule } = props;
   const isDesktop = useMediaQuery('(min-width:600px)');
 
   console.log('Schedule: ', schedule);
@@ -61,6 +62,7 @@ export const ExpandSchedule = (props: ScheduleProps) => {
             borderBottom: '0.5px solid #343434',
             padding: '15px',
             alignContent: 'center',
+            justifyContent: 'center',
           }}
         >
           <div
@@ -74,13 +76,13 @@ export const ExpandSchedule = (props: ScheduleProps) => {
               <img
                 src={schedule.imageURL}
                 alt='Schedule Image'
-                style={{ maxWidth: '20%', maxHeight: '100%' }}
+                style={{ maxWidth: '100px', maxHeight: '100%' }}
               />
             ) : (
               <img
                 src={Placeholder}
                 alt='Placeholder Image'
-                style={{ maxWidth: '20%', maxHeight: '100%' }}
+                style={{ maxWidth: '100px', maxHeight: '100%' }}
               />
             )}
             <div style={{ paddingLeft: '15px', flexDirection: 'column', display: 'flex' }}>
@@ -90,6 +92,11 @@ export const ExpandSchedule = (props: ScheduleProps) => {
                 {` ${new Date(schedule.start).getDate()} - ${new Date(schedule.end).getDate()} ${capitalizeFirstLetter(new Intl.DateTimeFormat('sv-SE', { month: 'long' }).format(new Date(schedule.start)))}`}
               </div>
             </div>
+          </div>
+          <div style={{ margin: 'auto', paddingTop: '10px' }}>
+            <Button style={{ width: '100px' }} onClick={() => handleActiveSchedule(schedule.id)}>
+              Aktivera
+            </Button>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { GlobalStyles } from '@kokitotsos/react-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'normalize.css';
 import ActivitiesWrapper from '@/styles/ActivitiesWrapper';
 import AddIcon from '@mui/icons-material/Add';
@@ -16,12 +16,23 @@ import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime, schedulesData] = useSchedule();
+  const [schedulesData, scheduleEndTime, _, activeSchedule, setActiveSchedule] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
 
-  // console.log('SchedulesData', schedulesData);
+  const handleActiveSchedule = (scheduleId: number) => {
+    const newActiveSchedule = schedulesData.find((schedule) => schedule.id === scheduleId);
+    if (newActiveSchedule) {
+      setActiveSchedule(newActiveSchedule);
+    }
+  };
+
+  console.log('Active Schedule: ', activeSchedule);
+
+  console.log('schedulesData Data: ', schedulesData);
+
+  // console.log('Active Activities: ', activeActivities);
 
   const activateDrawer = () => {
     setOpen(true);
@@ -51,8 +62,8 @@ export const Home = () => {
       )}
       <ActivitiesWrapper>
         {/* Menu drawer */}
-        <MenuDrawer />
-        <Activities activitiesData={activitiesData} scheduleTime={scheduleTime} />
+        <MenuDrawer handleActiveSchedule={handleActiveSchedule} schedulesData={schedulesData} />
+        <Activities activeSchedule={activeSchedule} scheduleTime={scheduleEndTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>

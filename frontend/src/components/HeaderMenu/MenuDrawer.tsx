@@ -21,11 +21,15 @@ import { Colors } from '@/styles/Common/colors';
 import { RenderSchedules } from '../Schedule/RenderSchedules';
 import Drawer from '@mui/material/Drawer';
 import ScheduleComponent from '../CreateSchedule/ScheduleComponent';
+import { Schedule } from '@/types/Schedule';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 interface Props {
   window?: () => Window;
+  handleActiveSchedule: (scheduleId: number) => void;
+  schedulesData: Schedule[];
 }
-function MenuDrawer(props: Props) {
-  const { window } = props;
+const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule, schedulesData }) => {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [open, setOpen] = React.useState(false);
   const [openSchedule, setOpenSchedule] = React.useState(false);
@@ -36,6 +40,8 @@ function MenuDrawer(props: Props) {
   const menuItems = isAdmin
     ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
     : ['Min profil', 'Tidigare KitsCons'];
+  const isDesktop = useMediaQuery('(min-width:600px)');
+
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -133,10 +139,22 @@ function MenuDrawer(props: Props) {
                 </MenuItem>
               ))}
             </Box>
-            <Drawer open={openSchedule} onClose={toggleDrawerSchedules(false)}>
+            <Drawer
+              PaperProps={{
+                overflow: 'hidden',
+                sx: {
+                  width: isDesktop ? '50%' : '100%',
+                },
+              }}
+              anchor='right'
+              open={openSchedule}
+              onClose={toggleDrawerSchedules(false)}
+            >
               <RenderSchedules
                 openSchedule={openSchedule}
                 setOpenSchedule={toggleDrawerSchedules(openSchedule)}
+                handleActiveSchedule={handleActiveSchedule}
+                schedulesData={schedulesData}
               />
             </Drawer>
             <Link to='https://beerwithme.se' style={{ textDecoration: 'none', color: 'white' }}>
@@ -197,5 +215,5 @@ function MenuDrawer(props: Props) {
       />
     </>
   );
-}
+};
 export default MenuDrawer;
