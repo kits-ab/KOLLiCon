@@ -16,7 +16,7 @@ import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
 
 export const Home = () => {
-  const [activitiesData, scheduleTime, schedulesData] = useSchedule();
+  const [activitiesData, scheduleTime, scheduleStartTime, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);

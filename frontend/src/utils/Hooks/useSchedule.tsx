@@ -47,6 +47,7 @@ function useSchedule(): [ActivityType[], Date, Date, Schedule[]] {
         return activity as ActivityType;
       });
       setScheduleEndTime(activeSchedule.end);
+      console.log('activeSchedule start: ', activeSchedule.start);
       setScheduleStartTime(activeSchedule.start);
       setActivitiesData(processedActivities);
       return activeSchedule;

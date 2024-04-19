@@ -14,7 +14,7 @@ interface RenderSchedulesProps {
 
 export const RenderSchedules = (props: RenderSchedulesProps) => {
   const { openSchedule, setOpenSchedule } = props;
-  const [_, __, schedulesData] = useSchedule();
+  const [_, __, ___, schedulesData] = useSchedule();
   const [open, setOpen] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number>(0);
 
