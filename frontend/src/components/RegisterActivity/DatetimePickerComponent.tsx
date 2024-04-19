@@ -10,12 +10,14 @@ import {
 import dayjs from 'dayjs';
 import { Colors } from '../../styles/Common/colors';
 import { RegisterActivity } from '@/types/Activities';
+import { svSE } from '@mui/x-date-pickers/locales';
+import useSchedule from '@/utils/Hooks/useSchedule';
 
 type DateTimePickerProps = {
   sxDateTimePickerStyles: any;
   DateTimePropsStyles: any;
   activity: RegisterActivity;
-  setActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  setActivity: React.Dispatch<React.SetStateAction<RegisterActivity>>;
   setIsStartFilled: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEndFilled: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -29,6 +31,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   setIsEndFilled,
 }) => {
   const [error, setError] = React.useState<string>('');
+  const [activitiesData, scheduleStartTime, scheduleEndTime, schedulesData] = useSchedule();
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
@@ -67,7 +70,8 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
         // Display an error message or handle it as needed
         setError('Fyll i minuter');
         setIsEndFilled(false);
-        return;}
+        return;
+      }
       const [hours, minutes] = value.split(':').map((val: string) => parseInt(val));
       // Validate hours and minutes
       if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && minutes >= 0 && minutes < 60) {
@@ -116,7 +120,10 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <DateTimePickerWrapper>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          localeText={svSE.components.MuiLocalizationProvider.defaultProps.localeText}
+        >
           <MobileDateTimePicker
             ampm={false}
             sx={{ ...sxDateTimePickerStyles }}
@@ -125,6 +132,7 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
             label='Starttid'
             name='start'
             value={activity.start || null}
+            minDate={dayjs(scheduleStartTime)}
             onChange={(date: any) => handleDateChange('start', date)}
           />
           <LengthStyled
@@ -141,15 +149,21 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
         </LocalizationProvider>
       </DateTimePickerWrapper>
       {error === 'Fyll i minuter' && (
-        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px', color: `${Colors.attentionColor}` }}>
+        <ErrorStyled
+          style={{
+            height: '2px',
+            margin: '5px 0 7px 47%',
+            fontSize: '13px',
+            color: `${Colors.attentionColor}`,
+          }}
+        >
           {error}
         </ErrorStyled>
       )}
       {error === 'Minuter (0-59)' && (
-        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize:'13px' }}>
+        <ErrorStyled style={{ height: '2px', margin: '5px 0 7px 47%', fontSize: '13px' }}>
           {error}
         </ErrorStyled>
-      
       )}
     </div>
   );

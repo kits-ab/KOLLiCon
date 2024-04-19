@@ -14,26 +14,18 @@ import { Activities } from '@/components/Activity/Activities';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
-import { Schedule } from '@/types/Schedule';
 
 export const Home = () => {
-  const [schedulesData, scheduleTime] = useSchedule();
+  const [schedulesData, scheduleEndTime, _, activeSchedule, setActiveSchedule] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
-  const [activeSchedule, setActiveSchedule] = useState<any>();
-
-  useEffect(() => {
-    const findActiveSchedule = schedulesData.find((schedule) => schedule.active);
-    if (findActiveSchedule) {
-      setActiveSchedule(findActiveSchedule);
-    }
-    setActiveSchedule(schedulesData[0]);
-  }, [schedulesData]);
 
   const handleActiveSchedule = (scheduleId: number) => {
     const newActiveSchedule = schedulesData.find((schedule) => schedule.id === scheduleId);
-    setActiveSchedule(newActiveSchedule);
+    if (newActiveSchedule) {
+      setActiveSchedule(newActiveSchedule);
+    }
   };
 
   console.log('Active Schedule: ', activeSchedule);
@@ -71,7 +63,7 @@ export const Home = () => {
       <ActivitiesWrapper>
         {/* Menu drawer */}
         <MenuDrawer handleActiveSchedule={handleActiveSchedule} schedulesData={schedulesData} />
-        <Activities activeSchedule={activeSchedule} scheduleTime={scheduleTime} />
+        <Activities activeSchedule={activeSchedule} scheduleTime={scheduleEndTime} />
         <FloatingButton activateDrawer={activateDrawer} />
         {/* Add activity button */}
         <AddAcitivityStyling>

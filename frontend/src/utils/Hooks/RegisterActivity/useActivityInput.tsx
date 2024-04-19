@@ -6,7 +6,7 @@ import { RegisterActivity} from '@/types/Activities';
 export const useActivityInput = (initialActivity: types.TimeslotType) => {
     const [type, setType] = useState<types.TimeslotType| ''>('');
 
-  const [activity, setActivity] = useState({ schedule: 1,
+  const [activity, setActivity] = useState({  
     userId: '',
     winner: false,
     type: initialActivity,

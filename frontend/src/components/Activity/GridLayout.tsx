@@ -127,13 +127,15 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
             numberOfParallellActivities,
           } = getGridLayout(activity, activitiesData);
 
+          // console.log('Activity: ', activity);
+          // console.log('Location: ', activity.location.coordinates);
           return (
             <React.Fragment key={activity.id}>
               {index === 0 && <DateText gridrowStart={gridRowStart}>{date}</DateText>}
               <a
                 style={{
                   cursor: 'pointer',
-                  gridRowStart,
+                  gridRowStart: index === 0 ? gridRowStart + 1 : gridRowStart,
                   gridRowEnd,
                   gridColumnStart: `auto`,
                   gridColumnEnd: `span ${columnSpan}`,
@@ -170,11 +172,13 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                     </p>
                   </Timeslot>
                 </TimeSlotWrapper>
-                <ExpandInfo
-                  activityProp={activity}
-                  open={selectedActivityId === activity.id && expandInfoOpen}
-                  setOpen={setExpandInfoOpen}
-                />
+                {selectedActivityId === activity.id && (
+                  <ExpandInfo
+                    activityProp={activity}
+                    open={expandInfoOpen}
+                    setOpen={setExpandInfoOpen}
+                  ></ExpandInfo>
+                )}
               </a>
             </React.Fragment>
           );

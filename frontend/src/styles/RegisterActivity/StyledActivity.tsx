@@ -4,6 +4,7 @@ import Input from '@mui/material/Input';
 import TextArea from '@mui/joy/Textarea';
 import Button from '../Common/Button/Button';
 import { Colors } from '../Common/colors';
+import { fonts } from '@kokitotsos/react-components';
 
 export const EventsWrapper = styled(Box)`
   margin-left: auto;
@@ -120,6 +121,7 @@ export const CancelButton = styled(Button)({
 
 export const ErrorStyled = styled.div`
   color: ${Colors.primaryDeleteButton};
+  font-family: ${fonts.thin};
   font-weight: lighter;
   margin: 4% 0 4% 0;
 `;
@@ -142,7 +144,7 @@ export const AddButton = styled(Button)({
 });
 
 export const DeleteButton = styled(Button)({
-  margin:'2px',
+  margin: '2px',
   width: '60px',
   fontSize: '13px',
   backgroundColor: `${Colors.primaryDeleteButton}`,

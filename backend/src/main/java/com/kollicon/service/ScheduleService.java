@@ -34,7 +34,17 @@ public class ScheduleService {
     }
 
     public ScheduleModel createSchedule(ScheduleModel schedule) {
+        deactivateAllSchedules();
+        schedule.setActive(true);
             return scheduleRepository.save(schedule);
+    }
+
+    private void deactivateAllSchedules() {
+        List<ScheduleModel> schedules = scheduleRepository.findAll();
+        for (ScheduleModel schedule : schedules) {
+            schedule.setActive(false);
+            scheduleRepository.save(schedule);
+        }
     }
 
     public Optional<ScheduleModel> getScheduleById(Long id) {

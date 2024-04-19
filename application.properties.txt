@@ -1,0 +1,20 @@
+spring.datasource.url= jdbc:postgresql://localhost:5432/{Database name}
+
+spring.datasource.username= {username}
+spring.datasource.password= {password}
+spring.jpa.hibernate.ddl-auto= create
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
+
+spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+
+#spring.datasource.driver-class-name=org.postgresql.Driver
+#logging.level.org.springframework.data.jpa=DEBUG
+
+#MailSender
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username={example@kits.se}
+spring.mail.password={app password}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+logging.level.root=info

@@ -30,12 +30,14 @@ export const useUser = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [name, setName] = useState<string>('');
+  // this state used for private routes
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the user and check if the user is an admin
     const fetchUser = async () => {
+      // Set loading to true while fetching user
+      setLoading(true);
       try {
-        // Get the user from the user manager
         const user: User | null = await userManager.getUser();
         if (user) {
           const email = user.profile.email ?? '';
@@ -46,6 +48,8 @@ export const useUser = () => {
       } catch (error) {
         console.error('Error fetching user:', error);
       }
+      // Set loading to false after fetching user
+      setLoading(false);
     };
     fetchUser();
   }, []);
@@ -67,7 +71,7 @@ export const useUser = () => {
     }
   }, [email]);
 
-  return { isAdmin, email, name, signOut };
+  return { isAdmin, email, name, signOut, loading };
 };
 
 export const signinRedirect = () => userManager.signinRedirect();

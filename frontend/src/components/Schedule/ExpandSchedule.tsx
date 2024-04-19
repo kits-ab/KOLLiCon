@@ -1,11 +1,10 @@
-import { React, useState } from 'react';
+import React from 'react';
 import { Colors } from '@/styles/Common/colors';
 import { Schedule } from '@/types/Schedule';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import DialogContent from '@mui/material/DialogContent';
 import Placeholder from '@/assets/placeholder.jpg';
 
 interface ScheduleProps {

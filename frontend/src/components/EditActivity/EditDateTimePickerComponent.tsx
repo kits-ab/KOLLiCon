@@ -10,6 +10,7 @@ import {
 import dayjs from 'dayjs';
 import { Colors } from '../../styles/Common/colors';
 import { RegisterActivity } from '@/types/Activities';
+import useSchedule from '@/utils/Hooks/useSchedule';
 
 type DateTimePickerProps = {
   sxDateTimePickerStyles?: any;
@@ -34,10 +35,12 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
 }) => {
   const [error, setError] = React.useState<string>('');
   const [placeholder, setPlaceholder] = useState<string>('');
+  const [activitiesData, scheduleStartTime, scheduleEndTime, schedulesData] = useSchedule();
+
   useEffect(() => {
     const calculatedDuration = convertShowDurationToHoursAndMinutes(showTimeDuration);
     setPlaceholder(calculatedDuration);
-    if (showTimeDuration === 0){
+    if (showTimeDuration === 0) {
       setError('');
       setIsEndFilled(true);
     }
@@ -153,6 +156,7 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
             label={'Starttid'}
             name='start'
             value={editActivity.start}
+            minDate={dayjs(scheduleStartTime)}
             onChange={(date: any) => handleDateChange('start', date)}
           />
           <LengthStyled
@@ -187,15 +191,15 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
       )}
       {error === 'Fyll i längd' && (
         <ErrorStyled
-        style={{
-          height: '2px',
-          margin: '5px 0 7px 47%',
-          fontSize: '13px',
-          color: `${Colors.attentionColor}`,
-        }}
-      >
-        {error}
-      </ErrorStyled>
+          style={{
+            height: '2px',
+            margin: '5px 0 7px 47%',
+            fontSize: '13px',
+            color: `${Colors.attentionColor}`,
+          }}
+        >
+          {error}
+        </ErrorStyled>
       )}
     </div>
   );
