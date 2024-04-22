@@ -1,85 +1,60 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
 import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
 
-function useSchedule(): [ActivityType[], Date, Date, Schedule[]] {
+function useSchedule(): [
+  Schedule[],
+  Date,
+  Date,
+  Schedule,
+  React.Dispatch<React.SetStateAction<Schedule>>,
+] {
   const [scheduleEndTime, setScheduleEndTime] = useState<Date>(new Date());
   const [scheduleStartTime, setScheduleStartTime] = useState<Date>(new Date());
-  const [activeSchedule, setActiveSchedule] = useState<Schedule>();
+  const [activeSchedule, setActiveSchedule] = useState<Schedule>({} as Schedule);
+  const [schedulesData, setSchedulesData] = useState<Schedule[]>([]);
   const backendIP = import.meta.env.VITE_API_URL;
-  // Fetch all schedules
-  const fetchSchedules = async (): Promise<Schedule[]> => {
+
+  const fetchAllSchedule = async (): Promise<Schedule[]> => {
     try {
       const response = await axios.get(`${backendIP}/api/allschedule`);
-
-      setSchedulesData(response.data);
-      return response.data as Schedule[];
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const fetchScheduleData = async (): Promise<Schedule> => {
-    try {
-      if (!activeSchedule) {
-        throw new Error('Active schedule is not set');
-      }
-      const activities = Array.isArray(activeSchedule.activityId) ? activeSchedule.activityId : [];
-      // Fetch all activities from the active schedule
-      const processedActivities = activities.map((activity: any) => {
-        let coorNumberArray: number[];
-        // Check if coordinates are already in array format or need to be split from string
-        if (Array.isArray(activity.location.coordinates)) {
-          coorNumberArray = activity.location.coordinates.map(Number);
-        } else if (typeof activity.location.coordinates === 'string') {
-          coorNumberArray = activity.location.coordinates.split(',').map(Number);
-        } else {
-          throw new Error('Unexpected type for coordinates');
-        }
-        const start = new Date(activity.start);
-        const end = new Date(activity.end);
-        activity.start = start;
-        activity.end = end;
-        activity.location.coordinates = coorNumberArray;
-        return activity as ActivityType;
+      const updatedData: Schedule[] = response.data.map((schedule: Schedule) => {
+        schedule.activityId?.map((activity: any) => {
+          const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);
+          const start = new Date(activity.start);
+          const end = new Date(activity.end);
+          activity.start = start;
+          activity.end = end;
+          activity.location.coordinates = coorNumberArray;
+          return activity as ActivityType;
+        });
+        return schedule as Schedule;
       });
-      setScheduleEndTime(activeSchedule.end);
-      console.log('activeSchedule start: ', activeSchedule.start);
-      setScheduleStartTime(activeSchedule.start);
-      setActivitiesData(processedActivities);
-      return activeSchedule;
+      console.log('Data: ', updatedData);
+      setSchedulesData(updatedData);
+      return updatedData as Schedule[];
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
 
-  const { data: scheduleData } = useQuery<Schedule>('scheduleData', fetchScheduleData, {
-    enabled: !!activeSchedule,
-  });
-  const { data: schedules } = useQuery<Schedule[]>('schedules', fetchSchedules);
-  const [activitiesData, setActivitiesData] = useState<ActivityType[]>(
-    scheduleData?.activityId ? [scheduleData.activityId] : [],
-  );
-  const [schedulesData, setSchedulesData] = useState<Schedule[]>(schedules || []);
-  // Find the active schedule and store it in the state
   useEffect(() => {
-    const findActiveSchedule = (schedules: Schedule[]): Schedule => {
-      for (const schedule of schedules) {
-        if (schedule.active) {
-          setActiveSchedule(schedule);
-          return schedule;
-        }
-      }
-      return schedules[0];
-    };
-    findActiveSchedule(schedulesData);
+    fetchAllSchedule();
+  }, []);
+
+  useEffect(() => {
+    const findActiveSchedule = schedulesData.find((schedule) => schedule.active);
+    if (findActiveSchedule) {
+      setActiveSchedule(findActiveSchedule);
+    }
+    setActiveSchedule(schedulesData[0]);
+    setScheduleEndTime(findActiveSchedule ? findActiveSchedule.end : new Date());
+    setScheduleStartTime(findActiveSchedule ? findActiveSchedule.start : new Date());
   }, [schedulesData]);
 
-  return [activitiesData, scheduleEndTime, scheduleStartTime, schedulesData];
+  return [schedulesData, scheduleEndTime, scheduleStartTime, activeSchedule, setActiveSchedule];
 }
 
 export default useSchedule;

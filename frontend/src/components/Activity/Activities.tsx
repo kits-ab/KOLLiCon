@@ -2,22 +2,33 @@ import { ActivityType } from '@/types/Activities';
 import React, { useState } from 'react';
 import { GridLayout } from './GridLayout';
 import { getWeek } from 'date-fns';
+import { Schedule } from '@/types/Schedule';
 import { Button, colors, colorsDark, width } from '@kokitotsos/react-components';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 interface ActivitiesProps {
-  activitiesData: [] | any;
+  activeSchedule: Schedule;
   scheduleTime: Date;
 }
 
-export const Activities: React.FC<ActivitiesProps> = (props) => {
-  const { activitiesData, scheduleTime } = props;
+export const Activities: React.FC<ActivitiesProps> = (props: ActivitiesProps) => {
+  const { activeSchedule, scheduleTime } = props;
   const [showPassedActivities, setShowPassedActivities] = useState(false);
 
-  const activitiesSortedByDate = activitiesData.sort(
-    (a: ActivityType, b: ActivityType) => a.start.getTime() - b.start.getTime(),
-  );
+  if (activeSchedule === undefined || activeSchedule === null) {
+    return null;
+  }
+
+  const activitiesSortedByDate = activeSchedule.activityId
+    ? activeSchedule.activityId.sort((a: ActivityType, b: ActivityType) => {
+        if (a.start && b.start) {
+          return new Date(a.start).getTime() - new Date(b.start).getTime();
+        } else {
+          return 0;
+        }
+      })
+    : [];
 
   // if the first activity has passed and the schedule end time has not passed, return true to enable the button
   const enableButtonToShowPassedActivities = () => {
@@ -33,18 +44,19 @@ export const Activities: React.FC<ActivitiesProps> = (props) => {
 
   // Separate activities by date and week
   const separateActivitiesByDate = (
-    activitiesSortedByDate: [],
+    activitiesSortedByDate: ActivityType[],
   ): { [key: string]: ActivityType[] } => {
     const separatedActivities: { [key: string]: ActivityType[] } = {};
 
     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
 
-    activitiesSortedByDate?.map((activity: ActivityType) => {
-      let date = activity.start.toLocaleDateString('sv-SE', options);
+    activitiesSortedByDate.map((activity: ActivityType) => {
+      const startDate = new Date(activity.start);
+      let date = startDate.toLocaleDateString('sv-SE', options);
       date = date.charAt(0).toUpperCase() + date.slice(1).toLowerCase();
       const today = new Date();
 
-      const weekNumber = getWeek(activity.start);
+      const weekNumber = getWeek(startDate);
 
       const key = `${date} week ${weekNumber}`;
 

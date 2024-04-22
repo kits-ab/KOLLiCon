@@ -3,7 +3,7 @@ import { ActivityType } from './Activities';
 export type Schedule = {
   id: number;
   userId: string;
-  activityId?: ActivityType;
+  activityId?: ActivityType[];
   imageURL?: string;
   type: string;
   title: string;

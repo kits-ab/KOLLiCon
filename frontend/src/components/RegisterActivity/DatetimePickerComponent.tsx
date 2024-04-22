@@ -31,7 +31,8 @@ const DateTimePickerComponent: React.FC<DateTimePickerProps> = ({
   setIsEndFilled,
 }) => {
   const [error, setError] = React.useState<string>('');
-  const [activitiesData, scheduleEndTime, scheduleStartTime, schedulesData] = useSchedule();
+  const [schedulesData, scheduleEndTime, scheduleStartTime, activeSchedule, setActiveSchedule] =
+    useSchedule();
   // Function to handle the date change
   const handleDateChange = (name: string, date: Date) => {
     setActivity({ ...activity, [name]: dayjs(date).format('YYYY-MM-DDTHH:mm') });
