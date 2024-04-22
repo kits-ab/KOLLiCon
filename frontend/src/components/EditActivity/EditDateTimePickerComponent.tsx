@@ -35,7 +35,8 @@ const EditDateTimePickerComponent: React.FC<DateTimePickerProps> = ({
 }) => {
   const [error, setError] = React.useState<string>('');
   const [placeholder, setPlaceholder] = useState<string>('');
-  const [activitiesData, scheduleStartTime, scheduleEndTime, schedulesData] = useSchedule();
+  const [schedulesData, scheduleEndTime, scheduleStartTime, activeSchedule, setActiveSchedule] =
+    useSchedule();
 
   useEffect(() => {
     const calculatedDuration = convertShowDurationToHoursAndMinutes(showTimeDuration);
