@@ -6,7 +6,7 @@ const backendIP = import.meta.env.VITE_API_URL;
 const userManagerConfig = {
   authority: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_KNn5zQbLW',
   client_id: '2vbat83e7ac8cubv23cbgq6ufe',
-  redirect_uri: 'http://localhost:5173/handlelogin',
+  redirect_uri: window.location.origin + '/handlelogin',
   response_type: 'code',
   scope: 'openid email profile', // Unnecessary?
   loadUserInfo: true, // Unnecessary?
@@ -81,7 +81,7 @@ export const signOut = () =>
     // https://docs.aws.amazon.com/cognito/latest/developerguide/logout-endpoint.html#get-logout-request-sample
     extraQueryParams: {
       client_id: userManagerConfig.client_id,
-      logout_uri: 'http://localhost:5173/login',
+      logout_uri: window.location.origin + '/login',
     },
   });
 export const signinCallback = () => userManager.signinCallback();
