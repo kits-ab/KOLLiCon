@@ -21,9 +21,9 @@ const ImageSelect: React.FC<ImageSelectProps> = ({ schedule, setSchedule }) => {
     // Fetch images from the kits repository
 
     fetch('https://api.github.com/repos/kits-ab/kits/contents/static/assets', {
-      headers: {
-        Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-      },
+      // headers: {
+      //   Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+      // },
     })
       .then((response) => response.json())
       .then((data) => {

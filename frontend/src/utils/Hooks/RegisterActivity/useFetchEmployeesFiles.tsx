@@ -16,11 +16,11 @@ export function useFetchFiles() {
       // Fetch the list of files in the medarbetare directory
       const response = await axios.get(
         `https://api.github.com/repos/kits-ab/kits/contents/content/medarbetare`,
-        {
-          headers: {
-            Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-          },
-        },
+        // {
+        //   headers: {
+        //     Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+        //   },
+        // },
       );
       if (response.status === 200) {
         const filesData: Promise<EmployeesFiles>[] = response.data
