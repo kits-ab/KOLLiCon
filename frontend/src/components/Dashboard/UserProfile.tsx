@@ -16,10 +16,21 @@ interface Props {
   onClose: () => void;
   open: boolean;
 }
+
+const safePhoneNumber = (phoneNumber: string) => {
+  try {
+    return new types.PhoneNumber(phoneNumber);
+  } catch (error) {
+    console.error('Failed to create phone number:', error);
+    return undefined;
+  }
+};
+
 const UserProfile: React.FC<Props> = ({ onClose, open }) => {
   const { signOut } = useUser();
   const { profileData, isLoading } = useUserProfile();
   const isDesktop = useMediaQuery('(min-width:600px)');
+  const phoneNumber = safePhoneNumber(profileData.phoneNumber);
 
   return (
     <>
@@ -43,9 +54,11 @@ const UserProfile: React.FC<Props> = ({ onClose, open }) => {
           onClick={onClose}
         />
         {/*show buffer loading while catching data*/}
-         {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '53vh' }}>
-            <CircularProgress color="success" />
+        {isLoading ? (
+          <Box
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '53vh' }}
+          >
+            <CircularProgress color='success' />
           </Box>
         ) : (
           <>
@@ -69,13 +82,18 @@ const UserProfile: React.FC<Props> = ({ onClose, open }) => {
               style={{ marginTop: '50px', marginLeft: '20px', height: '200px', width: '150px' }}
             />
             <div style={{ marginTop: '30px' }}>
-              <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>{profileData.name}</div>
-              <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>{profileData.email}</div>
+              <div style={{ marginLeft: '20px', color: '#E3E3E3', fontSize: '30px' }}>
+                {profileData.name}
+              </div>
+              <div style={{ marginLeft: '20px', color: '#6F6F70', fontSize: '20px' }}>
+                {profileData.email}
+              </div>
               <Contact
                 style={{ marginLeft: '20px', color: '#6F6F70' }}
-                info={{
-                  phone: new types.PhoneNumber(profileData.phoneNumber),
-                }}
+                info={{ phone: phoneNumber }}
+                // info={{
+                //   phone: new types.PhoneNumber(profileData.phoneNumber),
+                // }}
                 type={0}
               />
             </div>
