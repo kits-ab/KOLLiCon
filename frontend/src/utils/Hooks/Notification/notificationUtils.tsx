@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setSentCheck } from '@/utils/Redux/Notification/sentCheckSlice';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
@@ -27,7 +28,11 @@ export const useHandleSubmit = () => {
     const messageData: MessageData = { title, text, userEmails };
     try {
       if (userEmails.length !== 0) {
-        await axios.post(`${backendIP}/api/messages/send`, messageData);
+        await axios.post(`${backendIP}/api/messages/send`, messageData, {
+          headers: {
+            Authorization: `Bearer ${await getUserAccessToken()}`,
+          },
+        });
         setSuccess('Meddelande skickat!');
         dispatch(setSentCheck(true));
         clearError();

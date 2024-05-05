@@ -35,6 +35,7 @@ import {
   handleActivityInputChange,
 } from '@/utils/Hooks/EditActivity/useActivityState';
 import { DeleteActivityBox } from './DeleteActivityBox';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 const backendIP = import.meta.env.VITE_API_URL;
 
 interface EditActivityProps {
@@ -131,7 +132,11 @@ const EditActivity: React.FC<EditActivityProps> = ({
     e.preventDefault();
 
     try {
-      await axios.put(`${backendIP}/api/activity/update`, editActivity);
+      await axios.put(`${backendIP}/api/activity/update`, editActivity, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
 
       setOpenEditModal(false);
       // temporary solution to refresh the page after updating an activity
@@ -153,7 +158,11 @@ const EditActivity: React.FC<EditActivityProps> = ({
 
   const finalTermination = async () => {
     try {
-      await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`);
+      await axios.delete(`${backendIP}/api/activity/delete/${activityProp.id}`, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       window.location.reload();
     } catch (error) {
       console.error('Error terminating activity:', error);

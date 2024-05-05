@@ -8,6 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import axios from 'axios';
 import { Colors } from '../../styles/Common/colors';
 import { CancelButton, SaveButton } from '@/styles/RegisterActivity/StyledActivity';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 
 const BootstrapDialog = styled(Dialog)(() => ({
   '& .css-1t1j96h-MuiPaper-root-MuiDialog-paper': {
@@ -43,7 +44,11 @@ function ExportFileUI({ onClose }: { onClose: any }) {
   };
 
   const fetchAllSchedules = async () => {
-    const responseOfSchedules = await axios.get(`${backendUrl}/api/allschedule`);
+    const responseOfSchedules = await axios.get(`${backendUrl}/api/allschedule`, {
+      headers: {
+        Authorization: `Bearer ${await getUserAccessToken()}`,
+      },
+    });
     setSchedules(responseOfSchedules.data);
   };
 
@@ -65,9 +70,18 @@ function ExportFileUI({ onClose }: { onClose: any }) {
   // Create yaml objects of selected schedules.
   const createYamlobjects = async () => {
     for (let i = 0; i < idOfPickedSchedule.length; i++) {
-      const yolo = await axios.get(`${backendUrl}/api/${idOfPickedSchedule[i]}/generatemdfile`);
+      const yolo = await axios.get(`${backendUrl}/api/${idOfPickedSchedule[i]}/generatemdfile`, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       const titleOfSchedule = await axios.get(
         `${backendUrl}/api/scheduletitle/${idOfPickedSchedule[i]}`,
+        {
+          headers: {
+            Authorization: `Bearer ${await getUserAccessToken()}`,
+          },
+        },
       );
       selectedSchedule(yolo.data, titleOfSchedule.data);
     }

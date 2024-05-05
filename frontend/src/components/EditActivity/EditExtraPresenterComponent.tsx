@@ -7,18 +7,19 @@ import { BoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { PresenterBoxWrapper } from '@/styles/RegisterActivity/StyledActivity';
 import { AddedPresenterList } from '@/styles/RegisterActivity/StyledActivity';
 import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
-import { RegisterActivity, RegisterPerson} from '@/types/Activities';
+import { RegisterActivity, RegisterPerson } from '@/types/Activities';
 import axios from 'axios';
 import Box from '@mui/material/Box';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 
 type ExtraPresenterProps = {
   externalPresenter: { name: string; avatarSrc: string };
-  handleExternalPresenterChange:  (e: React.ChangeEvent<HTMLInputElement>) => void;
-  editActivity:   RegisterActivity;
-  setEditActivity:  React.Dispatch<React.SetStateAction<RegisterActivity>>;
-  setIsExternalPresenterFilled:   React.Dispatch<React.SetStateAction<boolean>>;
-  addExternalPresenter:  () => void;
-  setExternalPresenter:   React.Dispatch<React.SetStateAction<{name: string; avatarSrc:string}>>;
+  handleExternalPresenterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  editActivity: RegisterActivity;
+  setEditActivity: React.Dispatch<React.SetStateAction<RegisterActivity>>;
+  setIsExternalPresenterFilled: React.Dispatch<React.SetStateAction<boolean>>;
+  addExternalPresenter: () => void;
+  setExternalPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string }>>;
 };
 
 const backendIP = import.meta.env.VITE_API_URL;
@@ -93,6 +94,11 @@ const EditExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
       try {
         await axios.delete(
           `${backendIP}/api/external-presenter/delete/${deletedExtraPresenter.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${await getUserAccessToken()}`,
+            },
+          },
         );
       } catch (error) {
         console.error('Error deleting external presenter:', error);
@@ -115,17 +121,17 @@ const EditExternalPresenterComponent: React.FC<ExtraPresenterProps> = ({
         onChange={handleInputChange}
       />
       <InputStyled type='file' id='file' />
-      <Box sx={{display:'flex', justifyContent:'center'}}>
-      <AddButton onClick={handleAddButtonClick} disabled={isInputEmpty}>
-        Lägg till
-      </AddButton>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <AddButton onClick={handleAddButtonClick} disabled={isInputEmpty}>
+          Lägg till
+        </AddButton>
       </Box>
 
       {/* List added presenters */}
       <BoxWrapper>
         {editActivity.externalPresenter &&
           editActivity.externalPresenter
-            .filter((externalPresenter: RegisterPerson| null) => externalPresenter !== null)
+            .filter((externalPresenter: RegisterPerson | null) => externalPresenter !== null)
             .map(
               (
                 externalPresenter: { name: React.ReactElement<string> | Iterable<React.ReactNode> },

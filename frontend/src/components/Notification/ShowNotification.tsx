@@ -20,7 +20,7 @@ import {
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Colors } from '@/styles/Common/colors';
 import SendNotificationForm from './SendNotificationForm';
-import { useUser } from '@/utils/Authorization/Auth';
+import { getUserAccessToken, useUser } from '@/utils/Authorization/Auth';
 import { RootState } from '@/utils/Redux/Notification/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSentCheck } from '@/utils/Redux/Notification/sentCheckSlice';
@@ -64,7 +64,11 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
 
   const markNotificationAsRead = async (notificationId: number) => {
     try {
-      await axios.put(`${backendIP}/api/notifications/${notificationId}/read`);
+      await axios.put(`${backendIP}/api/notifications/${notificationId}/read`, null, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       // Update local state to reflect the notification is read
       setNotifications(
         notifications.map((notification) => {
@@ -91,7 +95,11 @@ const ShowNotifications: React.FC<ShowNotificationsProps> = ({
     // In the useEffect hook where you fetch notifications
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${backendIP}/api/notifications/all`);
+        const response = await axios.get(`${backendIP}/api/notifications/all`, {
+          headers: {
+            Authorization: `Bearer ${await getUserAccessToken()}`,
+          },
+        });
         dispatch(setSentCheck(false));
         const allNotifications: Notification[] = response.data;
 

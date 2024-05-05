@@ -14,12 +14,13 @@ import { DeleteButton } from '@/styles/RegisterActivity/StyledActivity';
 import axios from 'axios';
 import { RegisterActivity, RegisterPerson } from '@/types/Activities';
 import Box from '@mui/material/Box';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 
 const backendIP = import.meta.env.VITE_API_URL;
 
 type PresenterProps = {
   presenter: RegisterPerson;
-  suggestions:  { title: string }[];
+  suggestions: { title: string }[];
   presenterError: string;
   handlePresenterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSuggestionClick: (title: string) => void;
@@ -27,7 +28,9 @@ type PresenterProps = {
   setEditActivity: React.Dispatch<React.SetStateAction<RegisterActivity>>;
   addPresenter: () => Promise<RegisterActivity['presenter'][number] | undefined>;
   setIsPresenterFilled: React.Dispatch<React.SetStateAction<boolean>>;
-  setPresenter: React.Dispatch<React.SetStateAction<{ name: string; avatarSrc: string, email: string }>>;
+  setPresenter: React.Dispatch<
+    React.SetStateAction<{ name: string; avatarSrc: string; email: string }>
+  >;
 };
 
 const EditPresenterComponent: React.FC<PresenterProps> = ({
@@ -96,7 +99,11 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
     } else if (updatedPresenters.length > 1 && deletedPresenter.id) {
       // Trigger endpoint to delete presenter from the database using Axios
       try {
-        await axios.delete(`${backendIP}/api/presenter/delete/${deletedPresenter.id}`);
+        await axios.delete(`${backendIP}/api/presenter/delete/${deletedPresenter.id}`, {
+          headers: {
+            Authorization: `Bearer ${await getUserAccessToken()}`,
+          },
+        });
       } catch (error) {
         console.error('Error deleting presenter:', error);
       }
@@ -131,10 +138,10 @@ const EditPresenterComponent: React.FC<PresenterProps> = ({
             </SuggestionBoxStyled>
           </SuggestionBoxWrapper>
         )}
-        <Box sx={{display:'flex', justifyContent:'center'}}>
-        <AddButton type='button' onClick={handleAddPresenter} disabled={isInputEmpty}>
-          Lägg till
-        </AddButton>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <AddButton type='button' onClick={handleAddPresenter} disabled={isInputEmpty}>
+            Lägg till
+          </AddButton>
         </Box>
         {presenterError && <ErrorStyled>{presenterError}</ErrorStyled>}
 

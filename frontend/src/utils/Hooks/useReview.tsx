@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import axios from 'axios';
 import { ErrorStyled, TextAreaStyled } from '@/styles/RegisterActivity/StyledActivity';
 import { StyledRating, StyledSubmitButton, SuccessMessage } from '@/styles/Review/StyledReview';
+import { getUserAccessToken } from '../Authorization/Auth';
 
 interface Props {
   userId: string;
@@ -44,7 +45,11 @@ const PostReviewComponent: React.FC<Props> = (props): React.ReactNode => {
 
   const postReview = async (data: FormData) => {
     try {
-      const response = await axios.post(`${backendIP}/api/review/create`, data);
+      const response = await axios.post(`${backendIP}/api/review/create`, data, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       console.log(response);
 
       reset({

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Schedule } from '@/types/Schedule';
 import axios from 'axios';
 import { ActivityType } from '@/types/Activities';
+import { getUserAccessToken } from '../Authorization/Auth';
 
 function useSchedule(): [
   Schedule[],
@@ -18,7 +19,11 @@ function useSchedule(): [
 
   const fetchAllSchedule = async (): Promise<Schedule[]> => {
     try {
-      const response = await axios.get(`${backendIP}/api/allschedule`);
+      const response = await axios.get(`${backendIP}/api/allschedule`, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       const updatedData: Schedule[] = response.data.map((schedule: Schedule) => {
         schedule.activityId?.map((activity: any) => {
           const coorNumberArray: number[] = activity.location.coordinates.split(',').map(Number);

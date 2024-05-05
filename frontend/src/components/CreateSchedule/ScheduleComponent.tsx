@@ -18,7 +18,7 @@ import ImageSelect from './ImageSelectComponent';
 import DatePickerComponent from './DatePickerComponent';
 import InputComponent from './InputComponent';
 import { CreateSchedule } from '@/types/Schedule';
-import { useUser } from '@/utils/Authorization/Auth';
+import { getUserAccessToken, useUser } from '@/utils/Authorization/Auth';
 
 type scheduleType = CreateSchedule;
 
@@ -30,7 +30,7 @@ function ScheduleComponent({ onClose, onOpen, openScheduleModal }: any) {
   useEffect(() => {
     setSchedule({ ...schedule, userId: email });
   }, [openScheduleModal]);
-  
+
   const initialScheduleState: scheduleType = {
     userId: '',
     type: '',
@@ -60,7 +60,11 @@ function ScheduleComponent({ onClose, onOpen, openScheduleModal }: any) {
     e.preventDefault();
     setSchedule({ ...schedule, userId: email });
     try {
-      await axios.post(`${backendIP}/api/schedule/post`, schedule);
+      await axios.post(`${backendIP}/api/schedule/post`, schedule, {
+        headers: {
+          Authorization: `Bearer ${await getUserAccessToken()}`,
+        },
+      });
       window.location.reload();
     } catch (error) {
       console.error('Error submitting schedule:', error);

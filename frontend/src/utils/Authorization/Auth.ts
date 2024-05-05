@@ -63,7 +63,11 @@ export const useUser = () => {
     if (email !== '') {
       (async (email: string) => {
         try {
-          const response = await axios.get(`${backendIP}/api/admin/email/${email}`);
+          const response = await axios.get(`${backendIP}/api/admin/email/${email}`, {
+            headers: {
+              Authorization: `Bearer ${await getUserAccessToken()}`,
+            },
+          });
           setIsAdmin(response.data);
         } catch (error) {
           console.error('Error checking admin email:', error);

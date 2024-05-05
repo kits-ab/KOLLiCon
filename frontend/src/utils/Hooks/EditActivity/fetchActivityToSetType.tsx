@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { types } from '@kokitotsos/react-components';
 import { RegisterActivity } from '@/types/Activities';
 import { SetStateAction } from 'react';
+import { getUserAccessToken } from '@/utils/Authorization/Auth';
 const backendIP = import.meta.env.VITE_API_URL;
 
 export const fetchActivityToSetType = async (
@@ -15,7 +16,11 @@ export const fetchActivityToSetType = async (
   setShowLocation: { (value: SetStateAction<boolean>): void },
 ) => {
   try {
-    const response = await axios.get(`${backendIP}/api/activity/${activityProp.id}`);
+    const response = await axios.get(`${backendIP}/api/activity/${activityProp.id}`, {
+      headers: {
+        Authorization: `Bearer ${await getUserAccessToken()}`,
+      },
+    });
     const fetchedActivity = response.data;
     const durationInMinutes = dayjs(fetchedActivity.end).diff(
       dayjs(fetchedActivity.start),
