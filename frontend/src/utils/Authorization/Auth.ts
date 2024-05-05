@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { User, UserManager } from 'oidc-client-ts';
 import axios from 'axios';
+
 const backendIP = import.meta.env.VITE_API_URL;
+const COGNITO_USER_POOL_ENDPOINT = import.meta.env.VITE_COGNITO_USER_POOL_ENDPOINT;
+const COGNITO_CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID;
 
 const userManagerConfig = {
-  authority: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_KNn5zQbLW',
-  client_id: '2vbat83e7ac8cubv23cbgq6ufe',
+  authority:
+    COGNITO_USER_POOL_ENDPOINT ?? 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_KNn5zQbLW',
+  client_id: COGNITO_CLIENT_ID ?? '2vbat83e7ac8cubv23cbgq6ufe',
   redirect_uri: window.location.origin + '/handlelogin',
   response_type: 'code',
   scope: 'openid email profile', // Unnecessary?
