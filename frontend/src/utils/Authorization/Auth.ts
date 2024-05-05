@@ -89,5 +89,5 @@ export const signOut = () =>
     },
   });
 export const signinCallback = () => userManager.signinCallback();
-export const getUserAccessToken = async () => (await userManager.getUser())?.access_token;
+export const getUserAccessToken = async () => (await userManager.getUser())?.id_token;
 export default userManager;
