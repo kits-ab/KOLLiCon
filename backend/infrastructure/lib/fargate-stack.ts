@@ -74,7 +74,7 @@ export class FargateStack extends cdk.Stack {
 
     taskDefinition.addContainer('KolliconAppContainer', {
       image: ecs.ContainerImage.fromAsset('../'),
-      cpu: 256,
+      cpu: 384,
       memoryReservationMiB: 1536,
       portMappings: [
         {
