@@ -73,6 +73,8 @@ export class ApiStack extends cdk.Stack {
 
     taskDefinition.addContainer('KolliconAppContainer', {
       image: ecs.ContainerImage.fromAsset('../'),
+      cpu: 512,
+      memoryReservationMiB: 2048,
       portMappings: [
         {
           containerPort: applicationPort,
