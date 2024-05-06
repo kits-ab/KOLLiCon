@@ -127,7 +127,7 @@ export class ApiStack extends cdk.Stack {
       {
         cluster,
         taskDefinition,
-        cpu: 256,
+        cpu: 512,
         memoryLimitMiB: 2048,
         desiredCount: 1,
         taskSubnets: {
