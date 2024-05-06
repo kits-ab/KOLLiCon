@@ -137,6 +137,32 @@ export class ApiStack extends cdk.Stack {
       },
     );
 
+    // DB Query Lambda.
+    const queryLambda = new lambda.Function(this, 'KolliconQueryLambda', {
+      code: lambda.Code.fromAsset('../lambda/dbQuery/dbquery.zip'),
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'handler.handler',
+      environment: {
+        DB_SECRET_ARN: databaseStack.databaseCluster.secret?.secretArn!,
+      },
+      vpc: vpcStack.vpc,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      securityGroups: [fargateSecurityGroup],
+      memorySize: 512,
+      role: new cdk.aws_iam.Role(this, 'LambdaExecutionRole', {
+        assumedBy: new cdk.aws_iam.ServicePrincipal('lambda.amazonaws.com'),
+        managedPolicies: [
+          cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+            'service-role/AWSLambdaVPCAccessExecutionRole',
+          ),
+          cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+            'service-role/AWSLambdaBasicExecutionRole',
+          ),
+        ],
+      }),
+    });
+    dbSecret.grantRead(queryLambda);
+
     // Outputs
     new cdk.CfnOutput(this, 'KolliconLoadBalancerDnsName', {
       value: fargateService.loadBalancer.loadBalancerDnsName,
