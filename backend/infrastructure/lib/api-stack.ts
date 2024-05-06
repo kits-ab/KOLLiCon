@@ -165,6 +165,7 @@ export class ApiStack extends cdk.Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroups: [fargateSecurityGroup],
       memorySize: 512,
+      timeout: cdk.Duration.seconds(30),
       role: new cdk.aws_iam.Role(this, 'LambdaExecutionRole', {
         assumedBy: new cdk.aws_iam.ServicePrincipal('lambda.amazonaws.com'),
         managedPolicies: [
