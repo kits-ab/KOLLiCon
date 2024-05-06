@@ -68,6 +68,8 @@ export class FargateStack extends cdk.Stack {
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'KolliconAppTask', {
       taskRole,
       executionRole,
+      cpu: 512,
+      memoryLimitMiB: 2048,
     });
 
     taskDefinition.addContainer('KolliconAppContainer', {
