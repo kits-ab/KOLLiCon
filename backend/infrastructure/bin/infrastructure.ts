@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { ApiStack } from '../lib/api-stack';
+import { FargateStack } from '../lib/fargate-stack';
 import { CognitoStack } from '../lib/cognito-stack';
 import { VpcStack } from '../lib/vpc-stack';
 import { DatabaseStack } from '../lib/database-stack';
+import { LambdaStack } from '../lib/lambda-stack';
 
 const app = new cdk.App();
 const cognitoStack = new CognitoStack(app, 'KolliconCognitoStack');
 const vpcStack = new VpcStack(app, 'KolliconVpcStack');
 const databaseStack = new DatabaseStack(app, 'KolliconDatabaseStack', vpcStack);
-new ApiStack(app, 'KolliconApiStack', cognitoStack, vpcStack, databaseStack, {
+new LambdaStack(app, 'KolliconLambdaStack', vpcStack, databaseStack);
+new FargateStack(app, 'KolliconApiStack', cognitoStack, vpcStack, databaseStack, {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */

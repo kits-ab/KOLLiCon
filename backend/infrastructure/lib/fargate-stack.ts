@@ -12,11 +12,10 @@ import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as elbv2Actions from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 const applicationPort = 8080;
 
-export class ApiStack extends cdk.Stack {
+export class FargateStack extends cdk.Stack {
   constructor(
     scope: Construct,
     id: string,
@@ -154,33 +153,6 @@ export class ApiStack extends cdk.Stack {
       unhealthyThresholdCount: 2,
       path: '/actuator/health',
     });
-
-    // DB Query Lambda.
-    const queryLambda = new lambda.Function(this, 'KolliconQueryLambda', {
-      code: lambda.Code.fromAsset('../lambda/dbQuery/dbquery.zip'),
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'handler.handler',
-      environment: {
-        DB_SECRET_ARN: databaseStack.databaseCluster.secret?.secretArn!,
-      },
-      vpc: vpcStack.vpc,
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
-      securityGroups: [fargateSecurityGroup],
-      memorySize: 512,
-      timeout: cdk.Duration.seconds(30),
-      role: new cdk.aws_iam.Role(this, 'LambdaExecutionRole', {
-        assumedBy: new cdk.aws_iam.ServicePrincipal('lambda.amazonaws.com'),
-        managedPolicies: [
-          cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
-            'service-role/AWSLambdaVPCAccessExecutionRole',
-          ),
-          cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
-            'service-role/AWSLambdaBasicExecutionRole',
-          ),
-        ],
-      }),
-    });
-    dbSecret.grantRead(queryLambda);
 
     // Outputs
     new cdk.CfnOutput(this, 'KolliconLoadBalancerDnsName', {
