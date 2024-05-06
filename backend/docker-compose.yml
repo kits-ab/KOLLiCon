@@ -15,6 +15,7 @@ services:
       SPRING_MAIL_PASSWORD: app_password
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health
     depends_on:
       - db
   db:

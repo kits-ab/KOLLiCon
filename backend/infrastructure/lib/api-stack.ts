@@ -69,7 +69,6 @@ export class ApiStack extends cdk.Stack {
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'KolliconAppTask', {
       taskRole,
       executionRole,
-      memoryLimitMiB: 2048,
     });
 
     taskDefinition.addContainer('KolliconAppContainer', {
@@ -80,13 +79,6 @@ export class ApiStack extends cdk.Stack {
           protocol: ecs.Protocol.TCP,
         },
       ],
-      logging: new ecs.AwsLogDriver({
-        streamPrefix: 'KolliconApp',
-        logGroup: new logs.LogGroup(this, 'LogGroup', {
-          logGroupName: '/ecs/kollicon',
-          removalPolicy: cdk.RemovalPolicy.DESTROY,
-        }),
-      }),
       environment: {
         DB_NAME: 'postgres',
         // Placeholders
@@ -103,6 +95,20 @@ export class ApiStack extends cdk.Stack {
         DB_USERNAME: ecs.Secret.fromSecretsManager(dbSecret, 'username'),
         DB_PASSWORD: ecs.Secret.fromSecretsManager(dbSecret, 'password'),
       },
+      healthCheck: {
+        command: ['CMD-SHELL', 'curl -f http://localhost:8080/actuator/health || exit 1'],
+        interval: cdk.Duration.seconds(60),
+        timeout: cdk.Duration.seconds(30),
+        retries: 3,
+        startPeriod: cdk.Duration.seconds(300),
+      },
+      logging: new ecs.AwsLogDriver({
+        streamPrefix: 'KolliconApp',
+        logGroup: new logs.LogGroup(this, 'LogGroup', {
+          logGroupName: '/ecs/kollicon',
+          removalPolicy: cdk.RemovalPolicy.DESTROY,
+        }),
+      }),
     });
 
     const certificateArn = ssm.StringParameter.valueForStringParameter(
@@ -134,8 +140,18 @@ export class ApiStack extends cdk.Stack {
         protocol: elbv2.ApplicationProtocol.HTTPS,
         certificate,
         redirectHTTP: true,
+
+        healthCheckGracePeriod: cdk.Duration.minutes(5),
       },
     );
+
+    fargateService.targetGroup.configureHealthCheck({
+      interval: cdk.Duration.seconds(60),
+      timeout: cdk.Duration.seconds(30),
+      healthyThresholdCount: 5,
+      unhealthyThresholdCount: 2,
+      path: '/actuator/health',
+    });
 
     // DB Query Lambda.
     const queryLambda = new lambda.Function(this, 'KolliconQueryLambda', {
