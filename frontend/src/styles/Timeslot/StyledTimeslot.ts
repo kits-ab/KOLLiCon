@@ -1,41 +1,41 @@
-import styled from "@emotion/styled";
-import {Colors} from "../Common/colors";
+import styled from '@emotion/styled';
+import { Colors } from '../Common/colors';
 
 export const StyledTimeslot = styled('div')`
-
-
-    & > section, 
-    .MuiDialogContent-root > section {
-        background-color: ${Colors.primaryBorder};
-    }
-    & > section > div {
-        border-color: ${Colors.primaryBackground};
-    }  
-    .Timeslot-heading, 
-    .Timeslot-start, 
-    * >  p {
-        color: ${Colors.primaryText};
-    } 
-  section > header > div > div > div > span {
-      color: ${Colors.linkColor}
+  & > section,
+  .MuiDialogContent-root > section {
+    background-color: ${Colors.primaryBorder};
   }
-
-
+  & > section > div {
+    border-color: ${Colors.primaryBackground};
+  }
+  .Timeslot-heading,
+  .Timeslot-start,
+  * > p {
+    color: ${Colors.primaryText} !important;
+  }
+  section > header > div > div > div > span {
+    color: ${Colors.linkColor};
+  }
 `;
 
 interface StyledTimeslotProps {
-    numberOfParallellActivities: number;
-    activityType: string;
+  numberOfParallellActivities: number;
+  activityType: string;
 }
 
 export const TimeSlotWrapper = styled(StyledTimeslot)<StyledTimeslotProps>`
-        height: 100%;
-        margin-top: 30px;
-        padding-bottom: 30px;
+  height: 100%;
+  margin-top: 30px;
+  padding-bottom: 30px;
 
-${({ numberOfParallellActivities, activityType }) => {
-    if (numberOfParallellActivities === 3 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
-        return `
+  ${({ numberOfParallellActivities, activityType }) => {
+    if (
+      numberOfParallellActivities === 3 &&
+      activityType !== 'presentation' &&
+      activityType !== 'externalpresentation'
+    ) {
+      return `
         @media (max-width: 600px) {
         .Timeslot-header {
             display: flex;
@@ -57,8 +57,12 @@ ${({ numberOfParallellActivities, activityType }) => {
             align-items: start;
             width: 100%;
         }}
-  `} else if (numberOfParallellActivities === 3 && (activityType === "presentation" || activityType === "externalpresentation")) {
-        return `
+  `;
+    } else if (
+      numberOfParallellActivities === 3 &&
+      (activityType === 'presentation' || activityType === 'externalpresentation')
+    ) {
+      return `
         @media (max-width: 600px) {
         .Timeslot-header{
             display: flex;
@@ -76,9 +80,13 @@ ${({ numberOfParallellActivities, activityType }) => {
             font-size: 20px;
         }
     }         
-   `
-  } else if (numberOfParallellActivities === 2 && (activityType !== "presentation" && activityType !== "externalpresentation")) {
-        return `
+   `;
+    } else if (
+      numberOfParallellActivities === 2 &&
+      activityType !== 'presentation' &&
+      activityType !== 'externalpresentation'
+    ) {
+      return `
         @media (max-width: 600px) {
         .Timeslot-header {
             display: flex;
@@ -95,18 +103,14 @@ ${({ numberOfParallellActivities, activityType }) => {
             width: 100%;
             margin-left: 0;
         }
-        }`
-}
-}}`;
+        }`;
+    }
+  }}
+`;
 
-
-
-
-  export const GridWrapper = styled.div`
+export const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(6, 1fr);
   column-gap: 2%;
-
 `;
-
