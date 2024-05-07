@@ -150,7 +150,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                   numberOfParallellActivities={numberOfParallellActivities}
                 >
                   <Timeslot
-                    style={{ height: '100%' }}
+                    style={{}}
                     presenters={getPresenter(activity)}
                     endTime={activity.end}
                     heading={activity.title}
