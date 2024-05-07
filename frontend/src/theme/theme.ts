@@ -1,12 +1,12 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
-import {Colors} from '../styles/Common/colors';
+import { Colors } from '../styles/Common/colors';
 
 export const theme = responsiveFontSizes(
   createTheme({
     palette: {
-      mode: 'dark',
+      // mode: 'dark',
       background: {
-        default:  `${Colors.primaryBackground}`,
+        default: `${Colors.primaryBackground}`,
       },
     },
     components: {
