@@ -38,8 +38,11 @@ const MenuDrawer: React.FC<Props> = ({ window, handleActiveSchedule, schedulesDa
   const { isAdmin } = useUser();
   const [displayUserProfile, setDisplayUserProfile] = React.useState(false);
   const menuItems = isAdmin
-    ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
-    : ['Min profil', 'Tidigare KitsCons'];
+    ? ['Skapa Schema', 'Tidigare KitsCons', 'Exportera Markdownfil']
+    : ['Tidigare KitsCons'];
+  // Remove 'Min Profil' for now. Works though.
+  // ? ['Skapa Schema', 'Min profil', 'Tidigare KitsCons', 'Exportera Markdownfil']
+  // ['Min profil', 'Tidigare KitsCons'];
   const isDesktop = useMediaQuery('(min-width:600px)');
 
   const toggleDrawer = (newOpen: boolean) => () => {
