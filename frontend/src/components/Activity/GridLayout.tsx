@@ -91,7 +91,7 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
     let gridRowStart = calculateStartRow(activity) + 1;
     let gridRowEnd = calculateEndRow(activity) + 1;
     let columnSpan = 0;
-    let detailsSlice = 200;
+    let detailsSlice = 1000;
     let numberOfParallellActivities = 1;
 
     // Change the layout based on the number of parallell activities
