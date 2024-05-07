@@ -167,9 +167,11 @@ export const GridLayout: React.FC<ActivitiesProps> = (props) => {
                         }
                       : {})}
                   >
-                    <p style={{ wordBreak: 'break-word' }}>
-                      {activity.details.slice(0, detailsSlice)}
-                    </p>
+                    {activity?.details && (
+                      <p style={{ wordBreak: 'break-word' }}>
+                        {activity.details.slice(0, detailsSlice)}
+                      </p>
+                    )}
                   </Timeslot>
                 </TimeSlotWrapper>
                 {selectedActivityId === activity.id && (
