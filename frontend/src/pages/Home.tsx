@@ -14,12 +14,14 @@ import { Activities } from '@/components/Activity/Activities';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShowNotifications from '@/components/Notification/ShowNotification';
 import { NotificationPoint } from '@/styles/Notification/StyledNotification';
+import { useUser } from '@/utils/Authorization/Auth';
 
 export const Home = () => {
   const [schedulesData, scheduleEndTime, _, activeSchedule, setActiveSchedule] = useSchedule();
   const [open, setOpen] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const { isAdmin } = useUser();
 
   const handleActiveSchedule = (scheduleId: number) => {
     const newActiveSchedule = schedulesData.find((schedule) => schedule.id === scheduleId);
@@ -64,11 +66,13 @@ export const Home = () => {
         {/* Menu drawer */}
         <MenuDrawer handleActiveSchedule={handleActiveSchedule} schedulesData={schedulesData} />
         <Activities activeSchedule={activeSchedule} scheduleTime={scheduleEndTime} />
-        <FloatingButton activateDrawer={activateDrawer} />
+        {isAdmin && <FloatingButton activateDrawer={activateDrawer} />}
         {/* Add activity button */}
-        <AddAcitivityStyling>
-          <AddIcon style={{ fontSize: '60px', cursor: 'pointer' }} onClick={activateDrawer} />
-        </AddAcitivityStyling>
+        {isAdmin && (
+          <AddAcitivityStyling>
+            <AddIcon style={{ fontSize: '60px', cursor: 'pointer' }} onClick={activateDrawer} />
+          </AddAcitivityStyling>
+        )}
         {/* Register activity*/}
         <Activity onClose={deactivateDrawer} onOpen={activateDrawer} open={open} />
         {/* Show notifications */}
