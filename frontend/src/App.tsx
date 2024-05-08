@@ -15,18 +15,18 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes>
-        {/* <Route path='/' element={<Login />} /> */}
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<Login />} />
         <Route path='/login' element={<Login />} />
         <Route path='/handlelogin' element={<HandleLogin />} />
+        <Route path='/token' element={<Success />} />
         <Route path='/error' element={<Error />} />
         <Route path='*' element={<NotFound />} />
         <Route
           path='/home'
           element={
-            // <ProtectedRoute>
-            <Home />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
           }
         />
       </Routes>
